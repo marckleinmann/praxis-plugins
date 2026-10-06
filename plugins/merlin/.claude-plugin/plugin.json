@@ -1,0 +1,16 @@
+{
+  "name": "merlin",
+  "version": "1.0.4",
+  "description": "Merlin, by Praxis. The core: your Merlin data folder, the always-on rules, setup, tasks, sessions, meetings, email drafts and writing in your own voice.",
+  "author": {
+    "name": "Praxis"
+  },
+  "userConfig": {
+    "data_dir": {
+      "type": "directory",
+      "title": "Your Merlin data folder",
+      "description": "Where Merlin keeps your about-me, tasks, projects and outputs. Pick a folder you back up.",
+      "required": true
+    }
+  }
+}

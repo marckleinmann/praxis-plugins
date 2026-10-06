@@ -1,0 +1,20 @@
+{
+  "name": "praxis-plugins",
+  "interface": {
+    "displayName": "Merlin, by Praxis"
+  },
+  "plugins": [
+    {
+      "name": "merlin",
+      "source": {
+        "source": "local",
+        "path": "./plugins/merlin"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

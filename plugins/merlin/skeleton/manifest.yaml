@@ -1,0 +1,14 @@
+# Merlin data folder manifest. Merlin's skills read this file.
+# You may change `name`. Leave the task_lists block as it is.
+name: My Merlin
+
+# Projects Merlin manages. Project setup replaces the empty [] with entries like:
+#   - name: Website
+#     path: Website
+projects: []
+
+# One task list for the whole folder: TASKS.md, beside this file.
+# The task engine reads this block. "pre-cut" is the engine's single-list mode.
+task_lists:
+  state: pre-cut
+  frozen_ledger: ./TASKS.md
