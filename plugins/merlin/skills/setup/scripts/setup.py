@@ -323,7 +323,7 @@ def library_reason(p):
         return 'it is the top of your %s, not a folder inside it' % service_name(parts[0])
     if is_within(p, ic):
         return None if p != ic else 'it is the top of your iCloud Drive, not a folder inside it'
-    return 'it is a system folder inside Library'
+    return "it is one of your Mac's own system folders"
 
 
 def is_prepared(d):
@@ -374,30 +374,39 @@ def open_folder_check(raw):
         return False, 'it is named Merlin, and a folder named after the tool reads as safe to delete when the tool is removed'
     owner = enclosing_business(p)
     if owner:
-        return False, 'it is inside the business folder %s' % tilde(owner)
+        return False, 'it is inside another business folder, "%s"' % os.path.basename(owner)
     if not writable_dir(p):
         return False, 'this computer account cannot write to it'
     return True, place_words(p)
 
 
+def synced_places():
+    """[(root, plain words)] for every synced folder found, whatever the switch says."""
+    places = [(r, 'your Dropbox') for r in dropbox_roots()] + [(r, 'your Google Drive') for r in drive_roots()]
+    ic = icloud_root()
+    if ic:
+        places.append((ic, 'your iCloud Drive'))
+    return places
+
+
+def in_synced(p):
+    return any(is_within(p, r) for r, _ in synced_places())
+
+
 def place_words(p):
-    """'"Acmeco" on your Desktop', in plain words."""
+    """'"Acmeco" on your Desktop', in plain words, never a path."""
     name, parent = os.path.basename(p), os.path.dirname(p)
-    where = None
     for d, words in PLAIN_PLACES:
         if parent == canon(home(d)):
-            where = 'on your Desktop' if d == 'Desktop' else 'in %s' % words
-    if where is None:
-        for r in dropbox_roots():
-            if parent == r:
-                where = 'in your Dropbox'
-        if parent == canon(home()):
-            where = 'in your home folder'
-        elif parent in drive_roots():
-            where = 'in your Google Drive'
-        elif parent == icloud_root():
-            where = 'in your iCloud Drive'
-    return '"%s" %s' % (name, where or 'in %s' % tilde(parent))
+            return '"%s" %s' % (name, 'on your Desktop' if d == 'Desktop' else 'in %s' % words)
+    if parent == canon(home()):
+        return '"%s" in your home folder' % name
+    for r, words in synced_places():
+        if parent == r:
+            return '"%s" in %s' % (name, words)
+        if is_within(parent, r):
+            return '"%s" in the folder "%s" in %s' % (name, os.path.basename(parent), words)
+    return '"%s" in the folder "%s"' % (name, os.path.basename(parent) or parent)
 
 
 def manifest_name(d):
@@ -410,12 +419,15 @@ def manifest_name(d):
     if not m:
         return None
     v = m.group(1)
-    if v.startswith('"'):
+    q = re.match(r'"((?:[^"\\]|\\.)*)"', v)
+    if q:
         try:
-            v = json.loads(v)
+            v = json.loads(q.group(0))
         except ValueError:
-            v = v.strip('"')
-    return v.strip("'").strip() or None
+            v = q.group(1)
+    else:
+        v = re.sub(r'\s+#.*$', '', v).strip("'")
+    return v.strip() or None
 
 
 def prepared_lines(d):
@@ -427,19 +439,19 @@ def prepared_lines(d):
         lines.append('Business name in this folder: %s' % name)
     filled = []
     if os.path.isfile(os.path.join(d, 'ABOUT-ME', 'about-me.md')):
-        filled.append('about you (ABOUT-ME/about-me.md)')
+        filled.append('notes about you')
     notes = 0
     for dirpath, _, files in os.walk(os.path.join(d, 'memory')):
         notes += sum(1 for f in files if f.endswith('.md') and f != 'README.md')
     if notes:
-        filled.append('%d company note file(s) in memory/' % notes)
+        filled.append('%d company note%s' % (notes, '' if notes == 1 else 's'))
     try:
         with open(os.path.join(d, 'manifest.yaml'), encoding='utf-8') as f:
             projects = len(re.findall(r'^\s+-\s+name:', f.read(), re.M))
     except OSError:
         projects = 0
     if projects:
-        filled.append('%d project(s)' % projects)
+        filled.append('%d project%s' % (projects, '' if projects == 1 else 's'))
     lines.append('Already filled in: %s' % ('; '.join(filled) if filled else 'nothing yet beyond the starter files'))
     return lines
 
@@ -451,7 +463,10 @@ def folder_status(path):
         return ['A file already has that name, so it cannot be the folder. Suggest another name.']
     if is_prepared(path):
         return prepared_lines(path)
-    items = [x for x in os.listdir(path) if not x.startswith('.')]
+    try:
+        items = [x for x in os.listdir(path) if not x.startswith('.')]
+    except OSError:
+        return ['It exists, but this computer account cannot read it. Suggest another folder.']
     if items:
         return ['It exists and holds %d item(s). Setup adds its starter files beside them and overwrites nothing.' % len(items)]
     return ['It exists and is empty.']
@@ -489,7 +504,7 @@ def suggest(name, open_dir, drive_icloud):
             'example with Time Machine.' % (folder, 'Documents folder' if os.path.isdir(docs) else 'home folder'))
     for ln in folder_status(path):
         say(ln)
-    if svc:
+    if svc or (open_dir is not None and open_dir.strip() and in_synced(canon(open_dir))):
         say(ONE_MAC)
     say('Never move the business folder after setup records it. If it does move, run setup again to record the new place.')
     return 0
@@ -908,7 +923,7 @@ def report(root, data, source, created=None, kept=None):
     say(MEMORY_NOTE)
     say('')
     nxt = next((m for s, m in checks if s in ('missing', 'problem')), None)
-    say('Next action: %s' % (nxt if nxt else 'nothing is missing. Start your first project with Merlin\'s project-setup command.'))
+    say('Next action: %s' % (nxt if nxt else 'nothing is missing. Next: set up your first project, a folder inside your business folder for one job, client or area of work.'))
     return 0
 
 
@@ -939,7 +954,14 @@ def main(argv):
         say(MEMORY_NOTE)
         return 0
     if a.suggest is not None:
-        return suggest(a.suggest, a.open if a.open is not None else os.getcwd(), a.offer_drive_icloud)
+        if a.open is not None:
+            open_dir = a.open
+        else:
+            try:
+                open_dir = os.getcwd()
+            except OSError:
+                open_dir = ''
+        return suggest(a.suggest, open_dir, a.offer_drive_icloud)
     if a.inspect is not None:
         return inspect(a.inspect)
     if a.key_store:

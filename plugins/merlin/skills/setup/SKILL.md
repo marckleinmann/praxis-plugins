@@ -44,7 +44,9 @@ file, the Keychain) runs only after the user says yes to that step.
         that this folder was already set up for the business, possibly by Praxis,
         name the business from `Business name in this folder:`, list what is already
         filled in, and ask whether to use it. Setup keeps every file in a prepared
-        folder and fills in only what is missing.
+        folder and fills in only what is missing. On a yes to a folder that is not
+        prepared, ask "What's your business called?" (offer the folder's own name as
+        a likely answer), because step 3 writes it into the new folder.
      2. **Otherwise, a backed-up folder.** If the open folder was not offered (say
         why in a few words, from the reason it printed) or the user says no, ask:
         "What's your business called?", unless they already said. Run
@@ -55,8 +57,9 @@ file, the Keychain) runs only after the user says yes to that step.
         name another folder instead. If they say Praxis sent them a folder, ask
         where it is and run `bash <setup> --inspect "<that folder>"` to read back
         what it holds.
-     3. Say the two lines it printed about keeping the folder: use it from one Mac at
-        a time, and do not move it after setup records it.
+     3. Tell the user not to move the folder after setup records it. If the chosen
+        folder is in Dropbox, Google Drive or iCloud Drive, also say the line it
+        printed about using the folder from one Mac at a time.
      Never suggest a folder named Merlin. If the `Open folder:` line names a folder
      the user does not recognise, ask which folder the Code tab is open on. Keep the
      business name for step 3: from the user, or from `Business name in this folder:`.
