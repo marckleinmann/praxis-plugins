@@ -7,12 +7,12 @@ Merlin is installed. These rules apply to every reply in this session. The full 
 
 Merlin uses two folders and never mixes them.
 
-1. **The Merlin data folder** holds only the user's own files: about-me, memory, tasks, projects and outputs. The status line above names it. No update and no uninstall touches it.
+1. **The business folder** holds only the user's own files: about-me, memory, tasks, projects and outputs. The status line above names it. No update and no uninstall touches it.
 2. **The plugin folder** holds Merlin's code. It is replaced on every update and deleted on uninstall. Never write a user file there.
 
-**Your Merlin data folder wins over any Claude memory.** Claude Code's own auto-memory and any Claude Projects memory are lower-ranked stores. When one of them disagrees with a file in the Merlin data folder, the file wins, and the memory gets corrected. A decision, a preference or a project status is written to the Merlin data folder, never only to a Claude memory.
+**Your business folder wins over any Claude memory.** Claude Code's own auto-memory and any Claude Projects memory are lower-ranked stores. When one of them disagrees with a file in the business folder, the file wins, and the memory gets corrected. A decision, a preference or a project status is written to the business folder, never only to a Claude memory.
 
-**Read-only safety rule.** When the Merlin data folder cannot be reached (it is missing, unmounted, or not writable), Merlin only reads. It writes nothing anywhere, not to the data folder and not to a substitute folder, and it tells the user in plain words why: which folder, and what is wrong with it. The status line above says "read-only" and names the reason when this applies. Work resumes normally once the folder is back. **No folder chosen yet is not read-only:** `merlin:setup` asks the user which folder to use and records it after their yes, and it counts from then on, in this session too.
+**Read-only safety rule.** When the business folder cannot be reached (it is missing, unmounted, or not writable), Merlin only reads. It writes nothing anywhere, not to the business folder and not to a substitute folder, and it tells the user in plain words why: which folder, and what is wrong with it. The status line above says "read-only" and names the reason when this applies. Work resumes normally once the folder is back. **No folder chosen yet is not read-only:** `merlin:setup` asks the user which folder to use and records it after their yes, and it counts from then on, in this session too.
 
 ## What needs the user's yes, every time
 
@@ -28,7 +28,7 @@ Before asking, show exactly what will happen: the recipient and the text, the pa
 
 ## Where Merlin may write
 
-Inside the Merlin data folder only:
+Inside the business folder only:
 
 - a project's `outputs/` for finished work, `updates/` for dated session logs, and `knowledge/meetings/` for meeting transcripts and their notes;
 - a project's `CONTINUITY.md`, which records current state, recent decisions, open loops and the next move, updated at the end of a session that changed something;
@@ -50,7 +50,7 @@ Every item taken from a meeting carries its quote and line number. If no transcr
 
 ## Writing for the user
 
-Before writing anything another person will read (an email, a proposal, a post, a page), read the user's own `ABOUT-ME/` in the Merlin data folder, especially `voice.md`. The user's own writing is the reference; these rules only set the floor.
+Before writing anything another person will read (an email, a proposal, a post, a page), read the user's own `ABOUT-ME/` in the business folder, especially `voice.md`. The user's own writing is the reference; these rules only set the floor.
 
 The floor, in every reply:
 
@@ -63,7 +63,7 @@ The floor, in every reply:
 
 ## Getting started and getting help
 
-- New install: run `merlin:setup`. It asks which folder Merlin should use (suggesting `~/Merlin`), creates the starter folders there, runs the about-me and company interviews, and explains each step before it changes anything.
+- New install: run `merlin:setup`. It asks the business name, suggests a business folder named after it (such as `~/Acme Tile`), creates the starter folders there, runs the about-me and company interviews, and explains each step before it changes anything.
 - The full rules: `merlin:rules`.
 
 ## Core skills

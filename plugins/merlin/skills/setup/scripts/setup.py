@@ -1,20 +1,23 @@
 #!/usr/bin/env python3
 """Merlin setup helper. Run through setup.sh, which checks python3 first.
 
-Every change outside the Merlin data folder is recorded in ~/.merlin/setup-record.json,
+Every change outside the business folder is recorded in ~/.merlin/setup-record.json,
 so `--remove` reverses exactly what setup added and nothing else. Honours a HOME
 override (every home path comes from os.path.expanduser). Never reads a plugin variable:
 the plugin folder is found from this file's own location.
 
 Modes (one per run):
   --check                 report only; writes nothing anywhere
-  --choose DIR [--yes]    record DIR as the Merlin data folder: create it if needed and
+  --suggest [NAME]        print the folder to suggest for the business NAME: ~/<NAME>, or
+                          ~/My Business when no usable name is given. Writes nothing.
+  --choose DIR [--yes]    record DIR as the business folder: create it if needed and
                           write the pointer ~/.merlin/instance.json (preview without --yes).
                           Refuses when --data (the plugin option) names a different folder.
-  --skeleton-only         copy the starter files into the data folder (never overwrites),
+  --skeleton-only         copy the starter files into the business folder (never overwrites),
                           then report; no questions, no settings changes
-  --skeleton              same copy, used by the interactive setup
-  --grant [--yes]         add the data folder to permissions.additionalDirectories in
+  --skeleton [--name N]   same copy, used by the interactive setup; N, the business name,
+                          goes into a manifest.yaml this run creates
+  --grant [--yes]         add the business folder to permissions.additionalDirectories in
                           ~/.claude/settings.json (preview without --yes; backup first)
   --codex-status          report Codex: installed, Merlin present, start-up hook trusted
   --codex-block [--yes]   add the managed Merlin block to ~/.codex/AGENTS.md (preview
@@ -24,8 +27,8 @@ Modes (one per run):
   --key-check NAME        print "ok" or "missing", never the value
   --explain-memory        print the plain-words note about Claude Code's own memory
   --remove [--yes] [--keys A,B]
-                          reverse what setup and the start-up hook wrote outside the data
-                          folder (preview without --yes); never touches the data folder
+                          reverse what setup and the start-up hook wrote outside the
+                          business folder (preview without --yes); never touches that folder
 Common: --data DIR, the plugin option (default: the folder named in ~/.merlin/instance.json)
 
 Who writes the pointer: merlin:setup (--choose), after the user's yes in chat, and the
@@ -52,7 +55,7 @@ MEMORY_NOTE = """Claude's own memory, in plain words:
 - What it is: Claude Code keeps its own short notes for each folder you open, without asking.
 - Where it lives: on this computer, in ~/.claude/projects/<folder name>/memory/. The first 200 lines of the MEMORY.md file there load at the start of every session in that folder.
 - What it may hold: how-to notes about this computer only, such as where a program is installed.
-- Which one wins: your Merlin data folder, always. A decision, a preference or a project status goes into the Merlin data folder. When a Claude memory disagrees with a file there, the file wins and the memory gets corrected.
+- Which one wins: your business folder, always. A decision, a preference or a project status goes into the business folder. When a Claude memory disagrees with a file there, the file wins and the memory gets corrected.
 - Merlin does not move or change Claude's memory folder."""
 
 
@@ -153,12 +156,12 @@ def pointer_check(data):
     ptr = read_pointer()
     if ptr is None:
         if os.path.exists(POINTER):
-            return 'problem', 'The pointer file ~/.merlin/instance.json exists but cannot be read. Run setup\'s folder step to record the data folder again.'
-        return 'missing', 'The pointer file ~/.merlin/instance.json does not exist yet. Run setup\'s folder step to record this data folder.'
+            return 'problem', 'The pointer file ~/.merlin/instance.json exists but cannot be read. Run setup\'s folder step to record the business folder again.'
+        return 'missing', 'The pointer file ~/.merlin/instance.json does not exist yet. Run setup\'s folder step to record this business folder.'
     named = ptr.get('data_root')
     if data and named and canon(named) == data:
-        return 'ok', 'The pointer file ~/.merlin/instance.json names this data folder.'
-    return 'mismatch', 'The pointer file ~/.merlin/instance.json names %s, not this data folder. The plugin setting wins: the start-up hook rewrites the pointer from it at the next session start.' % named
+        return 'ok', 'The pointer file ~/.merlin/instance.json names this business folder.'
+    return 'mismatch', 'The pointer file ~/.merlin/instance.json names %s, not this business folder. The plugin setting wins: the start-up hook rewrites the pointer from it at the next session start.' % named
 
 
 def settings_has(data):
@@ -213,20 +216,59 @@ def nearest_existing(p):
     return p
 
 
+FALLBACK_NAME = 'My Business'
+
+
+def suggest_name(name):
+    """The folder name to suggest for a business: its own name, made safe as one folder name.
+
+    The folder holds the whole business (about-me, memory, tasks, every project), so it is
+    named after the business and never after Merlin: a folder named after the tool reads as
+    deletable when the tool is removed. Falls back to FALLBACK_NAME.
+    """
+    n = ''.join(' ' if (ch in '/:\\' or ord(ch) < 32) else ch for ch in (name or ''))
+    n = ' '.join(n.split()).strip(' .')
+    if len(n) > 60:
+        n = n[:60].rstrip(' .')
+    if not n or n.casefold() == 'merlin':
+        return FALLBACK_NAME
+    return n
+
+
+def suggest(name):
+    """Print the suggested business folder and what setup would find there. Writes nothing."""
+    folder = suggest_name(name)
+    path = os.path.join(os.path.expanduser('~'), folder)
+    say('Suggested business folder: ~/%s' % folder)
+    if not os.path.exists(path):
+        say('It does not exist yet. Setup creates it after the user says yes.')
+    elif not os.path.isdir(path):
+        say('A file already has that name, so it cannot be the folder. Suggest another name.')
+    else:
+        items = [x for x in os.listdir(path) if not x.startswith('.')]
+        if os.path.isfile(os.path.join(path, 'manifest.yaml')):
+            say('It exists and already holds Merlin starter files. Setup can use it as it is.')
+        elif items:
+            say('It exists and holds %d item(s). Setup adds its starter files beside them and overwrites nothing.' % len(items))
+        else:
+            say('It exists and is empty.')
+    return 0
+
+
 def choose(root, target, option, yes):
-    """Record TARGET as the Merlin data folder: create it and write the pointer."""
+    """Record TARGET as the business folder: create it and write the pointer."""
     raw = (target or '').strip()
     if not raw:
-        say('setup: say which folder to use, for example --choose ~/Merlin. Nothing was written.')
+        say('setup: say which folder to use, for example --choose "~/%s". Nothing was written.' % FALLBACK_NAME)
         return 2
     expanded = os.path.expanduser(raw)
     if not os.path.isabs(expanded):
-        say('setup: %s is not a full path. Use a path that starts with / or ~/, for example ~/Merlin. Nothing was written.' % raw)
+        say('setup: %s is not a full path. Use a path that starts with / or ~/, for example "~/%s". Nothing was written.' % (raw, FALLBACK_NAME))
         return 2
     want = canon(expanded)
     opt = option.strip() if option and not option.startswith('${') and option.strip() else None
     if opt and canon(opt) != want:
-        say('setup: the plugin setting "Your Merlin data folder" names %s, and that setting wins. '
+        say('setup: the plugin setting "Your business folder" names %s, and that setting wins. '
             'To use %s instead, change the plugin setting. Nothing was written.' % (canon(opt), want))
         return 2
     if os.path.exists(want) and not os.path.isdir(want):
@@ -250,7 +292,7 @@ def choose(root, target, option, yes):
         steps.append('change the pointer file ~/.merlin/instance.json from %s to %s' % (named, want))
     else:
         steps.append('write the pointer file ~/.merlin/instance.json naming %s' % want)
-    say('Merlin data folder: %s' % want)
+    say('Business folder: %s' % want)
     if not steps:
         say('Already recorded: the folder exists and the pointer file names it. Nothing to do.')
         return 0
@@ -285,15 +327,18 @@ def choose(root, target, option, yes):
 
 # ------------------------------------------------------------------ skeleton
 
-def copy_skeleton(root, data):
-    """Copy skeleton/ into the data folder. Never overwrites a file that exists."""
+def copy_skeleton(root, data, biz_name=None):
+    """Copy skeleton/ into the business folder. Never overwrites a file that exists.
+
+    BIZ_NAME, when given, replaces the default `name:` line in a manifest.yaml this run creates.
+    """
     src = os.path.join(root, 'skeleton')
     if not os.path.isdir(src):
         raise SystemExit('setup: the starter files are missing from the plugin folder (%s). Reinstall the plugin.' % src)
     parent = os.path.dirname(data)
     if not os.path.isdir(data):
         if not writable_dir(parent):
-            raise SystemExit('setup: read-only. The data folder %s does not exist and its parent folder cannot be written. Nothing was written.' % data)
+            raise SystemExit('setup: read-only. The business folder %s does not exist and its parent folder cannot be written. Nothing was written.' % data)
         os.makedirs(data)
     if not writable_dir(data):
         raise SystemExit('setup: read-only. This computer account cannot write to %s. Nothing was written.' % data)
@@ -316,6 +361,8 @@ def copy_skeleton(root, data):
                 continue
             with open(s, encoding='utf-8') as f:
                 lines = [ln for ln in f.read().split('\n') if not ln.startswith(BUILD_MARKER)]
+            if biz_name and rel == 'manifest.yaml':
+                lines = ['name: %s' % json.dumps(biz_name) if ln == 'name: %s' % FALLBACK_NAME else ln for ln in lines]
             fd = os.open(t, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o644)
             with os.fdopen(fd, 'w', encoding='utf-8') as f:
                 f.write('\n'.join(lines))
@@ -348,13 +395,13 @@ def grant(data, yes):
         return 2
     say('Folder access: setup will add one line to ~/.claude/settings.json, under permissions.additionalDirectories:')
     say('  "%s"' % data)
-    say('This lets a session opened in one of your project folders read and write the whole Merlin data folder. Nothing else in the file changes.')
+    say('This lets a session opened in one of your project folders read and write the whole business folder. Nothing else in the file changes.')
     if not yes:
         say('Preview only. Nothing was written. Run again with --yes after the user says yes.')
         return 0
     backups = os.path.join(data, 'state', 'setup', 'backups')
     if not writable_dir(data):
-        say('Folder access: read-only. The data folder cannot be written, so no backup can be kept. Nothing was written.')
+        say('Folder access: read-only. The business folder cannot be written, so no backup can be kept. Nothing was written.')
         return 2
     backup = None
     if exists:
@@ -393,9 +440,9 @@ def codex_block_text(data):
         CODEX_BEGIN,
         '## Merlin',
         '',
-        'Merlin is installed for this account. Your Merlin data folder is `%s`.' % data,
+        'Merlin is installed for this account. Your business folder is `%s`.' % data,
         'Before other Merlin work in a session, run the Merlin `rules` skill and follow it.',
-        'Your Merlin data folder wins over any memory the assistant keeps.',
+        'Your business folder wins over any memory the assistant keeps.',
         CODEX_END,
         '',
     ])
@@ -490,12 +537,12 @@ def remove(data, yes, keys):
         plan.append('delete the Keychain key %s (service "%s")' % (k, KEYCHAIN_SERVICE))
     if os.path.exists(RECORD):
         plan.append('delete setup\'s own record, ~/.merlin/setup-record.json')
-    say('Remove: this reverses what Merlin wrote outside your Merlin data folder.')
+    say('Remove: this reverses what Merlin wrote outside your business folder.')
     if not plan:
         say('Nothing to remove.')
     for i, p in enumerate(plan, 1):
         say('  %d. %s' % (i, p))
-    say('Your Merlin data folder and every file in it stay exactly as they are%s.' % (' (%s)' % data if data else ''))
+    say('Your business folder and every file in it stay exactly as they are%s.' % (' (%s)' % data if data else ''))
     if not yes:
         say('Preview only. Nothing was changed. Run again with --yes after the user says yes.')
         return 0
@@ -565,7 +612,7 @@ def remove(data, yes, keys):
     except OSError:
         pass
     say('Next: remove the Merlin plugin straight away. In the Claude app: the Plugins screen. In a terminal: '
-        'claude plugin uninstall merlin@praxis-plugins. If the plugin setting "Your Merlin data folder" is set, '
+        'claude plugin uninstall merlin@praxis-plugins. If the plugin setting "Your business folder" is set, '
         'the start-up hook writes the pointer file again at the next session start while the plugin stays installed.')
     return 0
 
@@ -577,13 +624,13 @@ def report(root, data, source, created=None, kept=None):
     say('')
     checks = []
     if data is None:
-        checks.append(('missing', 'Merlin data folder: none chosen yet. Run setup\'s folder step: it asks which folder to use and records it.'))
+        checks.append(('missing', 'Business folder: none chosen yet. Run setup\'s folder step: it asks which folder to use and records it.'))
     else:
         where = 'plugin setting' if source == 'option' else 'pointer file'
         if os.path.isdir(data):
-            checks.append(('ok', 'Merlin data folder: %s (from the %s)' % (data, where)))
+            checks.append(('ok', 'Business folder: %s (from the %s)' % (data, where)))
         else:
-            checks.append(('missing', 'Merlin data folder: %s (from the %s) is not there. If it was moved or renamed on purpose, %s' % (
+            checks.append(('missing', 'Business folder: %s (from the %s) is not there. If it was moved or renamed on purpose, %s' % (
                 data, where, 'run setup\'s folder step to record the new place.' if source != 'option' else 'change the plugin setting to the new place.')))
         if os.path.isdir(data):
             checks.append(('ok' if writable_dir(data) else 'problem', 'Writable by this account' if writable_dir(data) else 'Not writable by this account: Merlin stays read-only'))
@@ -620,8 +667,10 @@ def main(argv):
     ap.add_argument('--plugin-root')
     ap.add_argument('--yes', action='store_true')
     ap.add_argument('--keys', default='')
+    ap.add_argument('--name', help='with --skeleton: the business name for a new manifest.yaml')
     g = ap.add_mutually_exclusive_group()
     g.add_argument('--choose', metavar='DIR')
+    g.add_argument('--suggest', metavar='NAME', nargs='?', const='')
     for m in ('check', 'skeleton-only', 'skeleton', 'grant', 'codex-status', 'codex-block', 'explain-memory', 'remove'):
         g.add_argument('--' + m, action='store_true')
     g.add_argument('--key-store', metavar='NAME')
@@ -633,6 +682,8 @@ def main(argv):
     if a.explain_memory:
         say(MEMORY_NOTE)
         return 0
+    if a.suggest is not None:
+        return suggest(a.suggest)
     if a.key_store:
         return key_store(a.key_store)
     if a.key_check:
@@ -645,7 +696,7 @@ def main(argv):
     if a.choose is not None:
         return choose(root, a.choose, a.data, a.yes)
     if data is None and not a.check:
-        say('setup: no Merlin data folder is chosen yet. Run setup\'s folder step first (--choose, for example --choose ~/Merlin). Nothing was written.')
+        say('setup: no business folder is chosen yet. Run setup\'s folder step first (--choose, for example --choose "~/%s"). Nothing was written.' % FALLBACK_NAME)
         return 2
     if a.grant:
         return grant(data, a.yes)
@@ -655,7 +706,7 @@ def main(argv):
         if root is None:
             say('setup: cannot find the plugin folder from %s. Nothing was written.' % __file__)
             return 2
-        created, kept = copy_skeleton(root, data)
+        created, kept = copy_skeleton(root, data, (a.name or '').strip() or None)
         return report(root, data, source, created, kept)
     return report(root, data, source)
 

@@ -1,6 +1,6 @@
-# Merlin data folder manifest. Merlin's skills read this file.
-# You may change `name`. Leave the task_lists block as it is.
-name: My Merlin
+# Business folder manifest. Merlin's skills read this file.
+# `name` is your business name. You may change it. Leave the task_lists block as it is.
+name: My Business
 
 # Projects Merlin manages. Project setup replaces the empty [] with entries like:
 #   - name: Website

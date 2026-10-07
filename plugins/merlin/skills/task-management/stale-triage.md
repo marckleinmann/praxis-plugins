@@ -55,7 +55,7 @@ Ask what to do with them, for example "close GE12, keep GE17". The actions:
 **Step 3: collect the changes.** Build one list of changes keyed on the task
 id, for example
 `[{"tid":"GE12","action":"close"}, {"tid":"GE17","action":"keep"}]`, and save
-it as `ops.json` in a temporary folder, never inside the Merlin data folder.
+it as `ops.json` in a temporary folder, never inside the business folder.
 
 **Step 4: preview.**
 

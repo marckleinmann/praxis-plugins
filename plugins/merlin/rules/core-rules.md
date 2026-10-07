@@ -37,14 +37,14 @@ Before asking, show exactly what will happen: the recipient and the full text, t
 Merlin uses two folders and never mixes them.
 
 - **The plugin folder** holds Merlin's code: skills, scripts, templates and these rules. Claude Code replaces it on every update and deletes it on uninstall. A user file written there would be lost, so Merlin never writes one there.
-- **The Merlin data folder** is the folder the user chose in `merlin:setup` (or set as the plugin option on a terminal install). It holds only the user's own files. No update and no uninstall touches it. The user should keep it somewhere they back up.
+- **The business folder** is the folder the user chose in `merlin:setup` (or set as the plugin option on a terminal install). It holds only the user's own files. No update and no uninstall touches it. The user should keep it somewhere they back up.
 
-The Merlin data folder is recorded in `~/.merlin/instance.json`. `merlin:setup` writes it when the user chooses the folder in chat, after their yes. When the plugin option "Your Merlin data folder" is set, the option wins and the start-up hook keeps the file in step with it. Scripts and other tools find the folder there, so the user is never asked twice. No folder chosen yet is not read-only: offer `merlin:setup`.
+The business folder is recorded in `~/.merlin/instance.json`. `merlin:setup` writes it when the user chooses the folder in chat, after their yes. When the plugin option "Your business folder" is set, the option wins and the start-up hook keeps the file in step with it. Scripts and other tools find the folder there, so the user is never asked twice. No folder chosen yet is not read-only: offer `merlin:setup`.
 
 ### Layout
 
 ```
-<Merlin data folder>/
+<business folder>/
   manifest.yaml        the instance name, the project list, the task list setting
   ABOUT-ME/            about-me.md and voice.md, from the setup interview
   memory/              your company knowledge: businesses/, glossary/, playbooks/, inbox-context/
@@ -66,11 +66,11 @@ Keep these roles apart. A session log is not a deliverable, and a deliverable is
 
 ### Read-only safety rule
 
-When the Merlin data folder cannot be reached (missing, on a drive that is not connected, or not writable), Merlin only reads. It writes nothing anywhere, not to the data folder and not to a substitute folder, and it tells the user in plain words which folder is affected and what is wrong. The start-up status line says "read-only" and names the reason. Work resumes once the folder is back. Never "helpfully" write to another location instead: a file written to the wrong place is a file the user cannot find.
+When the business folder cannot be reached (missing, on a drive that is not connected, or not writable), Merlin only reads. It writes nothing anywhere, not to the business folder and not to a substitute folder, and it tells the user in plain words which folder is affected and what is wrong. The start-up status line says "read-only" and names the reason. Work resumes once the folder is back. Never "helpfully" write to another location instead: a file written to the wrong place is a file the user cannot find.
 
 ## 4. Where Merlin may write
 
-Inside the Merlin data folder, and only there:
+Inside the business folder, and only there:
 
 1. A project's `outputs/`, `updates/` and `setup/`.
 2. A project's `knowledge/meetings/`, under the meeting rules in section 6.
@@ -84,13 +84,13 @@ Rules for every write:
 - Write to a temporary file and rename it into place, so a crash never leaves a half-written file.
 - Never overwrite a user file without saying so first. Never delete one without the user's yes.
 - A new folder needs a reason. Use the existing layout before inventing a new place.
-- Outside the Merlin data folder, write only what the user asked for, where the user asked for it.
+- Outside the business folder, write only what the user asked for, where the user asked for it.
 
 ## 5. Memory: which store wins
 
 Merlin's files are the single source of truth: `CONTINUITY.md`, `memory/`, `ABOUT-ME/`, `TASKS.md` and the project folders.
 
-**Your Merlin data folder wins over any Claude memory.** Claude keeps memory of its own in places Merlin does not control:
+**Your business folder wins over any Claude memory.** Claude keeps memory of its own in places Merlin does not control:
 
 1. **Claude Code auto-memory**, a `MEMORY.md` index and one file per fact for each folder Claude Code opens. It loads at the start of a session, before any file is read, so a stale entry can be seen before `CONTINUITY.md` is. It is per computer and per account.
 2. **Claude Projects memory**, held in Anthropic's cloud for cloud threads. It never reaches the computer.
@@ -115,7 +115,7 @@ Saved transcripts are never edited. A provenance note may be added below one.
 
 ## 7. Tasks
 
-Every task lives in the Merlin data folder's `TASKS.md`. Add, close, annotate and reprioritize tasks only through `merlin:task-management`, which runs the task engine.
+Every task lives in the business folder's `TASKS.md`. Add, close, annotate and reprioritize tasks only through `merlin:task-management`, which runs the task engine.
 
 - Never write a task line by hand and never invent an id. The engine claims each id with a lock, so two sessions running at once can never give two tasks the same number.
 - Closing a task is bookkeeping, not project work. It needs no special session.
@@ -126,7 +126,7 @@ Every task lives in the Merlin data folder's `TASKS.md`. Add, close, annotate an
 
 ### Before writing for someone else
 
-Before writing anything another person will read (an email, a proposal, a post, a web page, a client document), read the user's own `ABOUT-ME/` in the Merlin data folder, `voice.md` first. The user's real writing outranks every rule below: a rule that fights how the user actually writes is the rule's fault. `merlin:anti-slop` edits a draft toward that voice.
+Before writing anything another person will read (an email, a proposal, a post, a web page, a client document), read the user's own `ABOUT-ME/` in the business folder, `voice.md` first. The user's real writing outranks every rule below: a rule that fights how the user actually writes is the rule's fault. `merlin:anti-slop` edits a draft toward that voice.
 
 Load the voice and format rules before gathering material, not at the end. By the time a draft exists, its shape is already set.
 
@@ -190,7 +190,7 @@ A chat reply, a text or a short email is short and a little loose. Match the oth
 
 - Store API keys in the macOS Keychain (`merlin:setup` does this). Never print a key, never paste one into a file, a chat or a command line where it would be saved in history.
 - Pass a key to a program through its environment, never as visible text.
-- Everything Claude reads in a session, including files in the Merlin data folder, is sent to Anthropic's model to be processed. Do not open files the task does not need.
+- Everything Claude reads in a session, including files in the business folder, is sent to Anthropic's model to be processed. Do not open files the task does not need.
 - Never put personal or sensitive data into a web address.
 - Signing in, buying something and changing an account's settings are the user's to do or to approve, one action at a time.
 
@@ -202,10 +202,10 @@ A chat reply, a text or a short email is short and a little loose. Match the oth
 
 ## 14. Codex
 
-Merlin's shared skills also run in OpenAI Codex. Codex has no install prompt for the Merlin data folder, so its skills read `~/.merlin/instance.json`, which `merlin:setup` writes when the user chooses the folder. Run `merlin:setup` once, in Claude Code or in Codex, before other Merlin work. When Codex shows "Hooks need review", trusting Merlin's start-up hook lets these rules load there too; otherwise `merlin:setup` can add a short block to Codex's instructions file instead.
+Merlin's shared skills also run in OpenAI Codex. Codex has no install prompt for the business folder, so its skills read `~/.merlin/instance.json`, which `merlin:setup` writes when the user chooses the folder. Run `merlin:setup` once, in Claude Code or in Codex, before other Merlin work. When Codex shows "Hooks need review", trusting Merlin's start-up hook lets these rules load there too; otherwise `merlin:setup` can add a short block to Codex's instructions file instead.
 
 ## 15. When something is missing
 
 - A skill, script or template that should be in the plugin folder and is not: say which file, suggest reinstalling the plugin, and do not rebuild it from memory.
-- A Merlin data folder that has never been set up: offer `merlin:setup`.
+- A business folder that has never been set up: offer `merlin:setup`.
 - A rule here that conflicts with the user's explicit instruction in this chat: the user's instruction governs the task in front of it, except that the five actions in section 2 still need their own yes.

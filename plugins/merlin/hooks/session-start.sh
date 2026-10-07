@@ -2,8 +2,8 @@
 # Merlin SessionStart hook (Claude Code and Codex).
 #
 # Prints one JSON line whose additionalContext is a short status header plus the
-# rules digest (rules/digest.md). The Merlin data folder comes from the plugin
-# option "Your Merlin data folder" when it is set, otherwise from the pointer file
+# rules digest (rules/digest.md). The business folder comes from the plugin
+# option "Your business folder" when it is set, otherwise from the pointer file
 # ~/.merlin/instance.json, which merlin:setup writes when the user chooses a folder
 # in chat. A desktop-app install often cannot set the option at all, so the
 # pointer is the normal source there.
@@ -130,7 +130,7 @@ if [ "$SOURCE" = "option" ] && { [ "$STATE" = "ready" ] || [ "$STATE" = "notsetu
         POINTER_NOTE="The pointer file ~/.merlin/instance.json could not be written. Scripts and Codex will not find this folder until it can be."
       fi
     else
-      POINTER_NOTE="The folder ~/.merlin could not be created, so the pointer file was not written. Scripts and Codex will not find the data folder until it can be."
+      POINTER_NOTE="The folder ~/.merlin could not be created, so the pointer file was not written. Scripts and Codex will not find the business folder until it can be."
     fi
   fi
 elif [ "$SOURCE" = "pointer" ]; then
@@ -144,20 +144,20 @@ fi
 
 case "$STATE" in
   ready)
-    STATUS="Status: ready. Merlin data folder: ${DATA}. Setup has run. ${POINTER_NOTE}" ;;
+    STATUS="Status: ready. Business folder: ${DATA}. Setup has run. ${POINTER_NOTE}" ;;
   notsetup)
-    STATUS="Status: setup has not run. Merlin data folder: ${DATA}. The folder exists but has no manifest.yaml yet. Before other Merlin work, tell the user once, in plain words, to run merlin:setup. ${POINTER_NOTE}" ;;
+    STATUS="Status: setup has not run. Business folder: ${DATA}. The folder exists but has no manifest.yaml yet. Before other Merlin work, tell the user once, in plain words, to run merlin:setup. ${POINTER_NOTE}" ;;
   readonly)
-    STATUS="Status: read-only. Merlin data folder: ${DATA}. Reason: ${REASON}. Merlin only reads this session and writes nothing anywhere until the folder is back. Tell the user which folder and what is wrong with it. ${POINTER_NOTE}" ;;
+    STATUS="Status: read-only. Business folder: ${DATA}. Reason: ${REASON}. Merlin only reads this session and writes nothing anywhere until the folder is back. Tell the user which folder and what is wrong with it. ${POINTER_NOTE}" ;;
   *)
-    STATUS="Status: no Merlin data folder chosen yet. This is not read-only. Before other Merlin work, tell the user once, in plain words, to run /merlin:setup: it asks which folder to use and records it after their yes. Until a folder is chosen, Merlin writes nothing except what merlin:setup writes after the user's yes. A folder merlin:setup records counts from then on, in this session too, with no new session needed. In Codex, merlin:setup records the folder the same way." ;;
+    STATUS="Status: no business folder chosen yet. This is not read-only. Before other Merlin work, tell the user once, in plain words, to run /merlin:setup: it asks which folder to use and records it after their yes. Until a folder is chosen, Merlin writes nothing except what merlin:setup writes after the user's yes. A folder merlin:setup records counts from then on, in this session too, with no new session needed. In Codex, merlin:setup records the folder the same way." ;;
 esac
 
 DIGEST=""
 if [ -f "$ROOT/rules/digest.md" ]; then
   DIGEST=$(grep -v -F "$BUILD_MARKER" "$ROOT/rules/digest.md")
 else
-  DIGEST="The Merlin rules digest is missing from the plugin folder (${ROOT}/rules/digest.md). Your Merlin data folder wins over any Claude memory. Run merlin:rules for the full rules."
+  DIGEST="The Merlin rules digest is missing from the plugin folder (${ROOT}/rules/digest.md). Your business folder wins over any Claude memory. Run merlin:rules for the full rules."
 fi
 
 TEXT="# Merlin ${VERSION}
