@@ -8,6 +8,9 @@ the plugin folder is found from this file's own location.
 
 Modes (one per run):
   --check                 report only; writes nothing anywhere
+  --choose DIR [--yes]    record DIR as the Merlin data folder: create it if needed and
+                          write the pointer ~/.merlin/instance.json (preview without --yes).
+                          Refuses when --data (the plugin option) names a different folder.
   --skeleton-only         copy the starter files into the data folder (never overwrites),
                           then report; no questions, no settings changes
   --skeleton              same copy, used by the interactive setup
@@ -23,7 +26,10 @@ Modes (one per run):
   --remove [--yes] [--keys A,B]
                           reverse what setup and the start-up hook wrote outside the data
                           folder (preview without --yes); never touches the data folder
-Common: --data DIR (default: the folder named in ~/.merlin/instance.json)
+Common: --data DIR, the plugin option (default: the folder named in ~/.merlin/instance.json)
+
+Who writes the pointer: merlin:setup (--choose), after the user's yes in chat, and the
+start-up hook, only while the plugin option is set. The option wins when both exist.
 """
 
 import argparse
@@ -142,16 +148,17 @@ def say(line=''):
 # ------------------------------------------------------------------ checks
 
 def pointer_check(data):
-    """Report only. Never writes the pointer: the start-up hook owns it."""
+    """Report only. The pointer is written by --choose, or by the start-up hook while the
+    plugin option is set."""
     ptr = read_pointer()
     if ptr is None:
         if os.path.exists(POINTER):
-            return 'problem', 'The pointer file ~/.merlin/instance.json exists but cannot be read. The start-up hook rewrites it at the next session start.'
-        return 'missing', 'The pointer file ~/.merlin/instance.json does not exist yet. The start-up hook writes it at the next session start, once the data folder exists.'
+            return 'problem', 'The pointer file ~/.merlin/instance.json exists but cannot be read. Run setup\'s folder step to record the data folder again.'
+        return 'missing', 'The pointer file ~/.merlin/instance.json does not exist yet. Run setup\'s folder step to record this data folder.'
     named = ptr.get('data_root')
     if data and named and canon(named) == data:
         return 'ok', 'The pointer file ~/.merlin/instance.json names this data folder.'
-    return 'mismatch', 'The pointer file ~/.merlin/instance.json names %s, not this data folder. Start a new session: the start-up hook rewrites it from the plugin setting.' % named
+    return 'mismatch', 'The pointer file ~/.merlin/instance.json names %s, not this data folder. The plugin setting wins: the start-up hook rewrites the pointer from it at the next session start.' % named
 
 
 def settings_has(data):
@@ -185,6 +192,95 @@ def codex_status():
     except OSError:
         pass
     return {'codex': present, 'merlin_installed': installed, 'hook_trusted': trusted, 'block_present': block}
+
+
+# ------------------------------------------------------------------ choose
+
+def plugin_version(root):
+    try:
+        with open(os.path.join(root, '.claude-plugin', 'plugin.json'), encoding='utf-8') as f:
+            return json.load(f).get('version') or 'unknown'
+    except (OSError, ValueError, TypeError):
+        return 'unknown'
+
+
+def nearest_existing(p):
+    while not os.path.exists(p):
+        nxt = os.path.dirname(p)
+        if nxt == p:
+            break
+        p = nxt
+    return p
+
+
+def choose(root, target, option, yes):
+    """Record TARGET as the Merlin data folder: create it and write the pointer."""
+    raw = (target or '').strip()
+    if not raw:
+        say('setup: say which folder to use, for example --choose ~/Merlin. Nothing was written.')
+        return 2
+    expanded = os.path.expanduser(raw)
+    if not os.path.isabs(expanded):
+        say('setup: %s is not a full path. Use a path that starts with / or ~/, for example ~/Merlin. Nothing was written.' % raw)
+        return 2
+    want = canon(expanded)
+    opt = option.strip() if option and not option.startswith('${') and option.strip() else None
+    if opt and canon(opt) != want:
+        say('setup: the plugin setting "Your Merlin data folder" names %s, and that setting wins. '
+            'To use %s instead, change the plugin setting. Nothing was written.' % (canon(opt), want))
+        return 2
+    if os.path.exists(want) and not os.path.isdir(want):
+        say('setup: %s is a file, not a folder. Pick another place. Nothing was written.' % want)
+        return 2
+    base = nearest_existing(want)
+    if not os.path.isdir(want) and not writable_dir(base):
+        say('setup: read-only. %s does not exist and %s cannot be written by this account. Nothing was written.' % (want, base))
+        return 2
+    if os.path.isdir(want) and not writable_dir(want):
+        say('setup: read-only. This computer account cannot write to %s. Nothing was written.' % want)
+        return 2
+    ptr = read_pointer() or {}
+    named = canon(ptr['data_root']) if ptr.get('data_root') else None
+    steps = []
+    if not os.path.isdir(want):
+        steps.append('create the folder %s' % want)
+    if named == want:
+        pass
+    elif named:
+        steps.append('change the pointer file ~/.merlin/instance.json from %s to %s' % (named, want))
+    else:
+        steps.append('write the pointer file ~/.merlin/instance.json naming %s' % want)
+    say('Merlin data folder: %s' % want)
+    if not steps:
+        say('Already recorded: the folder exists and the pointer file names it. Nothing to do.')
+        return 0
+    say('Setup will:')
+    for i, st in enumerate(steps, 1):
+        say('  %d. %s' % (i, st))
+    say('No file inside the folder is changed by this step.')
+    if not yes:
+        say('Preview only. Nothing was changed. Run again with --yes after the user says yes.')
+        return 0
+    if not os.path.isdir(want):
+        os.makedirs(want)
+    os.makedirs(os.path.dirname(POINTER), exist_ok=True)
+    body = {
+        'data_root': want,
+        'praxis_root': want,
+        'written_by': 'merlin plugin %s, merlin:setup' % plugin_version(root) if root else 'merlin:setup',
+        'written_at': datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
+        'data_access': 'local',
+    }
+    tmp = POINTER + '.tmp'
+    with open(tmp, 'w', encoding='utf-8') as f:
+        json.dump(body, f, indent=2, ensure_ascii=False)
+        f.write('\n')
+    os.replace(tmp, POINTER)
+    rec = load_record()
+    rec['pointer_written'] = True
+    save_record(rec)
+    say('Done. The folder exists and ~/.merlin/instance.json names it. It counts from now on, in this session too.')
+    return 0
 
 
 # ------------------------------------------------------------------ skeleton
@@ -468,8 +564,9 @@ def remove(data, yes, keys):
         os.rmdir(home('.merlin'))
     except OSError:
         pass
-    say('Next: uninstall the plugin straight away (in Claude Code: /plugin, or claude plugin uninstall in a terminal). '
-        'While it stays installed, its start-up hook writes the pointer file again at the next session start.')
+    say('Next: remove the Merlin plugin straight away. In the Claude app: the Plugins screen. In a terminal: '
+        'claude plugin uninstall merlin@praxis-plugins. If the plugin setting "Your Merlin data folder" is set, '
+        'the start-up hook writes the pointer file again at the next session start while the plugin stays installed.')
     return 0
 
 
@@ -480,9 +577,14 @@ def report(root, data, source, created=None, kept=None):
     say('')
     checks = []
     if data is None:
-        checks.append(('missing', 'Merlin data folder: none chosen. Set the plugin option "Your Merlin data folder", then start a new session.'))
+        checks.append(('missing', 'Merlin data folder: none chosen yet. Run setup\'s folder step: it asks which folder to use and records it.'))
     else:
-        checks.append(('ok' if os.path.isdir(data) else 'missing', 'Merlin data folder: %s (from the %s)' % (data, 'plugin setting' if source == 'option' else 'pointer file')))
+        where = 'plugin setting' if source == 'option' else 'pointer file'
+        if os.path.isdir(data):
+            checks.append(('ok', 'Merlin data folder: %s (from the %s)' % (data, where)))
+        else:
+            checks.append(('missing', 'Merlin data folder: %s (from the %s) is not there. If it was moved or renamed on purpose, %s' % (
+                data, where, 'run setup\'s folder step to record the new place.' if source != 'option' else 'change the plugin setting to the new place.')))
         if os.path.isdir(data):
             checks.append(('ok' if writable_dir(data) else 'problem', 'Writable by this account' if writable_dir(data) else 'Not writable by this account: Merlin stays read-only'))
             needed = ['manifest.yaml', 'TASKS.md', 'ABOUT-ME', 'memory', '.task-ids', 'state']
@@ -519,6 +621,7 @@ def main(argv):
     ap.add_argument('--yes', action='store_true')
     ap.add_argument('--keys', default='')
     g = ap.add_mutually_exclusive_group()
+    g.add_argument('--choose', metavar='DIR')
     for m in ('check', 'skeleton-only', 'skeleton', 'grant', 'codex-status', 'codex-block', 'explain-memory', 'remove'):
         g.add_argument('--' + m, action='store_true')
     g.add_argument('--key-store', metavar='NAME')
@@ -539,8 +642,10 @@ def main(argv):
         return 0
     if a.remove:
         return remove(data, a.yes, [k for k in a.keys.split(',') if k])
+    if a.choose is not None:
+        return choose(root, a.choose, a.data, a.yes)
     if data is None and not a.check:
-        say('setup: no Merlin data folder is known. Set the plugin option "Your Merlin data folder", start a new session, then run setup again. Nothing was written.')
+        say('setup: no Merlin data folder is chosen yet. Run setup\'s folder step first (--choose, for example --choose ~/Merlin). Nothing was written.')
         return 2
     if a.grant:
         return grant(data, a.yes)

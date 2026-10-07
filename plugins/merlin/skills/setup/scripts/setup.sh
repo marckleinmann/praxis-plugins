@@ -17,13 +17,13 @@ prereqs() {
   if command -v git >/dev/null 2>&1; then
     echo "[ok]       git: $(git --version 2>/dev/null)"
   else
-    echo "[missing]  git: not found. Install Apple's command line tools: run xcode-select --install in Terminal."
+    echo "[missing]  git: not found. On a Mac, macOS offers Apple's free command line developer tools in a window: click Install, wait for it to finish, then run Merlin's setup again."
     missing=1
   fi
   if command -v python3 >/dev/null 2>&1 && python3 -c 'import sys' >/dev/null 2>&1; then
     echo "[ok]       python3: $(python3 --version 2>&1)"
   else
-    echo "[missing]  python3: not found. Install Apple's command line tools (xcode-select --install) or Python from python.org. The task list and setup need it."
+    echo "[missing]  python3: not found. The task list and setup need it. On a Mac, macOS offers Apple's free command line developer tools in a window: click Install, wait for it to finish, then run Merlin's setup again. Or install Python from python.org."
     missing=1
   fi
   if command -v node >/dev/null 2>&1; then

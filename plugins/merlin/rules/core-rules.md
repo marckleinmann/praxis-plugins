@@ -37,9 +37,9 @@ Before asking, show exactly what will happen: the recipient and the full text, t
 Merlin uses two folders and never mixes them.
 
 - **The plugin folder** holds Merlin's code: skills, scripts, templates and these rules. Claude Code replaces it on every update and deletes it on uninstall. A user file written there would be lost, so Merlin never writes one there.
-- **The Merlin data folder** is the folder the user picked at install. It holds only the user's own files. No update and no uninstall touches it. The user should keep it somewhere they back up.
+- **The Merlin data folder** is the folder the user chose in `merlin:setup` (or set as the plugin option on a terminal install). It holds only the user's own files. No update and no uninstall touches it. The user should keep it somewhere they back up.
 
-The Merlin data folder is recorded in `~/.merlin/instance.json`, which the start-up hook writes and keeps current. Scripts and other tools find the folder there, so the user is never asked twice.
+The Merlin data folder is recorded in `~/.merlin/instance.json`. `merlin:setup` writes it when the user chooses the folder in chat, after their yes. When the plugin option "Your Merlin data folder" is set, the option wins and the start-up hook keeps the file in step with it. Scripts and other tools find the folder there, so the user is never asked twice. No folder chosen yet is not read-only: offer `merlin:setup`.
 
 ### Layout
 
@@ -202,7 +202,7 @@ A chat reply, a text or a short email is short and a little loose. Match the oth
 
 ## 14. Codex
 
-Merlin's shared skills also run in OpenAI Codex. Codex has no install prompt for the Merlin data folder, so its skills read `~/.merlin/instance.json`, which Claude Code's start-up hook writes. Run Claude Code once after installing, before using Merlin in Codex. When Codex shows "Hooks need review", trusting Merlin's start-up hook lets these rules load there too; otherwise `merlin:setup` can add a short block to Codex's instructions file instead.
+Merlin's shared skills also run in OpenAI Codex. Codex has no install prompt for the Merlin data folder, so its skills read `~/.merlin/instance.json`, which `merlin:setup` writes when the user chooses the folder. Run `merlin:setup` once, in Claude Code or in Codex, before other Merlin work. When Codex shows "Hooks need review", trusting Merlin's start-up hook lets these rules load there too; otherwise `merlin:setup` can add a short block to Codex's instructions file instead.
 
 ## 15. When something is missing
 

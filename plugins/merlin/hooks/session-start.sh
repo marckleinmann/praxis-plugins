@@ -2,15 +2,19 @@
 # Merlin SessionStart hook (Claude Code and Codex).
 #
 # Prints one JSON line whose additionalContext is a short status header plus the
-# rules digest (rules/digest.md). It also keeps the pointer file
-# ~/.merlin/instance.json in step with the plugin option "Your Merlin data folder":
+# rules digest (rules/digest.md). The Merlin data folder comes from the plugin
+# option "Your Merlin data folder" when it is set, otherwise from the pointer file
+# ~/.merlin/instance.json, which merlin:setup writes when the user chooses a folder
+# in chat. A desktop-app install often cannot set the option at all, so the
+# pointer is the normal source there.
 #
 #   - option set, folder exists and is writable: write the pointer when it is
 #     missing or names a different folder; leave it byte for byte when it matches.
 #   - folder missing, not a folder, or not writable: leave the pointer alone and
 #     report read-only with the reason.
-#   - option unset (Codex has no plugin options): never write; use the folder the
-#     pointer already names, if any.
+#   - option unset: never write; use the folder the pointer names, if any. With
+#     no pointer either, no folder is chosen yet: that is not read-only, and the
+#     status tells the user to run /merlin:setup.
 #
 # Only the hook may read plugin variables; skills and their scripts never get them.
 # Honours a HOME override. Needs bash only: no python3, no node.
@@ -42,6 +46,7 @@ json_escape() {
 json_unescape() {
   local s=$1
   s=${s//\\\"/\"}
+  s=${s//\\\//\/}
   s=${s//\\\\/\\}
   printf '%s' "$s"
 }
@@ -55,12 +60,24 @@ expand_home() {
 }
 
 pointer_value() { # $1 key: prints the string value from the pointer, or nothing
+  # Reads pretty-printed and one-line JSON alike: a hand-written or compact pointer
+  # must never read as "no folder".
   [ -f "$POINTER" ] || return 0
-  local line
-  line=$(grep -m1 "^[[:space:]]*\"$1\":" "$POINTER" 2>/dev/null) || return 0
-  line=${line#*\": \"}
-  line=${line%\"*}
-  json_unescape "$line"
+  local raw val
+  raw=$(tr '\n\r' '  ' < "$POINTER" 2>/dev/null) || return 0
+  val=$(printf '%s' "$raw" | sed -nE 's/.*"'"$1"'"[[:space:]]*:[[:space:]]*"(([^"\\]|\\.)*)".*/\1/p')
+  case "$val" in
+    *'\u'*)
+      # A \uXXXX escape (another tool's JSON writer): decode it with python3 when it is
+      # there; without python3 the value is used as written.
+      if command -v python3 >/dev/null 2>&1; then
+        local dec
+        if dec=$(python3 -c 'import json,sys; sys.stdout.write(json.loads("\"" + sys.argv[1] + "\""))' "$val" 2>/dev/null); then
+          printf '%s' "$dec"; return 0
+        fi
+      fi ;;
+  esac
+  json_unescape "$val"
 }
 
 VERSION=$(sed -n 's/^[[:space:]]*"version":[[:space:]]*"\([^"]*\)".*/\1/p' "$ROOT/.claude-plugin/plugin.json" 2>/dev/null | head -n1)
@@ -117,7 +134,10 @@ if [ "$SOURCE" = "option" ] && { [ "$STATE" = "ready" ] || [ "$STATE" = "notsetu
     fi
   fi
 elif [ "$SOURCE" = "pointer" ]; then
-  POINTER_NOTE="This folder comes from the pointer file ~/.merlin/instance.json, which Claude Code keeps up to date."
+  POINTER_NOTE="This folder comes from the pointer file ~/.merlin/instance.json."
+  if [ "$STATE" = "readonly" ]; then
+    POINTER_NOTE="${POINTER_NOTE} If the folder was moved or renamed on purpose, merlin:setup can record the new one after the user's yes."
+  fi
 elif [ "$STATE" = "readonly" ]; then
   POINTER_NOTE="The pointer file ~/.merlin/instance.json was left as it was."
 fi
@@ -130,7 +150,7 @@ case "$STATE" in
   readonly)
     STATUS="Status: read-only. Merlin data folder: ${DATA}. Reason: ${REASON}. Merlin only reads this session and writes nothing anywhere until the folder is back. Tell the user which folder and what is wrong with it. ${POINTER_NOTE}" ;;
   *)
-    STATUS="Status: read-only. No Merlin data folder is chosen yet, so Merlin writes nothing this session. Tell the user to set the plugin option \"Your Merlin data folder\" (in Claude Code: the /plugin screen, or claude plugin configure in a terminal), then start a new session. In Codex, open Claude Code once first: it records the folder for Codex." ;;
+    STATUS="Status: no Merlin data folder chosen yet. This is not read-only. Before other Merlin work, tell the user once, in plain words, to run /merlin:setup: it asks which folder to use and records it after their yes. Until a folder is chosen, Merlin writes nothing except what merlin:setup writes after the user's yes. A folder merlin:setup records counts from then on, in this session too, with no new session needed. In Codex, merlin:setup records the folder the same way." ;;
 esac
 
 DIGEST=""
