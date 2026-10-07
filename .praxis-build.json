@@ -13,8 +13,8 @@
   ],
   "plugins": {
     "merlin": {
-      "version": "1.0.7",
-      "hash": "93f9c9a598c38c87f5528a85cca505efbdd63a3683f3f925edb0290b846b2194",
+      "version": "1.0.8",
+      "hash": "678195a85a8224e54c5b12c9cdbc7a62e4b6beb5226c8f376859134c379e3cf8",
       "skills": [
         "about-me-setup",
         "anti-slop",
@@ -28,8 +28,8 @@
         "task-management"
       ],
       "files": {
-        ".claude-plugin/plugin.json": "f57076b4f8dfc9df32a1624e00b6ae20d50b16f766257fc5894fb490055e4882",
-        ".codex-plugin/plugin.json": "22b5715ce136c939cef6aafa8699b6d834547d0994e86ec5a28f01792b9ac484",
+        ".claude-plugin/plugin.json": "c1dced207823687f56121c9d0f0ecdfd908f343c0babbbaf00260d82c5359a40",
+        ".codex-plugin/plugin.json": "dda2cbdaa6f1b560b08bca0bd3c0b9666771739536ca0258959a38cbdfd76d4a",
         "LICENSE": "3a4a1539d3e265d98a43af998a13e28d4f04fcc35c283bec1e9bf7a86b266ef7",
         "NOTICE": "1863fb9732bca2fe9d55462186ab2c7f411e4bd1ec0a1bccbd783ae7657e5935",
         "hooks/hooks.json": "711f730a5f7ac15b0198f0e73e7cefac2070d48c09602b6b888a5093609b6e4a",
@@ -51,7 +51,7 @@
         "skeleton/state/README.md": "502e9452fc75f045dd519d22e00b711f8932871593e0a13310dbeb2fdf549a75",
         "skills/about-me-setup/SKILL.md": "e5d4a76a4a20c34072aa99becc8310784e01a7067274fd237640b670e3647daa",
         "skills/anti-slop/SKILL.md": "65452d36c394cf7270dfb63e8eaaf7b973415b51d3b87c3a22e47d9ecd0ecf0a",
-        "skills/company-info-setup/SKILL.md": "ad4c4bb4e0b86831f5a6dfda8885bdf93f3526401a33b208e14451283600810f",
+        "skills/company-info-setup/SKILL.md": "97d6c8580ebb53b89b7deccfa3aee5e45769e460d8b93ad8bbdfb7e1e6e8e912",
         "skills/draft-email/SKILL.md": "d8dcbafacae486ebe81bf6f41f684b24f8b79fc53fb244dff3048ef8c671dbef",
         "skills/meeting-dissect/SKILL.md": "7c2bc71e6e592b624124d748bf072b54c90908afd06bda56bd652c6944d0d9fe",
         "skills/meeting-dissect/extraction-prompt.md": "6601d060a3aa5ffa35a2449c7327a3e84876f04cc5a3180c77894b41aa213995",
@@ -63,9 +63,9 @@
         "skills/project-setup/SKILL.md": "fdbb65069a42b3e87fb0e1e59fa67f12a910bb7b9e054a52858494d896ee516d",
         "skills/project-setup/agents/openai.yaml": "8637115bd8c165e31dd848c12f953e297761e2ddb310ca423d2dc427e9763126",
         "skills/rules/SKILL.md": "a8dcbb82d6548bff65b71805fe8fbe648e58c206354f3df8e1647b90307a1fcf",
-        "skills/save-and-close/SKILL.md": "66f5592f7a47c91f8b9ba6fedc4e39978fff9e9c301c863a4fae91d1338261e5",
+        "skills/save-and-close/SKILL.md": "f76e26c404369ef08bf80f838b98d71d7eb756fe6c0dc747b0820d3e7ce5fdd7",
         "skills/save-and-close/continuation.md": "72feaec4f63f8b1116e063573804a1b94cb19a73a95ea4937d68f6ba494653f2",
-        "skills/setup/SKILL.md": "ab9dc10509fdfc0b23b4be878310b0c0b3133ef546b9b5bf1b156341199c02c4",
+        "skills/setup/SKILL.md": "76299e2215de25053efab959efe9a26b2067c958432db38876859c7f8564e983",
         "skills/setup/scripts/setup.py": "828a08d9605f7a6436311face6474d57765532b155c3da666f75bcd8e91ce929",
         "skills/setup/scripts/setup.sh": "82e8593675ff7d435df528a9e14986fc8daa0479324cf1cd0f001bf89e5de340",
         "skills/task-management/SKILL.md": "50e518dd3f4c7815e30d5adb858844cd560251be05d76ee23de3af818a5e5436",

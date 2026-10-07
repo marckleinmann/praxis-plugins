@@ -58,9 +58,11 @@ file, the Keychain) runs only after the user says yes to that step.
    home folder; allowing it is expected. The folder counts from then on, in this
    session too: no new session is needed.
 3. **Starter files.** Tell the user setup will copy Merlin's starter files into the
-   data folder (`manifest.yaml`, `TASKS.md`, `ABOUT-ME/`, `memory/`, `.task-ids/`,
+   business folder (`manifest.yaml`, `TASKS.md`, `ABOUT-ME/`, `memory/`, `.task-ids/`,
    `state/`) and will never overwrite a file that is already there. Then run
-   `bash <setup> --skeleton --data "${user_config.data_dir}"`. Report what it created
+   `bash <setup> --skeleton --name "<business name>" --data "${user_config.data_dir}"`, with
+   the business name from step 2 (leave `--name` off if the user gave none); it becomes
+   `name:` in a new `manifest.yaml`. Report what it created
    and what it left alone. If the business folder is not writable, stop and say why:
    Merlin stays read-only.
 4. **About the user.** Run `merlin:about-me-setup`, then `merlin:company-info-setup`.
@@ -72,7 +74,7 @@ file, the Keychain) runs only after the user says yes to that step.
    they are for how-to notes about this computer only, and the business folder
    always wins. Setup does not move or change that memory folder.
 6. **Folder access.** A session opened in a project folder can reach the rest of the
-   data folder only with a grant in the user's Claude Code settings. Run
+   business folder only with a grant in the user's Claude Code settings. Run
    `bash <setup> --grant --data "${user_config.data_dir}"` to show the exact change.
    Ask: "Okay to add this line to your Claude Code settings?" Only on a yes, run the
    same command with `--yes`. The script keeps a copy of the old settings file in

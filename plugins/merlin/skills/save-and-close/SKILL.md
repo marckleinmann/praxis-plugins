@@ -25,8 +25,8 @@ A checkpoint keeps unfinished work safe during a long session and never
 closes it. For a checkpoint, or to continue the work in a fresh session, read
 [continuation.md](continuation.md) instead.
 
-The closing request covers ordinary session bookkeeping inside the Merlin
-data folder. It never covers sending, publishing, deleting, spending, or
+The closing request covers ordinary session bookkeeping inside the
+business folder. It never covers sending, publishing, deleting, spending, or
 skipping an approval the user has not given, just to make the session look
 finished. If the user asked to preview before writing, preview. A blocked
 write is reported as blocked and earns no success line.

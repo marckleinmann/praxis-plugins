@@ -28,8 +28,8 @@ contents are mostly READMEs or empty. Offer to run the quiz.
 
 ## Where the knowledge layer lives
 
-The company knowledge layer lives in the `memory/` folder inside your Merlin
-data folder, `<merlin-data>/memory/`. Every path below is relative to it.
+The company knowledge layer lives in the `memory/` folder inside your
+business folder, `<merlin-data>/memory/`. Every path below is relative to it.
 If the business folder cannot be reached, stop, write nothing, and tell
 the user to run `merlin:setup`. Look for the standard layout:
 - `businesses/` (or `companies/`, `entities/`): sub-business folders
