@@ -8,8 +8,17 @@ the plugin folder is found from this file's own location.
 
 Modes (one per run):
   --check                 report only; writes nothing anywhere
-  --suggest [NAME]        print the folder to suggest for the business NAME: ~/<NAME>, or
-                          ~/My Business when no usable name is given. Writes nothing.
+  --suggest [NAME]        print the folders to offer, in order. First the open folder (the
+                          working folder, or --open DIR) unless it is home, Desktop, Documents or
+                          Downloads itself, the top of a synced folder, a system or hidden folder,
+                          a folder named Merlin, or inside another business folder. Then
+                          <Dropbox>/<NAME>, or ~/Documents/<NAME> with no Dropbox (My Business
+                          when no usable name is given). Reports a prepared folder (one that
+                          already holds Merlin's starter files). Writes nothing.
+                          --offer-drive-icloud also lets Google Drive, then iCloud Drive, be
+                          suggested when Dropbox is absent; off until they are tested.
+  --inspect DIR           report what DIR already holds (a prepared folder's business name and
+                          what is filled in). Writes nothing.
   --choose DIR [--yes]    record DIR as the business folder: create it if needed and
                           write the pointer ~/.merlin/instance.json (preview without --yes).
                           Refuses when --data (the plugin option) names a different folder.
@@ -235,23 +244,267 @@ def suggest_name(name):
     return n
 
 
-def suggest(name):
-    """Print the suggested business folder and what setup would find there. Writes nothing."""
-    folder = suggest_name(name)
-    path = os.path.join(os.path.expanduser('~'), folder)
-    say('Suggested business folder: ~/%s' % folder)
+def is_within(p, parent):
+    return p == parent or p.startswith(parent.rstrip(os.sep) + os.sep)
+
+
+def tilde(p):
+    h = canon(home())
+    return '~' + p[len(h):] if is_within(p, h) and p != h else ('~' if p == h else p)
+
+
+def dropbox_roots():
+    """Every Dropbox folder on this Mac, real paths, the plain `Dropbox` folder first."""
+    cands = []
+    cs = home('Library', 'CloudStorage')
+    if os.path.isdir(cs):
+        cands += [os.path.join(cs, n) for n in sorted(os.listdir(cs))
+                  if n.startswith('Dropbox') and os.path.isdir(os.path.join(cs, n))]
+    if os.path.isdir(home('Dropbox')):
+        cands.append(home('Dropbox'))
+    out = []
+    for c in cands:
+        r = canon(c)
+        if r not in out:
+            out.append(r)
+    return sorted(out, key=lambda r: os.path.basename(r) != 'Dropbox')
+
+
+def drive_roots():
+    cs = home('Library', 'CloudStorage')
+    if not os.path.isdir(cs):
+        return []
+    return [canon(os.path.join(cs, n, 'My Drive')) for n in sorted(os.listdir(cs))
+            if n.startswith('GoogleDrive-') and os.path.isdir(os.path.join(cs, n, 'My Drive'))]
+
+
+def icloud_root():
+    p = home('Library', 'Mobile Documents', 'com~apple~CloudDocs')
+    return canon(p) if os.path.isdir(p) else None
+
+
+def backed_up_place(drive_icloud):
+    """(service, folder) to suggest the business folder in, or (None, None).
+
+    Dropbox always comes first. Google Drive and iCloud Drive can keep files online-only, and
+    neither has been tested with Merlin yet, so they count only with --offer-drive-icloud.
+    """
+    dbx = dropbox_roots()
+    if dbx:
+        return 'Dropbox', dbx[0]
+    if drive_icloud:
+        drv = drive_roots()
+        if drv:
+            return 'Google Drive', drv[0]
+        ic = icloud_root()
+        if ic:
+            return 'iCloud Drive', ic
+    return None, None
+
+
+def service_name(provider):
+    for prefix, svc in (('Dropbox', 'Dropbox'), ('GoogleDrive-', 'Google Drive'), ('OneDrive', 'OneDrive')):
+        if provider.startswith(prefix):
+            return svc
+    return provider
+
+
+PLAIN_PLACES = (('Desktop', 'your Desktop'), ('Documents', 'your Documents folder'), ('Downloads', 'your Downloads folder'))
+
+
+def library_reason(p):
+    """Why a folder inside ~/Library is not offered, or None when it sits inside a synced folder."""
+    cs = canon(home('Library', 'CloudStorage'))
+    ic = canon(home('Library', 'Mobile Documents', 'com~apple~CloudDocs'))
+    if is_within(p, cs) and p != cs:
+        parts = os.path.relpath(p, cs).split(os.sep)
+        if len(parts) >= (3 if parts[0].startswith('GoogleDrive-') else 2):
+            return None
+        return 'it is the top of your %s, not a folder inside it' % service_name(parts[0])
+    if is_within(p, ic):
+        return None if p != ic else 'it is the top of your iCloud Drive, not a folder inside it'
+    return 'it is a system folder inside Library'
+
+
+def is_prepared(d):
+    """A business folder: Merlin's manifest plus a task list, a claim folder or ABOUT-ME."""
+    return os.path.isfile(os.path.join(d, 'manifest.yaml')) and any(
+        os.path.exists(os.path.join(d, x)) for x in ('.task-ids', 'TASKS.md', 'ABOUT-ME'))
+
+
+def enclosing_business(p):
+    """The business folder P sits inside (never P itself), or None."""
+    ptr = read_pointer() or {}
+    named = canon(ptr['data_root']) if ptr.get('data_root') else None
+    if named and is_within(p, named) and p != named:
+        return named
+    parts = p.split(os.sep)
+    for i in range(len(parts) - 1, 0, -1):
+        above = os.sep.join(parts[:i]) or os.sep
+        if is_prepared(above):
+            return above
+    return None
+
+
+def open_folder_check(raw):
+    """(offered, words): words is the plain place when offered, else the plain reason."""
+    if not raw or not raw.strip():
+        return False, 'no open folder was given'
+    p = canon(raw.strip())
+    h = canon(home())
+    if not os.path.isdir(p):
+        return False, 'it is not a folder on this Mac'
+    if p == h:
+        return False, 'it is your home folder itself'
+    if is_within(h, p):
+        return False, 'it holds your whole home folder'
+    for d, words in PLAIN_PLACES:
+        if p == canon(home(d)):
+            return False, 'it is %s itself' % words
+    for r in dropbox_roots():
+        if p == r:
+            return False, 'it is the top of your Dropbox, not a folder inside it'
+    if is_within(p, canon(home('Library'))):
+        why = library_reason(p)
+        if why:
+            return False, why
+    elif is_within(p, h) and any(x.startswith('.') for x in os.path.relpath(p, h).split(os.sep)):
+        return False, 'it is a hidden folder'
+    if os.path.basename(p).casefold() == 'merlin':
+        return False, 'it is named Merlin, and a folder named after the tool reads as safe to delete when the tool is removed'
+    owner = enclosing_business(p)
+    if owner:
+        return False, 'it is inside the business folder %s' % tilde(owner)
+    if not writable_dir(p):
+        return False, 'this computer account cannot write to it'
+    return True, place_words(p)
+
+
+def place_words(p):
+    """'"Acmeco" on your Desktop', in plain words."""
+    name, parent = os.path.basename(p), os.path.dirname(p)
+    where = None
+    for d, words in PLAIN_PLACES:
+        if parent == canon(home(d)):
+            where = 'on your Desktop' if d == 'Desktop' else 'in %s' % words
+    if where is None:
+        for r in dropbox_roots():
+            if parent == r:
+                where = 'in your Dropbox'
+        if parent == canon(home()):
+            where = 'in your home folder'
+        elif parent in drive_roots():
+            where = 'in your Google Drive'
+        elif parent == icloud_root():
+            where = 'in your iCloud Drive'
+    return '"%s" %s' % (name, where or 'in %s' % tilde(parent))
+
+
+def manifest_name(d):
+    try:
+        with open(os.path.join(d, 'manifest.yaml'), encoding='utf-8') as f:
+            text = f.read()
+    except OSError:
+        return None
+    m = re.search(r'^name:[ \t]*(.+?)[ \t]*$', text, re.M)
+    if not m:
+        return None
+    v = m.group(1)
+    if v.startswith('"'):
+        try:
+            v = json.loads(v)
+        except ValueError:
+            v = v.strip('"')
+    return v.strip("'").strip() or None
+
+
+def prepared_lines(d):
+    """What a prepared business folder already holds, one line each."""
+    lines = ['Prepared folder: yes. It already holds Merlin\'s starter files, so it was set up before, '
+             'possibly by Praxis. Setup keeps every file in it and fills in only what is missing.']
+    name = manifest_name(d)
+    if name and name != FALLBACK_NAME:
+        lines.append('Business name in this folder: %s' % name)
+    filled = []
+    if os.path.isfile(os.path.join(d, 'ABOUT-ME', 'about-me.md')):
+        filled.append('about you (ABOUT-ME/about-me.md)')
+    notes = 0
+    for dirpath, _, files in os.walk(os.path.join(d, 'memory')):
+        notes += sum(1 for f in files if f.endswith('.md') and f != 'README.md')
+    if notes:
+        filled.append('%d company note file(s) in memory/' % notes)
+    try:
+        with open(os.path.join(d, 'manifest.yaml'), encoding='utf-8') as f:
+            projects = len(re.findall(r'^\s+-\s+name:', f.read(), re.M))
+    except OSError:
+        projects = 0
+    if projects:
+        filled.append('%d project(s)' % projects)
+    lines.append('Already filled in: %s' % ('; '.join(filled) if filled else 'nothing yet beyond the starter files'))
+    return lines
+
+
+def folder_status(path):
     if not os.path.exists(path):
-        say('It does not exist yet. Setup creates it after the user says yes.')
-    elif not os.path.isdir(path):
-        say('A file already has that name, so it cannot be the folder. Suggest another name.')
-    else:
-        items = [x for x in os.listdir(path) if not x.startswith('.')]
-        if os.path.isfile(os.path.join(path, 'manifest.yaml')):
-            say('It exists and already holds Merlin starter files. Setup can use it as it is.')
-        elif items:
-            say('It exists and holds %d item(s). Setup adds its starter files beside them and overwrites nothing.' % len(items))
+        return ['It does not exist yet. Setup creates it after the user says yes.']
+    if not os.path.isdir(path):
+        return ['A file already has that name, so it cannot be the folder. Suggest another name.']
+    if is_prepared(path):
+        return prepared_lines(path)
+    items = [x for x in os.listdir(path) if not x.startswith('.')]
+    if items:
+        return ['It exists and holds %d item(s). Setup adds its starter files beside them and overwrites nothing.' % len(items)]
+    return ['It exists and is empty.']
+
+
+ONE_MAC = ('Use the business folder from one Mac at a time: two Macs writing to it at once can leave '
+           '"conflicted copy" files.')
+
+
+def suggest(name, open_dir, drive_icloud):
+    """Print the folders to offer, in order: the open folder, then a backed-up place. Writes nothing."""
+    folder = suggest_name(name)
+    if open_dir is not None:
+        offered, words = open_folder_check(open_dir)
+        say('Open folder: %s' % (canon(open_dir) if open_dir.strip() else '(none)'))
+        if offered:
+            say('Open folder offer: yes')
+            say('Open folder in plain words: %s' % words)
+            for ln in folder_status(canon(open_dir)):
+                say(ln)
         else:
-            say('It exists and is empty.')
+            say('Open folder offer: no (%s)' % words)
+    svc, base = backed_up_place(drive_icloud)
+    if svc:
+        path = os.path.join(base, folder)
+        say('Backed-up place: %s (%s)' % (svc, tilde(base)))
+        say('Suggested business folder: %s' % tilde(path))
+        say('Suggested in plain words: a folder named "%s" in your %s, which keeps it backed up.' % (folder, svc))
+    else:
+        docs = canon(home('Documents'))
+        path = os.path.join(docs if os.path.isdir(docs) else canon(home()), folder)
+        say('Backed-up place: none found (no Dropbox on this Mac)')
+        say('Suggested business folder: %s' % tilde(path))
+        say('Suggested in plain words: a folder named "%s" in your %s. Make sure it is backed up, for '
+            'example with Time Machine.' % (folder, 'Documents folder' if os.path.isdir(docs) else 'home folder'))
+    for ln in folder_status(path):
+        say(ln)
+    if svc:
+        say(ONE_MAC)
+    say('Never move the business folder after setup records it. If it does move, run setup again to record the new place.')
+    return 0
+
+
+def inspect(target):
+    """Report what a folder the user names already holds. Writes nothing."""
+    p = canon(target)
+    say('Folder: %s' % p)
+    if os.path.isdir(p):
+        offered, words = open_folder_check(p)
+        if not offered:
+            say('Not usable as the business folder: %s.' % words)
+    for ln in folder_status(p):
+        say(ln)
     return 0
 
 
@@ -668,9 +921,12 @@ def main(argv):
     ap.add_argument('--yes', action='store_true')
     ap.add_argument('--keys', default='')
     ap.add_argument('--name', help='with --skeleton: the business name for a new manifest.yaml')
+    ap.add_argument('--open', metavar='DIR', help='with --suggest: the folder the conversation is open on (default: the working folder)')
+    ap.add_argument('--offer-drive-icloud', action='store_true', help='with --suggest: also suggest Google Drive or iCloud Drive (untested)')
     g = ap.add_mutually_exclusive_group()
     g.add_argument('--choose', metavar='DIR')
     g.add_argument('--suggest', metavar='NAME', nargs='?', const='')
+    g.add_argument('--inspect', metavar='DIR')
     for m in ('check', 'skeleton-only', 'skeleton', 'grant', 'codex-status', 'codex-block', 'explain-memory', 'remove'):
         g.add_argument('--' + m, action='store_true')
     g.add_argument('--key-store', metavar='NAME')
@@ -683,7 +939,9 @@ def main(argv):
         say(MEMORY_NOTE)
         return 0
     if a.suggest is not None:
-        return suggest(a.suggest)
+        return suggest(a.suggest, a.open if a.open is not None else os.getcwd(), a.offer_drive_icloud)
+    if a.inspect is not None:
+        return inspect(a.inspect)
     if a.key_store:
         return key_store(a.key_store)
     if a.key_check:

@@ -32,17 +32,34 @@ file, the Keychain) runs only after the user says yes to that step.
 2. **Choose the business folder.** Run `bash <setup> --check --data "${user_config.data_dir}"`
    and read the report. It writes nothing.
    - If it names a business folder that is there and writable, say which folder and go on.
-   - If it says no folder is chosen yet, first get the business name. If the user
-     already gave it in this conversation, use it. Otherwise ask: "What's your
-     business called?" Then run `bash <setup> --suggest "<business name>"`. It writes
-     nothing and prints the folder to suggest, `~/<business name>`, or
-     `~/My Business` when there is no name. Then ask in chat, using the folder it
-     printed: "Merlin keeps your business files in one folder: what you tell it about
-     yourself and the business, its notes, your task list, and a folder for each job
-     or client. I suggest `<the folder it printed>` in your home folder as your business folder.
-     The folder is yours: removing Merlin later never touches it. Pick a place you
-     back up, or name another folder." Take the user's answer, or the suggestion if
-     they accept it. Never suggest a folder named Merlin.
+   - If it says no folder is chosen yet, run `bash <setup> --suggest` with no name,
+     from the folder this conversation is open on: do not change folders first. It
+     writes nothing. It reports the open folder (the folder the Code tab is open on)
+     and whether to offer it, then a backed-up place and a suggested folder.
+     1. **The open folder first.** If it prints `Open folder offer: yes`, ask, using
+        its plain words: "Merlin keeps your business files in one folder: what you
+        tell it about yourself and the business, its notes, your task list, and a
+        folder for each job or client. You have Acmeco on your Desktop open. Use it as
+        your business folder?" If it also prints `Prepared folder: yes`, say instead
+        that this folder was already set up for the business, possibly by Praxis,
+        name the business from `Business name in this folder:`, list what is already
+        filled in, and ask whether to use it. Setup keeps every file in a prepared
+        folder and fills in only what is missing.
+     2. **Otherwise, a backed-up folder.** If the open folder was not offered (say
+        why in a few words, from the reason it printed) or the user says no, ask:
+        "What's your business called?", unless they already said. Run
+        `bash <setup> --suggest "<business name>"` again and offer the suggested
+        folder in its plain words: with Dropbox, "a folder named Acme Tile in your
+        Dropbox, which keeps it backed up. We recommend Dropbox"; without Dropbox,
+        the folder in Documents, and say to make sure it is backed up. The user may
+        name another folder instead. If they say Praxis sent them a folder, ask
+        where it is and run `bash <setup> --inspect "<that folder>"` to read back
+        what it holds.
+     3. Say the two lines it printed about keeping the folder: use it from one Mac at
+        a time, and do not move it after setup records it.
+     Never suggest a folder named Merlin. If the `Open folder:` line names a folder
+     the user does not recognise, ask which folder the Code tab is open on. Keep the
+     business name for step 3: from the user, or from `Business name in this folder:`.
    - If it says the folder from the pointer file is not there, say which folder and
      ask whether it was moved or renamed. Use the new place they name, or ask the
      question above.
@@ -65,9 +82,12 @@ file, the Keychain) runs only after the user says yes to that step.
    `name:` in a new `manifest.yaml`. Report what it created
    and what it left alone. If the business folder is not writable, stop and say why:
    Merlin stays read-only.
-4. **About the user.** Run `merlin:about-me-setup`, then `merlin:company-info-setup`.
-   They write `ABOUT-ME/` and `memory/` in the business folder, each after the user's
-   yes. The user may skip either and come back later.
+4. **About the user and the business.** Run `merlin:about-me-setup`, then
+   `merlin:company-info-setup`. They write `ABOUT-ME/` and `memory/` in the business
+   folder, each after the user's yes. In a prepared folder, tell the user first that
+   both start from what is already there: they read it back, ask the user to confirm
+   or correct it, and ask only about what is missing. The user may skip either and
+   come back later.
 5. **Claude's own memory.** Run `bash <setup> --explain-memory` and give the user its
    note in your own plain words: Claude Code keeps its own notes per folder in
    `~/.claude/projects/<folder name>/memory/`, the first 200 lines load each session,
@@ -96,9 +116,11 @@ file, the Keychain) runs only after the user says yes to that step.
    block with `bash <setup> --codex-block --data "${user_config.data_dir}"`, and add
    it only on a yes, with `--yes`.
 10. **Report.** Run `bash <setup> --check --data "${user_config.data_dir}"` again and
-    give the user its checklist: what passed, what is missing, and the one next
-    action. The usual next action is a first project. Merlin's project setup only
-    starts when the user asks for it: they type /merlin and pick project-setup.
+    give the user its checklist: what passed and what is missing. Then offer a first
+    project: "Want to set up your first project now? A project is a folder inside
+    your business folder for one job, client or area of work." On a yes, run
+    `merlin:project-setup`; it asks before it writes anything. On a no, say they can
+    ask for it any time in plain words, such as "set up a project".
 
 ## Removal
 

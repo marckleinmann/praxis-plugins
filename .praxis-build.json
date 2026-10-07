@@ -13,8 +13,8 @@
   ],
   "plugins": {
     "merlin": {
-      "version": "1.0.8",
-      "hash": "678195a85a8224e54c5b12c9cdbc7a62e4b6beb5226c8f376859134c379e3cf8",
+      "version": "1.0.9",
+      "hash": "258c00c15ea91f9db2af50145df0e5ef23e6c1c1cd59960fc40b6df20682304b",
       "skills": [
         "about-me-setup",
         "anti-slop",
@@ -28,8 +28,8 @@
         "task-management"
       ],
       "files": {
-        ".claude-plugin/plugin.json": "c1dced207823687f56121c9d0f0ecdfd908f343c0babbbaf00260d82c5359a40",
-        ".codex-plugin/plugin.json": "dda2cbdaa6f1b560b08bca0bd3c0b9666771739536ca0258959a38cbdfd76d4a",
+        ".claude-plugin/plugin.json": "c88dd9db57eef4540551683b241309e9d871ec1808e907a415ced53fead4fccb",
+        ".codex-plugin/plugin.json": "8539325e43de22555620d7bdcf9afcfcadc48d28c728de1f16c2e7f1057714f8",
         "LICENSE": "3a4a1539d3e265d98a43af998a13e28d4f04fcc35c283bec1e9bf7a86b266ef7",
         "NOTICE": "1863fb9732bca2fe9d55462186ab2c7f411e4bd1ec0a1bccbd783ae7657e5935",
         "hooks/hooks.json": "711f730a5f7ac15b0198f0e73e7cefac2070d48c09602b6b888a5093609b6e4a",
@@ -39,7 +39,7 @@
         "lib/engine/triage-tasks/triage.py": "dce000aa5978e268df029da681cd22285aa34581442002def6cbb486430fc3c4",
         "output-styles/merlin.md": "7d213ae0965bafafa5e5ab014a68de490383c6a71db3f106f852ffcadbe0e7d2",
         "rules/core-rules.md": "fc253daf28bdf8f7ce130598413d28f841798533852a0e4c4a67090beadc5341",
-        "rules/digest.md": "d1f1826ca63dcb79ea1b1260b0c53a65faf64b04162040b1670095c3ff7e83fe",
+        "rules/digest.md": "8dbf58b82c8d9d4fd46a42811a75dbda0ce329ca7d78aafe54a91aee6c8450d5",
         "skeleton/.task-ids/README.md": "2806175f51c8e2f1314d6252f7cd7f33459372fd1a3e2c2abbca56fea0d37881",
         "skeleton/ABOUT-ME/README.md": "335b24af3698375bb24d53679da7e4e471f3041a6caac3b31c1e6f900fd47d74",
         "skeleton/TASKS.md": "5b6bd4ecb7122fbdea587df1a6df7800cf8b449370245ae15f119e5ac0596fa0",
@@ -60,13 +60,12 @@
         "skills/meeting-dissect/scripts/diff_passes.py": "d654bbe2d3f96d06ae9db92496dc07c0cf1e117239b5cd520e00e933dd236c21",
         "skills/meeting-dissect/scripts/dissect_lib.py": "554044a9e0ed175251f35a6dfb8a6b0c9a53e07d2c7257a6b4b25630fa6b87c2",
         "skills/meeting-dissect/scripts/validate.py": "3877d888a30bd0b5f3d7644f82ceac6f3eebee5f8c62a8d8bc9c515aa701560f",
-        "skills/project-setup/SKILL.md": "fdbb65069a42b3e87fb0e1e59fa67f12a910bb7b9e054a52858494d896ee516d",
-        "skills/project-setup/agents/openai.yaml": "8637115bd8c165e31dd848c12f953e297761e2ddb310ca423d2dc427e9763126",
+        "skills/project-setup/SKILL.md": "245e0f141b5431634d95ee55c98761c5e2a4c9a2a567ea90253deda0ed650182",
         "skills/rules/SKILL.md": "a8dcbb82d6548bff65b71805fe8fbe648e58c206354f3df8e1647b90307a1fcf",
         "skills/save-and-close/SKILL.md": "f76e26c404369ef08bf80f838b98d71d7eb756fe6c0dc747b0820d3e7ce5fdd7",
         "skills/save-and-close/continuation.md": "72feaec4f63f8b1116e063573804a1b94cb19a73a95ea4937d68f6ba494653f2",
-        "skills/setup/SKILL.md": "76299e2215de25053efab959efe9a26b2067c958432db38876859c7f8564e983",
-        "skills/setup/scripts/setup.py": "828a08d9605f7a6436311face6474d57765532b155c3da666f75bcd8e91ce929",
+        "skills/setup/SKILL.md": "d909f47b1d9da72d672bf999476bf7dc51294de6d13afde4371afa3f69e86d12",
+        "skills/setup/scripts/setup.py": "5405a365dffd4e1a847ef76d0d630569346de3f777338f2e0d1234c62b4e6016",
         "skills/setup/scripts/setup.sh": "82e8593675ff7d435df528a9e14986fc8daa0479324cf1cd0f001bf89e5de340",
         "skills/task-management/SKILL.md": "50e518dd3f4c7815e30d5adb858844cd560251be05d76ee23de3af818a5e5436",
         "skills/task-management/stale-triage.md": "99819dfada55d696e224b80afbc20acd0d3830a2ffb6a721551548562d56d578"

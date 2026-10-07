@@ -12,18 +12,20 @@ Your files and Merlin's code live in separate places. Updating or removing Merli
 
 ## Install in the Claude app
 
-1. In Finder, make a folder named after your business in your home folder, for example **Acme Tile**. This is your business folder: it holds what Merlin learns about you and the business, your task list, and a folder for each job or client. Setup suggests a folder with your business name later. To keep it somewhere else, such as Dropbox, make it there and tell setup where it is.
-2. Open the Claude app, click the **Code** tab, and open your business folder.
-3. Type `/plugin` in the chat box and press Return. The Plugins screen opens.
-4. Add the Praxis catalog, which Claude calls a marketplace. Click **Add custom marketplace** (on some versions it is under **Manage marketplaces**) and paste the full address. It then shows up as **praxis-plugins**:
+1. Make your business folder. We recommend Dropbox, so it is backed up: in Finder, click **Dropbox** in the sidebar, choose **File > New Folder**, and name it after your business, for example **Acme Tile**. No Dropbox? Make it in **Documents** instead. This folder holds what Merlin learns about you and the business, your task list, and a folder for each job or client. Once it is made, do not move or rename it. If Praxis sent you a folder already set up for your business, use that one instead.
+2. Open the Claude app, click the **Code** tab, and open your business folder. Keep the Code tab open on it for the rest of the install.
+3. Click your name (your profile), then **Settings**. Scroll down to the **Customize** section and click **Plugins**.
+4. Add the Praxis catalog, which Claude calls a marketplace. Click **Add**, then **Add custom marketplace**, then **Add from repository**. Paste the full address and click **Sync**. If the app offers to connect GitHub, skip it: Merlin does not need a GitHub account.
 
    ```
    https://github.com/marckleinmann/praxis-plugins
    ```
 
-5. Find **Merlin** in the plugins list and click **Add** or **+**.
-6. Start a new conversation in the Code tab, in your business folder.
-7. Type `/merlin:setup`. Setup asks your business name and suggests a business folder named after it, such as `~/Acme Tile` in your home folder. Say yes, or tell it where you made the folder. It then copies a few starter files there and asks some short questions about you and your business.
+5. Next to **Merlin**, click **Add**.
+6. Go back to the Code tab, still open on your business folder, and start a new conversation.
+7. Type `/merlin:setup`. Setup offers the folder you have open as your business folder. Say yes. It copies a few starter files there, asks some short questions about you and your business, and offers to set up your first project. In a folder Praxis prepared, it reads back what is already there and asks only about what is missing.
+
+Use the business folder from one Mac at a time: two Macs changing it at once can leave "conflicted copy" files.
 
 No folder question appears when you add Merlin. That is expected: setup asks for it.
 
@@ -31,12 +33,12 @@ On claude.ai you can add the same catalog under **Customize**, **Plugins**, **Ad
 
 ## Update
 
-Open the Plugins screen (`/plugin`), refresh **praxis-plugins** under **Manage marketplaces**, then update **Merlin**. Start a new conversation afterwards.
+Click your name, then **Settings**, and scroll down to **Plugins**. Click **Sync** on **praxis-plugins**, then update **Merlin**. Start a new conversation afterwards.
 
 ## Remove
 
 1. Type `/merlin:setup --remove`. It undoes what setup changed outside your business folder.
-2. On the Plugins screen, remove **Merlin**, then remove **praxis-plugins** under **Manage marketplaces**.
+2. In **Settings**, **Plugins**, remove **Merlin**, then remove the **praxis-plugins** catalog.
 3. If you also added Merlin on claude.ai, remove it there too. Removing it in one place does not remove it in the other.
 
 Your business folder and every file in it stay where they are.

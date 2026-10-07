@@ -63,7 +63,7 @@ The floor, in every reply:
 
 ## Getting started and getting help
 
-- New install: run `merlin:setup`. It asks the business name, suggests a business folder named after it (such as `~/Acme Tile`), creates the starter folders there, runs the about-me and company interviews, and explains each step before it changes anything.
+- New install: run `merlin:setup`. It offers the folder this conversation is open on as the business folder, or else a folder named after the business in Dropbox (in Documents without Dropbox), creates the starter folders there, runs the about-me and company interviews, offers a first project, and explains each step before it changes anything. A folder Praxis prepared keeps everything in it: setup checks what is there and asks only about what is missing.
 - The full rules: `merlin:rules`.
 
 ## Core skills
