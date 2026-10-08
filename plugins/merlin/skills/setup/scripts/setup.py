@@ -18,7 +18,9 @@ Modes (one per run):
                           --offer-drive-icloud also lets Google Drive, then iCloud Drive, be
                           suggested when Dropbox is absent; off until they are tested.
   --inspect DIR           report what DIR already holds (a prepared folder's business name and
-                          what is filled in). Writes nothing.
+                          what is filled in; when Praxis left its record in
+                          state/praxis-concierge/prepared.json, also the date, the owner's
+                          first name and the open tasks). Writes nothing.
   --choose DIR [--yes]    record DIR as the business folder: create it if needed and
                           write the pointer ~/.merlin/instance.json (preview without --yes).
                           Refuses when --data (the plugin option) names a different folder.
@@ -26,6 +28,8 @@ Modes (one per run):
                           then report; no questions, no settings changes
   --skeleton [--name N]   same copy, used by the interactive setup; N, the business name,
                           goes into a manifest.yaml this run creates
+  --set-name NAME         write NAME into manifest.yaml, only where it still reads
+                          `name: My Business`; a name already there is never changed
   --grant [--yes]         add the business folder to permissions.additionalDirectories in
                           ~/.claude/settings.json (preview without --yes; backup first)
   --codex-status          report Codex: installed, Merlin present, start-up hook trusted
@@ -430,10 +434,57 @@ def manifest_name(d):
     return v.strip() or None
 
 
+RECEIPT = os.path.join('state', 'praxis-concierge', 'prepared.json')
+NAME_PLACEHOLDERS = ('name: %s' % FALLBACK_NAME, 'name: %s' % json.dumps(FALLBACK_NAME))
+
+
+def read_receipt(d):
+    """The record Praxis leaves in a folder it prepared, as (date, first name or None), or None.
+
+    A missing, unreadable, truncated or odd-shaped record counts as no record at all, so the
+    report is then exactly what it is for any prepared folder.
+    """
+    try:
+        with open(os.path.join(d, RECEIPT), encoding='utf-8') as f:
+            rec = json.load(f)
+    except (OSError, ValueError):
+        return None
+    if not isinstance(rec, dict):
+        return None
+    when = rec.get('prepared_on')
+    if not isinstance(when, str) or not re.match(r'^\d{4}-\d{2}-\d{2}$', when):
+        return None
+    try:
+        datetime.date.fromisoformat(when)
+    except ValueError:
+        return None
+    first = rec.get('owner_first_name')
+    first = ' '.join(first.split()) if isinstance(first, str) else ''
+    return when, first or None
+
+
+def open_tasks(d):
+    """Open tasks on the folder's task list: the live `- [ ]` lines in TASKS.md."""
+    try:
+        with open(os.path.join(d, 'TASKS.md'), encoding='utf-8') as f:
+            text = f.read()
+    except (OSError, ValueError):
+        return 0
+    text = re.sub(r'<!--.*?-->', '', text, flags=re.S)
+    return len(re.findall(r'^- \[ \] ', text, re.M))
+
+
 def prepared_lines(d):
     """What a prepared business folder already holds, one line each."""
-    lines = ['Prepared folder: yes. It already holds Merlin\'s starter files, so it was set up before, '
-             'possibly by Praxis. Setup keeps every file in it and fills in only what is missing.']
+    receipt = read_receipt(d)
+    if receipt:
+        lines = ['Prepared folder: yes. It already holds Merlin\'s starter files, so it was set up before, '
+                 'by Praxis. Setup keeps every file in it and fills in only what is missing.']
+        when, first = receipt
+        lines.append('Prepared by Praxis on %s%s' % (when, ' for %s' % first if first else ''))
+    else:
+        lines = ['Prepared folder: yes. It already holds Merlin\'s starter files, so it was set up before, '
+                 'possibly by Praxis. Setup keeps every file in it and fills in only what is missing.']
     name = manifest_name(d)
     if name and name != FALLBACK_NAME:
         lines.append('Business name in this folder: %s' % name)
@@ -453,7 +504,63 @@ def prepared_lines(d):
     if projects:
         filled.append('%d project%s' % (projects, '' if projects == 1 else 's'))
     lines.append('Already filled in: %s' % ('; '.join(filled) if filled else 'nothing yet beyond the starter files'))
+    if receipt:
+        n = open_tasks(d)
+        lines.append('Task list: %s' % ('no open tasks' if n == 0 else '%d open task%s' % (n, '' if n == 1 else 's')))
     return lines
+
+
+def set_name(data, name):
+    """Write the business name into a manifest.yaml that still has the starter name.
+
+    Replaces only the starter line `name: My Business` (or its quoted form). A name that is
+    already there is never changed.
+    """
+    name = ' '.join((name or '').split())
+    if not name:
+        say('Business name: no name was given. Nothing was written.')
+        return 2
+    if name == FALLBACK_NAME:
+        say('Business name: "%s" is the starter name, not a business name. Nothing was written.' % FALLBACK_NAME)
+        return 2
+    path = os.path.join(data, 'manifest.yaml')
+    try:
+        with open(path, encoding='utf-8', newline='') as f:
+            text = f.read()
+    except (OSError, ValueError):
+        say('Business name: there is no readable manifest.yaml in %s, so there is nowhere to write the name. '
+            'Run setup\'s starter-files step first. Nothing was written.' % data)
+        return 2
+    m = re.search(r'^name:[^\r\n]*', text, re.M)
+    if not m:
+        say('Business name: manifest.yaml in %s has no name line. Nothing was written.' % data)
+        return 2
+    if m.group(0) not in NAME_PLACEHOLDERS:
+        have = manifest_name(data)
+        if have == name:
+            say('Business name: already "%s". Nothing to change.' % name)
+            return 0
+        say('Business name: this folder already has a name, "%s". Setup never changes a name that is '
+            'already there, so nothing was written. To change it, edit the name line in manifest.yaml.' % have)
+        return 2
+    if not os.access(path, os.W_OK) or not writable_dir(data):
+        say('Business name: read-only. This computer account cannot write manifest.yaml in %s. Nothing was written.' % data)
+        return 2
+    new = text[:m.start()] + 'name: %s' % json.dumps(name) + text[m.end():]
+    tmp = path + '.merlin-tmp'
+    with open(tmp, 'w', encoding='utf-8', newline='') as f:
+        f.write(new)
+    shutil.copymode(path, tmp)
+    os.replace(tmp, path)
+    if manifest_name(data) != name:
+        with open(tmp, 'w', encoding='utf-8', newline='') as f:
+            f.write(text)
+        shutil.copymode(path, tmp)
+        os.replace(tmp, path)
+        say('Business name: the name could not be read back the same way, so manifest.yaml was put back as it was.')
+        return 1
+    say('Business name: set to "%s" in manifest.yaml. Nothing else in the folder changed.' % name)
+    return 0
 
 
 def folder_status(path):
@@ -944,6 +1051,7 @@ def main(argv):
     g.add_argument('--inspect', metavar='DIR')
     for m in ('check', 'skeleton-only', 'skeleton', 'grant', 'codex-status', 'codex-block', 'explain-memory', 'remove'):
         g.add_argument('--' + m, action='store_true')
+    g.add_argument('--set-name', metavar='NAME', help='write the business name into a manifest.yaml that still says My Business')
     g.add_argument('--key-store', metavar='NAME')
     g.add_argument('--key-check', metavar='NAME')
     a = ap.parse_args(argv)
@@ -978,6 +1086,8 @@ def main(argv):
     if data is None and not a.check:
         say('setup: no business folder is chosen yet. Run setup\'s folder step first (--choose, for example --choose "~/%s"). Nothing was written.' % FALLBACK_NAME)
         return 2
+    if a.set_name is not None:
+        return set_name(data, a.set_name)
     if a.grant:
         return grant(data, a.yes)
     if a.codex_block:

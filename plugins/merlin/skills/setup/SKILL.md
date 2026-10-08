@@ -43,10 +43,16 @@ file, the Keychain) runs only after the user says yes to that step.
         your business folder?" If it also prints `Prepared folder: yes`, say instead
         that this folder was already set up for the business, possibly by Praxis,
         name the business from `Business name in this folder:`, list what is already
-        filled in, and ask whether to use it. Setup keeps every file in a prepared
-        folder and fills in only what is missing. On a yes to a folder that is not
+        filled in, and ask whether to use it. If it also prints a line starting
+        `Prepared by Praxis on`, leave out "possibly": say Praxis set it up, on that
+        date and for that person, and give the open tasks from `Task list:`. Setup
+        keeps every file in a prepared folder and fills in only what is missing.
+        On a yes to a folder that is not
         prepared, ask "What's your business called?" (offer the folder's own name as
-        a likely answer), because step 3 writes it into the new folder.
+        a likely answer), because step 3 writes it into the new folder. On a yes to a
+        prepared folder with no `Business name in this folder:` line, its manifest
+        still says My Business, so ask "What's your business called?" too: step 3
+        writes the answer with `--set-name`.
      2. **Otherwise, a backed-up folder.** If the open folder was not offered (say
         why in a few words, from the reason it printed) or the user says no, ask:
         "What's your business called?", unless they already said. Run
@@ -56,7 +62,7 @@ file, the Keychain) runs only after the user says yes to that step.
         the folder in Documents, and say to make sure it is backed up. The user may
         name another folder instead. If they say Praxis sent them a folder, ask
         where it is and run `bash <setup> --inspect "<that folder>"` to read back
-        what it holds.
+        what it holds, in the same words as a prepared open folder above.
      3. Tell the user not to move the folder after setup records it. If the chosen
         folder is in Dropbox, Google Drive or iCloud Drive, also say the line it
         printed about using the folder from one Mac at a time.
@@ -84,7 +90,11 @@ file, the Keychain) runs only after the user says yes to that step.
    the business name from step 2 (leave `--name` off if the user gave none); it becomes
    `name:` in a new `manifest.yaml`. Report what it created
    and what it left alone. If the business folder is not writable, stop and say why:
-   Merlin stays read-only.
+   Merlin stays read-only. A prepared folder already has its `manifest.yaml`, so
+   `--name` does not change it. When step 2 asked the business name for a prepared
+   folder that had none, run `bash <setup> --set-name "<business name>" --data "${user_config.data_dir}"`.
+   It replaces only the starter line `name: My Business` and never a name that is
+   already there. Tell the user the name is now in `manifest.yaml`.
 4. **About the user and the business.** Run `merlin:about-me-setup`, then
    `merlin:company-info-setup`. They write `ABOUT-ME/` and `memory/` in the business
    folder, each after the user's yes. In a prepared folder, tell the user first that
