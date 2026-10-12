@@ -166,11 +166,40 @@ file, the Keychain) runs only after the user says yes to that step.
    block with `bash <setup> --codex-block --data "${user_config.data_dir}"`, and add
    it only on a yes, with `--yes`.
 10. **Report.** Run `bash <setup> --check --data "${user_config.data_dir}"` again and
-    give the user its checklist: what passed and what is missing. Then offer a first
+    give the user its checklist: what passed and what is missing. If it has a line
+    about task numbers on this computer that is not `[ok]`, run "Task numbers"
+    below before anything else. That line appears only in a business folder that
+    switched on per-folder task lists. Then offer a first
     project: "Want to set up your first project now? A project is a folder inside
     your business folder for one job, client or area of work." On a yes, run
     `merlin:project-setup`; it asks before it writes anything. On a no, say they can
     ask for it any time in plain words, such as "set up a project".
+
+## Task numbers
+
+Only for a business folder whose settings file (`<merlin-manifest>`) has a
+`task_lists:` block with `state: active`, which means per-folder task lists are
+switched on. There each computer needs its own lane, a digit from 0 to 9, before
+it can add a task, so two computers never give out the same task number. Run this
+when the checklist in step 10 flags it, when `merlin:task-management` reports
+that adding a task was refused for want of a lane, or when the user says "set up
+task numbers".
+
+1. Run `bash <setup> --task-lane --data "${user_config.data_dir}"` (same `--data`
+   rule as step 2). It writes nothing. It says per-folder task lists are off and
+   there is nothing to do, or that this computer already has a lane, or it refuses
+   with a reason, or it lists the two things it will write: the lane file
+   `~/.claude/merlin-task-lane`, outside the business folder, and one entry in
+   the lanes list of the settings file.
+2. If it refuses, give the user its reason in plain words and stop. A missing
+   `lanes: []` line is added under `task_lists:` in the settings file, after the
+   user's yes, and then this step runs again.
+3. Show the list and ask: "Okay to give this computer its task numbers lane?"
+4. Only on a yes, run the same command with `--yes`. It runs the task engine's own
+   enrolment and prints the lane it took. Then retry whatever was waiting on it.
+
+`--remove` deletes the lane file again if setup wrote it. The entry in the
+settings file stays, so running this step again gives the computer the same lane.
 
 ## Change the business folder
 

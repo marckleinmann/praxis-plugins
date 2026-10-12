@@ -91,7 +91,10 @@ Ask one question at a time. Keep it to a short conversation.
 
 Do not create a task list in the project. Tasks for this project go in the
 one list at `<task-list>`, tagged with the project name, through
-`merlin:task-management`.
+`merlin:task-management`. If the business has switched on per-folder task lists
+(`state: active` in the `task_lists:` block of `<merlin-manifest>`), the new
+folder needs its own row in that block instead: follow `merlin:task-management`,
+show the user the row, and write it only after a yes.
 
 **brief.md**, filled from the answers:
 

@@ -54,6 +54,11 @@ Modes (one per run):
   --codex-status          report Codex: installed, Merlin present, start-up hook trusted
   --codex-block [--yes]   add the managed Merlin block to ~/.codex/AGENTS.md (preview
                           without --yes)
+  --task-lane [--yes]     only when the manifest's task_lists state is active (per-folder task
+                          lists): give this computer its task-number lane by running the task
+                          engine's claim_id.py --enroll --registry <manifest>, which writes the
+                          lane file ~/.claude/merlin-task-lane and one lanes entry in the
+                          manifest (preview without --yes). Off otherwise: says so, writes nothing
   --key-store NAME        store a key in the macOS Keychain, service "Merlin"; the value
                           is read from stdin and never printed
   --key-check NAME        print "ok" or "missing", never the value
@@ -2004,6 +2009,11 @@ def remove(data, yes, keys):
         plan.append('remove the Merlin block from ~/.codex/AGENTS.md')
     for k in keys:
         plan.append('delete the Keychain key %s (service "%s")' % (k, KEYCHAIN_SERVICE))
+    lane = rec.get('task_lane')
+    if lane and os.path.exists(lane.get('file') or ''):
+        plan.append('delete this computer\'s task numbers lane file %s, which setup wrote (the lane stays listed in '
+                    'your settings file, so setup\'s task numbers step gives this computer the same lane back)'
+                    % tilde(lane['file']))
     if os.path.exists(RECORD):
         plan.append('delete setup\'s own record, ~/.merlin/setup-record.json')
     say('Remove: this reverses what Merlin wrote outside your business folder.')
@@ -2071,6 +2081,12 @@ def remove(data, yes, keys):
         r = subprocess.run(['security', 'delete-generic-password', '-a', k, '-s', KEYCHAIN_SERVICE],
                            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         say('Keys: %s %s.' % (k, 'deleted' if r.returncode == 0 else 'was not in the Keychain'))
+    if lane and os.path.exists(lane.get('file') or ''):
+        if sha256_file(lane['file']) == lane.get('written_sha256'):
+            os.remove(lane['file'])
+            say('Task numbers: the lane file %s was deleted.' % tilde(lane['file']))
+        else:
+            say('Task numbers: the lane file %s changed since setup wrote it, so it was left as it is.' % tilde(lane['file']))
     if os.path.exists(POINTER):
         os.remove(POINTER)
         say('Pointer: ~/.merlin/instance.json deleted.')
@@ -2083,6 +2099,142 @@ def remove(data, yes, keys):
     say('Next: remove the Merlin plugin straight away. In the Claude app: the Plugins screen. In a terminal: '
         'claude plugin uninstall merlin@praxis-plugins. If the plugin setting "Your business folder" is set, '
         'the start-up hook writes the pointer file again at the next session start while the plugin stays installed.')
+    return 0
+
+
+# ------------------------------------------------------------------ task numbering lane
+# Only for a business folder that switched on per-folder task lists (task_lists state: active in
+# its manifest). There the task engine gives out a task number only when this computer holds a
+# lane digit in its lane file, so two computers never give out the same number. Every other
+# folder never sees any of this. The engine's own tasklists.py reads the lane, so setup and the
+# engine agree on what counts as set.
+
+TASK_LISTS_ACTIVE_RE = re.compile(r'^[ \t]+state[ \t]*:[ \t]*["\']?active["\']?[ \t]*(#.*)?$')
+TASK_LISTS_LANES_RE = re.compile(r'^[ \t]+lanes[ \t]*:')
+
+
+def _engine(root):
+    """The task engine's tasklists module from the plugin folder, or None. No bytecode is left."""
+    if root is None:
+        return None
+    d = os.path.join(root, 'lib', 'engine', 'triage-tasks')
+    if not os.path.isfile(os.path.join(d, 'tasklists.py')):
+        return None
+    saved = sys.dont_write_bytecode
+    sys.dont_write_bytecode = True
+    sys.path.insert(0, d)
+    try:
+        import tasklists
+        return tasklists
+    except Exception:
+        return None
+    finally:
+        sys.path.remove(d)
+        sys.dont_write_bytecode = saved
+
+
+def task_lane_status(root, data):
+    """None when per-folder task lists are off. Otherwise a dict: the manifest, whether its
+    task_lists block has a `lanes:` line, the lane file, and state: ok, missing, other-machine,
+    no-lanes-key or no-engine."""
+    p = paths(data)
+    manifest = p.get('manifest')
+    if not manifest:
+        return None
+    try:
+        with open(manifest, encoding='utf-8') as f:
+            lines = f.read().split('\n')
+    except (OSError, ValueError):
+        return None
+    blocks = _top_blocks(lines)
+    if 'task_lists' not in blocks:
+        return None
+    a, b = blocks['task_lists']
+    body = [l.rstrip('\r') for l in lines[a + 1:b + 1]]
+    if not any(TASK_LISTS_ACTIVE_RE.match(l) for l in body):
+        return None
+    out = {'manifest': manifest, 'lanes_key': any(TASK_LISTS_LANES_RE.match(l) for l in body)}
+    tl = _engine(root)
+    if tl is None:
+        out.update(state='no-engine', lane_file=None)
+        return out
+    out['lane_file'] = tl.lane_file_path()
+    lane = tl.read_lane()
+    if lane is not None and not (lane[1] and lane[1] != tl.machine_hash()):
+        out['state'] = 'ok'
+        out['lane'] = lane[0]
+    elif not out['lanes_key']:
+        out['state'] = 'no-lanes-key'    # enrolment records the lane there, so it needs the line
+    else:
+        out['state'] = 'missing' if lane is None else 'other-machine'
+    return out
+
+
+def task_lane_check(st):
+    """The report line for the task numbering lane, or None when per-folder task lists are off."""
+    if st is None:
+        return None
+    s = st['state']
+    if s == 'ok':
+        return ('ok', 'Task numbers on this computer (per-folder task lists are on): set, lane %d' % st['lane'])
+    if s == 'no-engine':
+        return ('problem', 'Task numbers on this computer: setup cannot find the task engine in the plugin folder. Reinstall the Merlin plugin.')
+    if s == 'no-lanes-key':
+        return ('missing', 'Task numbers on this computer: per-folder task lists are on, but the task_lists block in '
+                'Merlin\'s settings file (manifest.yaml) has no "lanes: []" line. Add that line under task_lists, then '
+                'run setup\'s task numbers step.')
+    if s == 'other-machine':
+        return ('problem', 'Task numbers on this computer: the lane file %s came from another computer, so adding a task '
+                'is refused. Next: setup\'s task numbers step gives this computer its own lane (say: set up task numbers).'
+                % tilde(st['lane_file']))
+    return ('missing', 'Task numbers on this computer: not set yet, so adding a task is refused. Next: setup\'s task '
+            'numbers step sets it after a yes (say: set up task numbers).')
+
+
+def task_lane(root, data, yes):
+    """Preview, then on --yes run the task engine's own enrolment for this computer."""
+    st = task_lane_status(root, data)
+    if st is None:
+        say('Task numbers: per-folder task lists are not switched on in Merlin\'s settings file (manifest.yaml), so this '
+            'computer needs no lane. Nothing to change.')
+        return 0
+    if st['state'] == 'ok':
+        say('Task numbers: this computer already has lane %d (%s). Nothing to change.' % (st['lane'], tilde(st['lane_file'])))
+        return 0
+    if st['state'] in ('no-engine', 'no-lanes-key'):
+        say('%s Nothing was written.' % task_lane_check(st)[1])
+        return 2
+    claim = os.path.join(root, 'lib', 'engine', 'triage-tasks', 'claim_id.py')
+    say('Task numbers: per-folder task lists are on, and this computer has %s.' % (
+        'no lane yet' if st['state'] == 'missing' else 'a lane file copied from another computer'))
+    say('Setup will run the task engine\'s enrolment once. It takes the lowest free lane, a digit from 0 to 9, '
+        'for this computer and writes two things:')
+    say('  1. the lane file %s, outside your business folder' % tilde(st['lane_file']))
+    say('  2. one entry in the lanes list of %s' % st['manifest'])
+    say('This computer then gives out only task numbers that end in its digit, so two computers never give out the '
+        'same number. Numbers skip as a result (WS3, WS13, WS23); that is expected.')
+    if not yes:
+        say('Preview only. Nothing was written. Run again with --yes after the user says yes.')
+        return 0
+    existed = os.path.exists(st['lane_file'])
+    r = subprocess.run([sys.executable, claim, '--enroll', '--registry', st['manifest']],
+                       stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True,
+                       env=dict(os.environ, PYTHONDONTWRITEBYTECODE='1'))
+    if r.returncode != 0:
+        msg = (r.stderr or r.stdout or '').strip()
+        try:
+            msg = json.loads(msg).get('message', msg)
+        except ValueError:
+            pass
+        say('Task numbers: the task engine refused: %s' % msg)
+        say('Nothing was recorded by setup.')
+        return 2
+    say('Task numbers: %s.' % r.stdout.strip())
+    if os.path.exists(st['lane_file']):
+        rec = load_record()
+        rec['task_lane'] = {'file': st['lane_file'], 'existed_before': existed,
+                            'written_sha256': sha256_file(st['lane_file'])}
+        save_record(rec)
     return 0
 
 
@@ -2133,6 +2285,9 @@ def report(root, data, source, created=None, kept=None):
                 have_about = os.path.exists(about)
                 checks.append(('ok' if have_about else 'missing', 'Notes about you (about-me.md): %s' % (
                     'written' if have_about else 'not written yet. Next: the about-you interview writes them (say: set up my profile)')))
+                lane_line = task_lane_check(task_lane_status(root, data))
+                if lane_line:
+                    checks.append(lane_line)
         status, msg = pointer_check(data)
         checks.append(('problem' if status == 'mismatch' else status, msg))
         checks.append(('ok' if settings_has(data) else 'optional', 'Folder access in ~/.claude/settings.json: %s' % ('granted' if settings_has(data) else 'not granted (offered on a yes)')))
@@ -2189,7 +2344,8 @@ def main(argv):
     g.add_argument('--move-to-hq', metavar='DIR', nargs='?', const='', help='turn an older flat business folder into the HQ layout (preview without --yes)')
     g.add_argument('--suggest', metavar='NAME', nargs='?', const='')
     g.add_argument('--inspect', metavar='DIR')
-    for m in ('check', 'skeleton-only', 'skeleton', 'grant', 'codex-status', 'codex-block', 'explain-memory', 'remove', 'where'):
+    for m in ('check', 'skeleton-only', 'skeleton', 'grant', 'codex-status', 'codex-block', 'explain-memory', 'remove', 'where',
+              'task-lane'):
         g.add_argument('--' + m, action='store_true')
     g.add_argument('--set-name', metavar='NAME', help='write the business name into a manifest.yaml that still says My Business')
     g.add_argument('--key-store', metavar='NAME')
@@ -2241,6 +2397,11 @@ def main(argv):
         return grant(data, a.yes)
     if a.codex_block:
         return codex_block(data, a.yes)
+    if a.task_lane:
+        if root is None:
+            say('setup: cannot find the plugin folder from %s. Nothing was written.' % __file__)
+            return 2
+        return task_lane(root, data, a.yes)
     if a.skeleton or a.skeleton_only:
         if root is None:
             say('setup: cannot find the plugin folder from %s. Nothing was written.' % __file__)

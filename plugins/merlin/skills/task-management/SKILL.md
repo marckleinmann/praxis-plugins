@@ -13,6 +13,12 @@ Tasks span every project, so they live in one file rather than scattered
 per-project lists. A task engine that ships with Merlin does every write, so
 two sessions can never overwrite each other's changes.
 
+**First, check which kind of list this business uses.** Read the `task_lists:`
+block in `<merlin-manifest>`. If it says `state: active`, the business has
+switched on per-folder task lists: read `per-folder.md` in this folder and
+follow it instead of the steps below. Any other state, or no such line, means
+the one list described here: follow the steps below as written.
+
 ## When to use
 
 Any request to add, complete, review, or reprioritize tasks.
@@ -26,8 +32,8 @@ Trigger phrases: "add a task", "remind me to", "what's on my plate",
   current folder and never create per-project task files. Merlin's setup
   creates the list; if it is missing, stop and tell the user to run
   `merlin:setup`.
-- **The engine:** `<plugin-root>/lib/engine/triage-tasks/triage.py`, run with
-  `python3`. Written `<engine>` below.
+- **The engine:** the folder `<plugin-root>/lib/engine/triage-tasks`, written
+  `<engine>` below. Run its `triage.py` with `python3`.
 - **Never write a task line by hand, never pick an id, never strike a line
   through by hand.** The engine claims the id, writes the line and holds a
   lock on the file for the whole change.
@@ -186,3 +192,7 @@ preview and a yes before anything is written.
 
 - `<task-list>`: the task list.
 - `stale-triage.md` in this folder: the clean-up mode.
+- `per-folder.md` in this folder: per-folder task lists, used only when
+  switched on.
+- `<merlin-manifest>`: its `task_lists:` block says which kind of list is in
+  use.

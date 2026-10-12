@@ -15,24 +15,48 @@ short section in today's session log in the project's `updates/` folder
 - files in flight
 - the exact next action
 
+If the user or a tool already named a checkpoint file, save there instead and
+keep using it. Keep the task id, approvals and limits it already records. If
+the work follows a written plan with phases (a `PLAN.md`), the plan keeps the
+step-by-step state; the checkpoint names the current phase and links the
+plan.
+
 Read it back from disk. Then continue the same work. A checkpoint never
 closes tasks, never prints the closing line, and never starts a new session.
+Saving a checkpoint does not free up context. It only makes the work safe to
+resume.
 
 After the conversation is compacted, re-read only the saved checkpoint
 section. Check what is really on disk and trust that over the remaining-work
 list where they differ. Keep the approvals and limits it records, and resume
-the same task. Do not redo finished work.
+the same task. Do not redo finished work, and do not hand over to a fresh
+session only because of the compaction.
 
 ## Continue in a fresh session
 
-Use only when the user asks to continue elsewhere, or the session cannot
-continue reliably. Continuing elsewhere keeps work open; it does not say the
-work is finished.
+How full the context is does not, on its own, call for a handover. Hand over
+only on one of these:
+
+1. The user asks to continue elsewhere.
+2. A reliability problem survives a check against the evidence: the session
+   repeats a question already answered, contradicts a decision already made,
+   or repeats a claim the user corrected.
+3. The same step fails or is blocked twice.
+4. The session cannot continue, or picking the work up after a compaction
+   fails.
+
+Continuing elsewhere keeps work open; it does not say the work is finished.
 
 1. Save current state and open work in a checkpoint as above, touch
    `CONTINUITY.md` lightly, and keep the existing task. Never add a second
-   task for the same work and never close it just to hand it over.
-2. Read the writes back from disk before handing over.
+   task for the same work and never close it just to hand it over. Record any
+   step only a person can still do (sending, publishing, deploying), so
+   staged work is not mistaken for live work.
+2. Read the writes back from disk before handing over. If the work follows a
+   `PLAN.md`, point at the plan and its phase numbers as the state. If the
+   work comes from a meeting, name that meeting's requirement list (the
+   `dissect_*.md` file from `merlin:meeting-dissect`) and say to read all of
+   it. Never pass on a hand-picked selection of its items.
 3. Write every open decision in full now, while this session still holds the
    context: what is being decided in plain words, why now, the facts with
    full file paths, each option and its cost, and a recommendation. The next
@@ -54,4 +78,7 @@ Open decisions: <each one a complete question, or "none">
 Next action: <exact next step>
 Confirms: <how to tell it worked>
 Checkpoint: <absolute path of the saved checkpoint>
+Checkpoint heading: <heading of the saved checkpoint section>
 ```
+
+A checkpoint or a handover never audits other tasks, calendars or projects.

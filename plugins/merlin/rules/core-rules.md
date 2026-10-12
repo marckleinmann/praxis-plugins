@@ -87,6 +87,7 @@ Inside the business folder, and only there:
 4. Merlin's own files, from any chat, at the paths the start-up status line names:
    - the about-me and memory folders, when the user asks or through the setup interview;
    - the task list, only through the task engine (section 7);
+   - the `task_lists:` block of the settings file, only to switch on per-folder task lists or add a folder's row, after the user sees the edit and says yes;
    - the run-state folder, one `<owner>/` folder per script or plugin for its own run state. No user content goes in state files.
 
 Rules for every write:
@@ -125,7 +126,7 @@ Saved transcripts are never edited. A provenance note may be added below one.
 
 ## 7. Tasks
 
-Every task lives in the one task list, `TASKS.md`, at the path the start-up status line names. Add, close, annotate and reprioritize tasks only through `merlin:task-management`, which runs the task engine.
+Every task lives in the one task list, `TASKS.md`, at the path the start-up status line names. Add, close, annotate and reprioritize tasks only through `merlin:task-management`, which runs the task engine. If the business has switched on per-folder task lists (`state: active` in the `task_lists:` block of its settings file), each project folder keeps its own `TASKS.md` instead, and `merlin:task-management` explains how.
 
 - Never write a task line by hand and never invent an id. The engine claims each id with a lock, so two sessions running at once can never give two tasks the same number.
 - Closing a task is bookkeeping, not project work. It needs no special session.

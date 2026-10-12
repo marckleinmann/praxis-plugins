@@ -186,7 +186,10 @@ list misses different things.
    smaller one. Give it only three paths: `extraction-prompt.md`, the transcript, and its
    output file `<merlin-data>/<Project>/updates/dissect-work/<YYYY-MM-DD>_<slug>/pass-b.md`.
    Tell it not to open any `dissect_*` file and not to start helpers of its own. Never give it
-   the first list, a digest of it, or this conversation.
+   the first list, a digest of it, or this conversation. Its output stays under `updates/`,
+   never beside the lists, so no search for `dissect_*.md` ever picks it up. For a very long
+   transcript it reads the whole transcript itself, or splits it its own way; it never sees
+   how the first reading was split.
 3. **Compare the two readings:**
    `python3 <scripts>/diff_passes.py <first list> <pass-b.md> --transcript <transcript>`
 4. **Add, never filter.** Every item only the second reader found, whose quote checked out
@@ -200,6 +203,7 @@ list misses different things.
 **If this session cannot start a helper**, stamp `second_pass: DEFERRED (no helper
 available)` and say so plainly in Step 7. The list is then one reader's work, and the user
 should know that before approving it. Offer to run the second reading in a fresh session.
+A DEFERRED second reading is owed work: a search for `second_pass: DEFERRED` finds every one.
 
 ---
 
@@ -219,6 +223,14 @@ times is telling you what the decision turns on.
 
 Earlier lists for the same client live beside this one:
 `<merlin-data>/<Project>/knowledge/meetings/dissect_*.md`.
+
+Carry-forward reads every earlier list for this client, so only a run that has those lists
+to itself may compute it. A normal single session does. A run that is one of several working
+on the same project at once (for example, helpers that each list one meeting) does not, even
+when the other lists look finished: two lists written minutes apart can each miss what the
+other settled.
+
+### 5A · When this run has the lists to itself
 
 **Run the script. Never pick carried items by reading.** Reading by meaning drops whole
 categories: an objection, a constraint or a spec can never be "fulfilled", so a reader
@@ -264,6 +276,21 @@ with no list counts as not listed; when in doubt, it counts. `carry_forward: COM
 allowed only when nothing is unmatched AND `validate.py` exits 0 (Step 6). Otherwise the
 stamp is `PARTIAL` with the count, and Step 7 offers to list the older meetings.
 
+### 5B · When this run does not have the lists to itself
+
+Do not compute carry-forward. Do not read the other lists, do not write "None", and do not
+write empty carry-forward sections that look like a clean check. Stamp
+`carry_forward: DEFERRED (<reason>)`, put the reason in `carry_forward_basis`, and, when this
+run cannot start the second reader either, stamp `second_pass: DEFERRED` as Step 3B says. Put
+this block at the very top of the body:
+
+> 🔴 **CARRY-FORWARD DEFERRED (the reason).** This list has not been checked against earlier
+> meetings. The asked-twice-delivered-zero check has NOT run on this file. Run Reconcile for
+> this project before writing anything for this client from it.
+
+A DEFERRED stamp is owed work, never a finished state. Reconcile clears it. A search for
+`carry_forward: DEFERRED` finds every one.
+
 ---
 
 ## Step 6 · Write the list
@@ -301,6 +328,10 @@ Exit 0 means every earlier ID is carried or closed exactly once, every closed it
 pointer, and `prior_items = carried + closed`. Exit 1 means the stamp may not be `COMPLETE`:
 fix the file, never the stamp. Exit 2 means the file lacks the three carry-forward sections.
 
+The two `carry_forward` lines are required. A carried count of zero on its own cannot tell a
+clean check from a missing or skipped one; the stamp and its basis line are what make a zero
+mean something. On `DEFERRED`, the basis line holds the reason.
+
 Body order: the 🔴 red flags, `## Still open from prior meetings`, `## Standing context`,
 `## Closed since last meeting`, then `## This meeting` with the ranked list (and
 `### Found by the second reading only` when Step 3B added items), then `## Coverage note`.
@@ -323,7 +354,8 @@ from memory or from a summary. An empty list with receipts beats a full one with
 This is the step the whole skill exists for. The user sees the list **before** anything is
 written from the meeting.
 
-First, if `second_pass` is `PENDING`, run Step 3B now. Then run the coverage report:
+First, if `second_pass` is `PENDING`, or `DEFERRED` and this session can start a helper, run
+Step 3B now. Then run the coverage report:
 
 ```
 python3 <scripts>/coverage.py <transcript> <this list> \
@@ -403,7 +435,9 @@ the report says "asked for 10, the draft has 3".
 
 Repairs a client's lists when an earlier one is PARTIAL, has DEFERRED carry-forward, or is
 written in an item shape the script cannot read. Triggered by "reconcile the meeting lists
-for <Project>". It reads lists only, never transcripts. Run one at a time per project.
+for <Project>". It reads lists only, never transcripts. Run one at a time per project, and
+never inside a run that is one of several working in parallel (Step 5B). Different projects
+may be reconciled at the same time.
 
 1. List every `dissect_*.md` in the project's `knowledge/meetings/`, sorted by
    `meeting_date`.
@@ -422,12 +456,15 @@ for <Project>". It reads lists only, never transcripts. Run one at a time per pr
 4. Run `validate.py` on each rewritten file, then the Step 5 check for meetings never listed,
    and update each stamp: `COMPLETE` only where the checker exited 0, otherwise `PARTIAL`
    with the count.
-5. Report how many files are COMPLETE, PARTIAL and DEFERRED. On any PARTIAL, name the
-   transcripts with no list and offer to list them.
+5. Report how many files are COMPLETE, PARTIAL and DEFERRED. DEFERRED carry-forward should
+   be zero when it finishes. On any PARTIAL, name the transcripts with no list and offer to
+   list them.
 
 Reconcile changes only the carry-forward sections, the stamps, `ID:` lines, item statuses
 with pointers, and the item shape of a file the script could not read. Statements, quotes
-and line numbers stay as written. Transcripts are never touched.
+and line numbers stay as written. Transcripts are never touched. A DEFERRED second reading
+is not cleared here: it needs the transcript, so the session that shows the list runs
+Step 3B.
 
 ---
 
@@ -446,7 +483,11 @@ and line numbers stay as written. Transcripts are never touched.
   and stamp this list PARTIAL. Never hand-pick the carried items instead. A "different
   clients" refusal means pass `--client`.
 - **`validate.py` exits 1.** An item was dropped, duplicated, or closed without a pointer.
-  Fix the file.
+  Fix the file. Stamping PARTIAL to quiet it is right only when the gap is real and named in
+  `carry_forward_basis`.
+- **This run is one of several working in parallel.** Step 5B: no carry-forward, stamp
+  DEFERRED, and Reconcile is owed. A helper that computes carry-forward anyway gets a wrong
+  answer that looks right, which is worse than the stamp.
 - **The transcript is not one turn per line.** `coverage.py` treats unlabelled lines as
   candidates and says so, and exits 2 on a file with no `## Transcript` section. When every
   line carries the same label, the report cannot leave out the user's own turns; read it

@@ -6,9 +6,15 @@ stale when it was added more than 60 days ago. This mode walks the stale
 tasks one project at a time and lets the user close, update, keep, move or
 skip each one.
 
-The engine is `<plugin-root>/lib/engine/triage-tasks/triage.py`, written
-`<engine>` below. It does all the reading and writing. Never edit the list by
-hand.
+The engine is the folder `<plugin-root>/lib/engine/triage-tasks`, written
+`<engine>` below. Its `triage.py` does all the reading and writing. Never edit
+the list by hand.
+
+**Per-folder lists.** If the `task_lists:` block in `<merlin-manifest>` says
+`state: active`, each project folder keeps its own list. Run the steps below
+once per folder list, naming that folder's own `TASKS.md` wherever they say
+`<task-list>`, and add `--registry <merlin-manifest>` to the `apply` commands.
+The single list at `<task-list>` is frozen then: never triage it.
 
 ## Safety rules
 

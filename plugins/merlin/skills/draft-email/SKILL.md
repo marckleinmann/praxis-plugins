@@ -67,7 +67,13 @@ sends it.
 5. **Check before placing it.** Read the draft back against this list and fix what fails:
    - The recipient's name and address are the ones the user gave, spelled the same way.
    - Every link is written out in full and points where the user said it should.
-   - Every attachment the body mentions is named, and the user knows to attach it.
+   - Every attachment the body mentions is named, and the user knows to attach it. When the
+     user gives a file to attach, check that it exists and is not empty. If the files come to
+     more than 10 MB together, say so and suggest a link instead: receiving mail servers cap
+     a message near 20 MB, and sending grows each file by about a third.
+   - If the user wants an image shown inside the body, it is a PNG, JPEG or GIF (WebP and
+     SVG fail in many email apps), and it has real alt text, which is what readers who block
+     images see.
    - Nothing in it came from a summary or was guessed.
    - It answers the one thing the email is for, and ends with the next step.
 
@@ -91,7 +97,9 @@ sends it.
 
 7. **After it goes out**, if the email was about a project and a task follows from it, offer
    to add the task through `merlin:task-management`. Keep a copy of the email in the
-   project's `updates/` only if the user asks for one.
+   project's `updates/` only if the user asks for one. Once the email is sent, that copy is
+   the record of what the recipient got: never edit it. A change after sending is a new
+   email, with its own copy.
 
 ## Boundaries
 

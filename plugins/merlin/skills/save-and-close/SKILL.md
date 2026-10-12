@@ -17,7 +17,8 @@ pick up again.
 Run on an explicit request to close the session, including the older names
 "wrap-session" and "wrap session". A request to edit or discuss this skill
 does not close anything. Bare "save", "done with X" and checkpoint requests do
-not run it. When a session that changed things winds down, a one-line offer
+not run it. Neither does the context filling up, or the conversation being
+compacted. When a session that changed things winds down, a one-line offer
 to save and close is enough; run only after a yes, and do not offer again
 once the bookkeeping is done.
 
@@ -26,9 +27,9 @@ closes it. For a checkpoint, or to continue the work in a fresh session, read
 [continuation.md](continuation.md) instead.
 
 The closing request covers ordinary session bookkeeping inside the
-business folder. It never covers sending, publishing, deleting, spending, or
-skipping an approval the user has not given, just to make the session look
-finished. If the user asked to preview before writing, preview. A blocked
+business folder. It never covers sending, publishing, deploying, deleting,
+spending, creating a task in another app, or skipping an approval the user
+has not given, just to make the session look finished. If the user asked to preview before writing, preview. A blocked
 write is reported as blocked and earns no success line.
 
 If the business folder cannot be reached, write nothing, say why, and give
@@ -67,16 +68,26 @@ Otherwise:
 4. `## Current state` holds open and in-progress work only. Move every line
    this session finished, word for word, into `## Session log` under this
    session's entry. If a finished line names follow-on work that is still
-   open, leave one line naming that follow-on and its task id. Never reword,
-   merge or drop a moved line, and leave other sessions' lines alone.
+   open, leave one line naming that follow-on and its task id. Do the same
+   for an `## Open loops` item this session closed. Never reword, merge or
+   drop a moved line, and leave other sessions' lines alone.
+5. If the project's own instructions keep a decisions file, record this
+   session's decisions there too.
 
-Record one resume pointer: the project name, its folder, where the full state
-is, and the next action someone could run cold. If no work remains, say so
-and do not invent a task.
+Record one resume pointer: the project name, its absolute folder path, where
+the full state is (the session log, or a checkpoint file), and the next
+action someone could run cold. When it matters, name the app or tool that
+next action needs and any approval it is waiting on. If this session was
+given a checkpoint path, keep that path; do not start a new one. If the work
+follows a written plan with phases (a `PLAN.md`), the plan stays the detailed
+record: note which phase is done and which is next, and link the plan rather
+than retelling it. If no work remains, say so and do not invent a task.
 
 Immediately before writing, re-read the sections you are about to change and
 compare them with what you composed. If they changed since you read them,
-recompose. Keep other sessions' changes intact.
+recompose. Keep other sessions' changes intact. Keep separate dated entries
+separate; never merge older entries or prune history this session did not
+write.
 
 ## 2. Update this session's tasks
 
@@ -90,19 +101,28 @@ actually ask for. Reuse an open task for the same obligation.
 - **Annotate** partial progress: what landed and the exact remaining step.
   Leave the checkbox open. If you are not sure a task matches, leave it open
   and say so.
-- **Add** new obligations this session created, tagged with their project,
+- **Add** new obligations this session created, tagged with the project that
+  owns the work (`--tag <Project>`), even when that is a different project,
   with the state file and the exact next action in the description.
 - A step only a person can do gets a task too, saying what is ready and what
   they still have to do. Other next steps stay in `CONTINUITY.md` rather
   than becoming duplicate tasks.
+
+If the business keeps one task list per project (`task_lists.state: active`
+in `<merlin-manifest>`) and the engine refuses because another project's list
+cannot be reached from this session, that task was not filed. Say so
+plainly, and record it under `## Open loops` in this project's
+`CONTINUITY.md` with the target project and the full task text, so it can be
+filed later. Never put it in this project's list instead.
 
 ## 3. Check the writes
 
 Read every changed section and every task result back from disk. Confirm the
 date, decisions, open work, resume pointer and task status against the
 evidence. Check each engine result, not only its exit status: a skipped
-change is not a successful one. Fix this session's mistakes; report problems
-that were already there without trying to fix unrelated work.
+change is not a successful one. Judge any problem against the tasks this
+session touched. Fix this session's mistakes; report problems that were
+already there without trying to fix unrelated work.
 
 Check the deliverables this session created or changed: the right template,
 any companion file the project requires, and that a companion matches its
@@ -110,7 +130,8 @@ current source. A missing or blocked deliverable stays an open obligation.
 
 Close only temporary things this session opened (a preview, a scratch file),
 and leave open anything the user asked to keep or is still reading. Do not
-audit the rest of the project, other tasks, calendars or other sessions.
+audit the rest of the project, other tasks, calendars or other sessions, and
+do not start or schedule a recurring job as part of closing.
 
 ## 4. Confirm briefly
 
