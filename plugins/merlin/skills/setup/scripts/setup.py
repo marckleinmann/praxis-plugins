@@ -18,7 +18,9 @@ Modes (one per run):
                           open folder holds brief.md, CONTINUITY.md or CLAUDE.md, with its parent when
                           the parent could be offered. When this Mac already has a business folder,
                           prints `existing business folder: <path>` and nothing else to choose.
-                          Writes nothing.
+                          Each folder it names gets an `HQ in plain words:` line: the
+                          <folder name>-HQ setup creates inside it, the HQ already there, or an
+                          older flat layout that gets no new folder. Writes nothing.
                           --offer-drive-icloud also lets Google Drive, then iCloud Drive, be
                           suggested when Dropbox is absent; off until they are tested.
   --inspect DIR           report what DIR already holds (a prepared folder's business name and
@@ -852,6 +854,24 @@ def project_reason(d):
     return 'it holds %s' % (' and '.join(have) if len(have) < 3 else '%s, %s and %s' % tuple(have))
 
 
+def hq_words(d):
+    """One plain line on where Merlin's own files go in business folder D, for the question that
+    offers D, or None when there is no single answer (two HQ folders, a file, or D is an HQ)."""
+    if os.path.lexists(d) and not os.path.isdir(d):
+        return None
+    p = paths(d)
+    if p['rule'] == 4:
+        return ('Merlin will keep its own files in a folder it creates inside it, called "%s". '
+                'Your projects go next to that folder.' % os.path.basename(p['new_hq']))
+    if p['rule'] == 2:
+        return ('Merlin\'s own files are already in the folder "%s" inside it, so setup creates no new '
+                'folder. Your projects go next to that folder.' % os.path.basename(p['hq']))
+    if p['rule'] == 3:
+        return ('Merlin\'s own files already sit in this folder itself, the way an older Merlin kept them, '
+                'so setup creates no new folder.')
+    return None
+
+
 def suggest(name, open_dir, drive_icloud, option=None):
     """Print the folders to offer, in order: the open folder, then a backed-up place. Writes nothing.
 
@@ -862,6 +882,9 @@ def suggest(name, open_dir, drive_icloud, option=None):
         biz = manifest_name(existing)
         if biz and biz != FALLBACK_NAME:
             say('Business name in this folder: %s' % biz)
+        hq = hq_words(existing)
+        if hq:
+            say('HQ folder in plain words: %s' % hq)
         say('This Mac already has a business folder, with notes about you in it. Merlin uses one business '
             'folder. Setup can run again on that folder. To use a different folder instead, %s.' % CHANGE_STEP)
         return 0
@@ -880,6 +903,9 @@ def suggest(name, open_dir, drive_icloud, option=None):
                 say('looks like a project: %s%s' % (why, '; parent: %s' % parent if up_ok else ''))
             for ln in folder_status(od):
                 say(ln)
+            hq = hq_words(od)
+            if hq:
+                say('Open folder HQ in plain words: %s' % hq)
         else:
             say('Open folder offer: no (%s)' % words)
     svc, base = backed_up_place(drive_icloud)
@@ -897,6 +923,9 @@ def suggest(name, open_dir, drive_icloud, option=None):
             'example with Time Machine.' % (folder, 'Documents folder' if os.path.isdir(docs) else 'home folder'))
     for ln in folder_status(path):
         say(ln)
+    hq = hq_words(path)
+    if hq:
+        say('Suggested folder HQ in plain words: %s' % hq)
     if svc or (open_dir is not None and open_dir.strip() and in_synced(canon(open_dir))):
         say(ONE_MAC)
     say('Never move the business folder after setup records it. If it does move, run setup again to record the new place.')

@@ -40,8 +40,9 @@ file, the Keychain) runs only after the user says yes to that step.
      the Code tab is open on) and whether to offer it, then a backed-up place and a
      suggested folder.
      - **An existing business folder.** If it prints `existing business folder:`, this
-       Mac already has one. Name it, and the business from `Business name in this
-       folder:`, and stop here. Go on only if the user asked to run setup again on that
+       Mac already has one. Name it, the business from `Business name in this
+       folder:`, and where Merlin's own files are from `HQ folder in plain words:`,
+       and stop here. Go on only if the user asked to run setup again on that
        folder (then use it for `--choose` below) or to change the business folder (then
        go to "Change the business folder" below).
      - **A folder that looks like a project.** If it prints `looks like a project:`,
@@ -54,7 +55,11 @@ file, the Keychain) runs only after the user says yes to that step.
         its plain words: "Merlin keeps your business files in one folder: what you
         tell it about yourself and the business, its notes, your task list, and a
         folder for each job or client. You have Acmeco on your Desktop open. Use it as
-        your business folder?" If it also prints `Prepared folder: yes`, say instead
+        your business folder? Merlin will keep its own files in a folder it creates
+        inside it, called "Acmeco-HQ". Your projects go next to that folder." That last
+        part is the `Open folder HQ in plain words:` line. Always put it inside the
+        question text itself, not only in the chat above it, so the user sees which
+        folder setup creates and where. If it also prints `Prepared folder: yes`, say instead
         that this folder was already set up for the business, possibly by Praxis,
         name the business from `Business name in this folder:`, list what is already
         filled in, and ask whether to use it. If it also prints a line starting
@@ -73,11 +78,22 @@ file, the Keychain) runs only after the user says yes to that step.
         `bash <setup> --suggest "<business name>"` again and offer the suggested
         folder in its plain words: with Dropbox, "a folder named Acme Tile in your
         Dropbox, which keeps it backed up. We recommend Dropbox"; without Dropbox,
-        the folder in Documents, and say to make sure it is backed up. The user may
+        the folder in Documents, and say to make sure it is backed up. Put its
+        `Suggested folder HQ in plain words:` line inside the question too. The user may
         name another folder instead. If they say Praxis sent them a folder, ask
         where it is and run `bash <setup> --inspect "<that folder>"` to read back
         what it holds, in the same words as a prepared open folder above.
-     3. Tell the user not to move the folder after setup records it. If the chosen
+     3. **An answer that is a folder name, not a choice.** If the user types a folder
+        name instead of picking an option, do not make a folder from it yet.
+        - If the name ends in HQ (such as OakBakery-HQ), say that Merlin makes its HQ
+          folder by itself, inside the business folder, so the user does not name it.
+          Then ask the business folder question again.
+        - If they said the folder goes inside the open folder, use that place.
+        - If they did not say where, ask once where it should go, and offer the open
+          folder first.
+        - Never create a folder in the home folder unless the user typed a full path
+          there.
+     4. Tell the user not to move the folder after setup records it. If the chosen
         folder is in Dropbox, Google Drive or iCloud Drive, also say the line it
         printed about using the folder from one Mac at a time.
      Never suggest a folder named Merlin. If the `Open folder:` line names a folder

@@ -13,8 +13,8 @@
   ],
   "plugins": {
     "merlin": {
-      "version": "1.0.12",
-      "hash": "4e9b77c19c1a757ddcddda4bf058b715f33a5e5941dfcac4080975a620d48dee",
+      "version": "1.0.13",
+      "hash": "78131cc696641b6089e5ea87bbfd892c1db257aa6b8ba2a59ac74e173389687e",
       "skills": [
         "about-me-setup",
         "anti-slop",
@@ -28,8 +28,8 @@
         "task-management"
       ],
       "files": {
-        ".claude-plugin/plugin.json": "f4bb123a66a5e7875900ce63813aa7ce6182a55fc2fdf87a5417f506d7deedfb",
-        ".codex-plugin/plugin.json": "d695c7a7172f6ad7212c0952f69b3cc230d946c07d7f3917ba5102ded1c2349f",
+        ".claude-plugin/plugin.json": "e3c52f5d1176ee7957f6dad8c2fb662d24fa2b2e89fba80b1147e5c3ef90f3c7",
+        ".codex-plugin/plugin.json": "1c32f52316adbf8765029cab7370dcb39c4d8b6faf2d5b4542b58adc17285954",
         "LICENSE": "3a4a1539d3e265d98a43af998a13e28d4f04fcc35c283bec1e9bf7a86b266ef7",
         "NOTICE": "1863fb9732bca2fe9d55462186ab2c7f411e4bd1ec0a1bccbd783ae7657e5935",
         "hooks/hooks.json": "711f730a5f7ac15b0198f0e73e7cefac2070d48c09602b6b888a5093609b6e4a",
@@ -65,8 +65,8 @@
         "skills/rules/SKILL.md": "492faceb0f608933e4f1586d3a75fd7726162a98efa3129eb3d6957a6b988498",
         "skills/save-and-close/SKILL.md": "91b7b84410ffeea3ad0abd47c85465529c622e8e0fa95d22ed159dd4d1d61f4a",
         "skills/save-and-close/continuation.md": "72feaec4f63f8b1116e063573804a1b94cb19a73a95ea4937d68f6ba494653f2",
-        "skills/setup/SKILL.md": "9f33a7bee455da29ade5a85fa77cccb376936dd99d1ba4151464861033b093cf",
-        "skills/setup/scripts/setup.py": "b3048f889d9906c3db177db991dd0728379d59809afee23f23210ae34c46dd00",
+        "skills/setup/SKILL.md": "a8dd0eaaa5d139ad1db3e6e876412e3cf6a981d267cd29a94b7700d746dbd420",
+        "skills/setup/scripts/setup.py": "d6e28e1283cc5bff086bbbbffba919a6bcba5c0f2d3a1df96262ab58a8a32000",
         "skills/setup/scripts/setup.sh": "82e8593675ff7d435df528a9e14986fc8daa0479324cf1cd0f001bf89e5de340",
         "skills/task-management/SKILL.md": "8bb8947b9523a356c60152ec0f8e44cd05442da4b9f284fef9c443099bd8a592",
         "skills/task-management/stale-triage.md": "30305ce57946e236bad18bd469df54bcb3ae848fa40eb9fb454edeb6279678fd"
