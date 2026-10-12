@@ -23,7 +23,7 @@ Your files and Merlin's code live in separate places. Updating or removing Merli
 
 5. Next to **Merlin**, click **Add**.
 6. Go back to the Code tab, still open on your business folder, and start a new conversation.
-7. Type `/merlin:setup`. Setup offers the folder you have open as your business folder. Say yes. It copies a few starter files there, asks some short questions about you and your business, and offers to set up your first project. In a folder Praxis prepared, it reads back what is already there and asks only about what is missing.
+7. Type `/merlin:setup`. Setup offers the folder you have open as your business folder. Say yes. It makes one folder inside it where Merlin keeps its own files, called Merlin's HQ folder and named after your business folder with **-HQ** at the end. Your projects stay beside it, in the business folder. Setup copies a few starter files into the HQ folder, asks some short questions about you and your business, and offers to set up your first project. In a folder Praxis prepared, it reads back what is already there and asks only about what is missing.
 
 Use the business folder from one Mac at a time: two Macs changing it at once can leave "conflicted copy" files.
 

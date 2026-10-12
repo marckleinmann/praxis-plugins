@@ -41,7 +41,7 @@ import sys
 
 # Bumped whenever the engine's on-disk behaviour changes, so a copy of the engine
 # running an old router can be detected by comparing stamps.
-ENGINE_VERSION = '1.2.0'
+ENGINE_VERSION = '1.3.0'
 
 PRE_CUT = 'pre-cut'
 CUTTING = 'cutting'
@@ -287,6 +287,28 @@ class Registry(object):
                 out.append(n)
         return out
 
+    def code_names(self):
+        """The parser's in-text project codes: folder names, then the manifest's
+        `projects:` names, in a stable order with no duplicates.
+
+        Legacy tags are left out on purpose. They are routing aliases for old
+        `[Tag]` brackets, so `add --tag <legacy>` still files into its folder,
+        but a legacy tag that is an ordinary word (a product name, say) must not
+        read as a project code wherever it appears in a task line, or as a
+        routing preamble ahead of a real title. A bracket that holds a legacy
+        tag is grouped under its folder by the parser instead
+        (triage.py `code_vocabulary`)."""
+        out = []
+        for n in [f.name for f in self.folders] + list(self.projects):
+            if n and n not in out:
+                out.append(n)
+        return out
+
+    def code_stems(self):
+        """Hyphenated code stems from `code_names`, by the same narrow rule as
+        `code_family`."""
+        return _stems(self.code_names())
+
     def code_family(self):
         """Hyphenated code stems from the registry, such as {'Web'} for a
         folder named `Web-Shop`.
@@ -300,13 +322,7 @@ class Registry(object):
         stem, so widening the family can never change how an ordinary
         lowercase hyphenated word in a task line parses.
         """
-        out = set()
-        for tag in self.project_names():
-            if '-' in tag:
-                stem = tag.split('-', 1)[0]
-                if re.match(r'^[A-Z][A-Za-z]{1,3}$', stem):
-                    out.add(stem)
-        return out
+        return _stems(self.project_names())
 
     def as_dict(self):
         """The registry as plain JSON-safe data. Callers round-trip this through
@@ -320,6 +336,18 @@ class Registry(object):
             'folders': [f.as_dict() for f in self.folders],
             'projects': self.projects,
         })
+
+
+def _stems(names):
+    """Hyphenated code stems in `names`: the part before the first hyphen, kept
+    only when it is an initial capital and one to three more letters."""
+    out = set()
+    for tag in names:
+        if '-' in tag:
+            stem = tag.split('-', 1)[0]
+            if re.match(r'^[A-Z][A-Za-z]{1,3}$', stem):
+                out.add(stem)
+    return out
 
 
 def _empty_registry():
@@ -678,15 +706,105 @@ def data_root():
         return None
 
 
+# --- the HQ folder -------------------------------------------------------------
+#
+# A business folder may keep Merlin's own files in one child folder, its HQ. The
+# HQ is found by one top-level line in its manifest.yaml, never by its name. The
+# same rule is written in the plugin's start-up hook (bash) and in its setup.py;
+# one fixture matrix in the plugin's tests holds the three together, so a change
+# here is a change there.
+#
+# The match is on bytes, so `\s` is the six ASCII whitespace characters in all
+# three places and a line that is not valid UTF-8 still reads the same way.
+HQ_MARKER_RE = re.compile(br'^kind:\s*["\']?merlin-hq["\']?\s*(#.*)?$')
+AMBIGUOUS = 'ambiguous'
+
+
+def has_hq_marker(manifest):
+    """True when MANIFEST is a file with a top-level `kind: merlin-hq` line.
+
+    A trailing carriage return is stripped first. A manifest that cannot be read
+    counts as no marker.
+    """
+    try:
+        with open(manifest, 'rb') as f:
+            data = f.read()
+    except (OSError, ValueError):
+        return False
+    for line in data.split(b'\n'):
+        if line.endswith(b'\r'):
+            line = line[:-1]
+        if HQ_MARKER_RE.match(line):
+            return True
+    return False
+
+
+def find_hq(d):
+    """Where Merlin's own files sit for folder D: (rule, business, hq, clash).
+
+      1  D is an HQ: its manifest carries the marker. Business is D's parent.
+      2  D holds exactly one HQ: one immediate child's manifest carries it.
+      3  the older flat layout: D has a manifest.yaml without the marker, and
+         Merlin's files sit in D itself. Business and HQ are both D.
+      4  nothing: not set up. HQ is None.
+      'ambiguous'  two or more children carry the marker. CLASH lists them,
+         sorted; HQ is None. Nothing may be written until one is gone.
+
+    Hidden children (a name starting with a dot) are never looked at. A child
+    reached through a symlink counts, and is named by its path inside D.
+    """
+    d = os.path.abspath(d)
+    own = os.path.join(d, 'manifest.yaml')
+    if os.path.isfile(own) and has_hq_marker(own):
+        return 1, os.path.dirname(d), d, []
+    try:
+        names = sorted(os.listdir(d))
+    except OSError:
+        names = []
+    hqs = []
+    for n in names:
+        if n.startswith('.'):
+            continue
+        c = os.path.join(d, n)
+        m = os.path.join(c, 'manifest.yaml')
+        if os.path.isdir(c) and os.path.isfile(m) and has_hq_marker(m):
+            hqs.append(c)
+    if len(hqs) > 1:
+        return AMBIGUOUS, d, None, hqs
+    if hqs:
+        return 2, d, hqs[0], []
+    if os.path.isfile(own):
+        return 3, d, d, []
+    return 4, d, None, []
+
+
 def _walk_for_registry(roots):
-    """The plain search: at each level `core/task-lists.json` first, then a
-    `manifest.yaml` that carries a `task_lists:` block."""
+    """The plain search: at each level `core/task-lists.json` first, then the
+    HQ child's `manifest.yaml` when the level holds exactly one HQ, then the
+    level's own `manifest.yaml`. A manifest counts when it carries a
+    `task_lists:` block. A level that holds two HQ folders stops the walk with
+    an error naming both, so nothing is written to either."""
     for d in roots:
         j = os.path.join(d, 'core', 'task-lists.json')
         if os.path.exists(j):
             return _registry_from_build(j)
+        rule, _business, hq, clash = find_hq(d)
+        if rule == AMBIGUOUS:
+            raise TaskListError(
+                'registry-ambiguous-hq',
+                'the folder %s holds more than one HQ folder (%s), the folder where '
+                'Merlin keeps its own files. Each one is marked as Merlin\'s HQ in its '
+                'settings file (manifest.yaml), so there is no telling which one holds '
+                'the task lists. Keep one and move the others out of the folder '
+                '(renaming one does not help). Nothing was written.'
+                % (d, ', '.join('"%s"' % os.path.basename(c) for c in clash)))
+        manifests = []
+        if rule == 2:
+            manifests.append(os.path.join(hq, 'manifest.yaml'))
         m = os.path.join(d, 'manifest.yaml')
         if os.path.exists(m):
+            manifests.append(m)
+        for m in manifests:
             try:
                 return _registry_from_manifest(m)
             except TaskListError as e:
@@ -709,9 +827,13 @@ def load_registry(explicit=None, start=None, _cache=True):
          directory, both files accepted at every level. Reached when the
          resolver is absent, refuses, or names a manifest with no
          `task_lists:` block. With the list's own folder as the start, this is
-         how a data folder's `manifest.yaml` is normally found.
+         how a data folder's `manifest.yaml` is normally found. At each level
+         the walk also looks for one HQ child (`find_hq`), so a project's list
+         finds `<business>/<Business>-HQ/manifest.yaml` from beside it.
 
-    Two refusals:
+    Three refusals:
+      - a level of the walk holds two HQ folders: `registry-ambiguous-hq`,
+        naming both, before anything is read from either.
       - the resolver refuses because it found two data folders with a
         manifest each (a move between folders left half done):
         `registry-split-unfinished`, raised at step 4, before the walk could

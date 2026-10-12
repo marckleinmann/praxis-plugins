@@ -41,17 +41,24 @@ Merlin uses two folders and never mixes them.
 
 The business folder is recorded in `~/.merlin/instance.json`. `merlin:setup` writes it when the user chooses the folder in chat, after their yes. When the plugin option "Your business folder" is set, the option wins and the start-up hook keeps the file in step with it. Scripts and other tools find the folder there, so the user is never asked twice. No folder chosen yet is not read-only: offer `merlin:setup`.
 
+**Where to start a chat.** Start a Merlin chat in the Claude desktop app's Code tab, with the business folder (or one of its projects) connected. A chat on claude.ai or on the phone cannot reach the folder: Merlin says so in plain words and does not work from memory instead.
+
 ### Layout
 
 ```
 <business folder>/
-  manifest.yaml        the instance name, the project list, the task list setting
-  ABOUT-ME/            about-me.md and voice.md, from the setup interview
-  memory/              your company knowledge: businesses/, glossary/, playbooks/, inbox-context/
-  TASKS.md             the task list, with .task-ids/ beside it
-  state/<owner>/       run state for scripts and plugins
-  <Project>/           one folder per project
+  <Business>-HQ/                Merlin's own files, in one folder
+    manifest.yaml               kind: merlin-hq, the instance name, the project list, the task list setting
+    context/ABOUT-ME/           about-me.md and voice.md, from the setup interview
+    context/memory/             your company knowledge: businesses/, glossary/, playbooks/, inbox-context/
+    live/TASKS.md               the task list, with .task-ids/ beside it
+    live/state/<owner>/         run state for scripts and plugins
+  <Project>/                    one folder per project
 ```
+
+Merlin finds its HQ folder by the line `kind: merlin-hq` in the folder's `manifest.yaml`, never by its name. Setup names a new one after the business folder with `-HQ` added. Projects stay in the business folder, beside the HQ folder. The start-up status line names the business folder, the HQ folder and the path of each of Merlin's files, so a skill reads the paths there (or from `setup.sh --where`) and never builds one by hand.
+
+**The older flat layout.** A business folder set up by an earlier version of Merlin keeps the same files at its own top level (`manifest.yaml`, `ABOUT-ME/`, `memory/`, `TASKS.md`, `state/`) with no HQ folder. It keeps working as it is: the status line says so and names the files there, and setup never creates an HQ folder beside them. `merlin:setup` can move them into an HQ folder, but only after it shows the move and the user says yes.
 
 Each project folder holds:
 
@@ -70,14 +77,17 @@ When the business folder cannot be reached (missing, on a drive that is not conn
 
 ## 4. Where Merlin may write
 
+**One project per chat.** A chat writes only to the project it was opened on. The start-up status line's "Open on:" line says which project that is. Work for another project becomes a task tagged with that project (section 7), never a write into its folder. A chat opened on the business folder itself, or on Merlin's HQ folder, asks which project before writing to one. Setting up or adopting a project with `merlin:project-setup` is the exception: it writes that project's starter files from a chat open on the business folder. Reading stays free anywhere in the business folder; say which file you read.
+
 Inside the business folder, and only there:
 
-1. A project's `outputs/`, `updates/` and `setup/`.
-2. A project's `knowledge/meetings/`, under the meeting rules in section 6.
-3. A project's `CONTINUITY.md`, at the end of any session that changed the project's state.
-4. `ABOUT-ME/` and `memory/`, when the user asks or through the setup interview.
-5. `TASKS.md`, only through the task engine (section 7).
-6. `state/<owner>/`, for a script's or plugin's own run state. No user content goes in state files.
+1. The open project's `outputs/`, `updates/` and `setup/`.
+2. The open project's `knowledge/meetings/`, under the meeting rules in section 6.
+3. The open project's `CONTINUITY.md`, at the end of any session that changed the project's state.
+4. Merlin's own files, from any chat, at the paths the start-up status line names:
+   - the about-me and memory folders, when the user asks or through the setup interview;
+   - the task list, only through the task engine (section 7);
+   - the run-state folder, one `<owner>/` folder per script or plugin for its own run state. No user content goes in state files.
 
 Rules for every write:
 
@@ -88,7 +98,7 @@ Rules for every write:
 
 ## 5. Memory: which store wins
 
-Merlin's files are the single source of truth: `CONTINUITY.md`, `memory/`, `ABOUT-ME/`, `TASKS.md` and the project folders.
+Merlin's files are the single source of truth: each project's `CONTINUITY.md`, the memory and about-me folders, the task list and the project folders.
 
 **Your business folder wins over any Claude memory.** Claude keeps memory of its own in places Merlin does not control:
 
@@ -115,7 +125,7 @@ Saved transcripts are never edited. A provenance note may be added below one.
 
 ## 7. Tasks
 
-Every task lives in the business folder's `TASKS.md`. Add, close, annotate and reprioritize tasks only through `merlin:task-management`, which runs the task engine.
+Every task lives in the one task list, `TASKS.md`, at the path the start-up status line names. Add, close, annotate and reprioritize tasks only through `merlin:task-management`, which runs the task engine.
 
 - Never write a task line by hand and never invent an id. The engine claims each id with a lock, so two sessions running at once can never give two tasks the same number.
 - Closing a task is bookkeeping, not project work. It needs no special session.
@@ -126,7 +136,7 @@ Every task lives in the business folder's `TASKS.md`. Add, close, annotate and r
 
 ### Before writing for someone else
 
-Before writing anything another person will read (an email, a proposal, a post, a web page, a client document), read the user's own `ABOUT-ME/` in the business folder, `voice.md` first. The user's real writing outranks every rule below: a rule that fights how the user actually writes is the rule's fault. `merlin:anti-slop` edits a draft toward that voice.
+Before writing anything another person will read (an email, a proposal, a post, a web page, a client document), read the user's own about-me folder (the start-up status line names it), `voice.md` first. The user's real writing outranks every rule below: a rule that fights how the user actually writes is the rule's fault. `merlin:anti-slop` edits a draft toward that voice.
 
 Load the voice and format rules before gathering material, not at the end. By the time a draft exists, its shape is already set.
 
@@ -202,7 +212,7 @@ A chat reply, a text or a short email is short and a little loose. Match the oth
 
 ## 14. Codex
 
-Merlin's shared skills also run in OpenAI Codex. Codex has no install prompt for the business folder, so its skills read `~/.merlin/instance.json`, which `merlin:setup` writes when the user chooses the folder. Run `merlin:setup` once, in Claude Code or in Codex, before other Merlin work. When Codex shows "Hooks need review", trusting Merlin's start-up hook lets these rules load there too; otherwise `merlin:setup` can add a short block to Codex's instructions file instead.
+Merlin's shared skills also run in OpenAI Codex. Codex has no install prompt for the business folder, so its skills read `~/.merlin/instance.json`, which `merlin:setup` writes when the user chooses the folder, and `setup.sh --where` prints the path of each of Merlin's files there. Run `merlin:setup` once, in Claude Code or in Codex, before other Merlin work. When Codex shows "Hooks need review", trusting Merlin's start-up hook lets these rules load there too; otherwise `merlin:setup` can add a short block to Codex's instructions file instead.
 
 ## 15. When something is missing
 

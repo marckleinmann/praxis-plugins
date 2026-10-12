@@ -7,8 +7,10 @@ Merlin is installed. These rules apply to every reply in this session. The full 
 
 Merlin uses two folders and never mixes them.
 
-1. **The business folder** holds only the user's own files: about-me, memory, tasks, projects and outputs. The status line above names it. No update and no uninstall touches it.
+1. **The business folder** holds only the user's own files: about-me, memory, tasks, projects and outputs. The status line above names it. No update and no uninstall touches it. Projects sit in it, one folder each. Merlin's own files (about-me, memory, the task list, the manifest, run state) sit in its HQ folder inside it, or at its top level in an older install. The status line names the path of each one: use those paths, never build one by hand.
 2. **The plugin folder** holds Merlin's code. It is replaced on every update and deleted on uninstall. Never write a user file there.
+
+**Start in the Code tab.** Merlin works in a chat in the Claude desktop app's Code tab, with the business folder or one of its projects connected. A chat on claude.ai or on the phone cannot reach the folder: say so and do not work from memory.
 
 **Your business folder wins over any Claude memory.** Claude Code's own auto-memory and any Claude Projects memory are lower-ranked stores. When one of them disagrees with a file in the business folder, the file wins, and the memory gets corrected. A decision, a preference or a project status is written to the business folder, never only to a Claude memory.
 
@@ -28,13 +30,13 @@ Before asking, show exactly what will happen: the recipient and the text, the pa
 
 ## Where Merlin may write
 
+**One project per chat.** A chat writes only to the project it was opened on; the status line's "Open on:" line names it. Work for another project becomes a task tagged with that project. A chat opened on the business folder itself asks which project before writing. Reading is free; name the file you read.
+
 Inside the business folder only:
 
-- a project's `outputs/` for finished work, `updates/` for dated session logs, and `knowledge/meetings/` for meeting transcripts and their notes;
-- a project's `CONTINUITY.md`, which records current state, recent decisions, open loops and the next move, updated at the end of a session that changed something;
-- `ABOUT-ME/` and `memory/` when the user asks, or through the setup interview;
-- `TASKS.md`, only through the task engine (below);
-- `state/<owner>/` for a script's or plugin's own run state.
+- the open project's `outputs/` for finished work, `updates/` for dated session logs, and `knowledge/meetings/` for meeting transcripts and their notes;
+- the open project's `CONTINUITY.md`, which records current state, recent decisions, open loops and the next move, updated at the end of a session that changed something;
+- from any chat, Merlin's own files at the paths the status line names: the about-me and memory folders when the user asks or through the setup interview, the task list only through the task engine (below), and the run-state folder for a script's or plugin's own run state.
 
 Never delete a user file without the user's yes. Never edit a meeting transcript after it is saved.
 
@@ -50,7 +52,7 @@ Every item taken from a meeting carries its quote and line number. If no transcr
 
 ## Writing for the user
 
-Before writing anything another person will read (an email, a proposal, a post, a page), read the user's own `ABOUT-ME/` in the business folder, especially `voice.md`. The user's own writing is the reference; these rules only set the floor.
+Before writing anything another person will read (an email, a proposal, a post, a page), read the user's own about-me folder, especially `voice.md`. The user's own writing is the reference; these rules only set the floor.
 
 The floor, in every reply:
 

@@ -10,8 +10,9 @@ task's fields the same way, so the parsing rules are stated here once:
   - project: an explicit `[Code]` / `[General]` bracket right after the tid,
     else a known project code anywhere in the line, else the code in the
     nearest `### heading` (Active only), else "General". The known project
-    codes are the user's own: the registry's folder names and tags and the
-    manifest's `projects:` names (see `configure_codes`).
+    codes are the user's own: the registry's folder names and the manifest's
+    `projects:` names (see `configure_codes`). A bracket holding a folder's
+    legacy tag groups under that folder.
   - date: an explicit `(YYYY-MM-DD)` stamp after the tid/bracket, else the
     date in the nearest `### heading` (Active only), else "" (unknown).
   - section: which open section the task lives in: active | waiting | upcoming | unclassified.
@@ -119,11 +120,16 @@ def file_lock(path, timeout=15.0):
 # ships with NO built-in project names. The codes come from the registry the
 # list belongs to:
 #
-#   * NAMES: every registry folder name and legacy tag, plus every `name:` in
-#     the manifest's top-level `projects:` list. Matched as whole words.
+#   * NAMES: every registry folder name, plus every `name:` in the manifest's
+#     top-level `projects:` list. Matched as whole words.
 #   * STEMS: the part before the hyphen of any of those names that has one
 #     (`Web` for `Web-Shop`). A stem is a FAMILY: once `Web` is known, any
 #     `Web-<anything>` reads as a project code, including one no row names.
+#   * LEGACY: a folder's `legacy_tags` are NOT codes. They stay routing aliases
+#     (`add --tag <legacy>` files into the folder), and a `[Tag]` bracket that
+#     holds one groups under the folder's name and counts as an inline code.
+#     Anywhere else in a line a legacy tag is an ordinary word, so a product
+#     name kept as a legacy tag never regroups a task or eats a title.
 #
 # With nothing registered, CODE matches nothing, so only an explicit
 # `[General]` bracket or the "General" fallback names a project, and no
@@ -141,22 +147,30 @@ DATE_RE = re.compile(r'(\d{4}-\d{2}-\d{2})')
 
 
 def code_vocabulary(reg):
-    """(stems, names) for a registry; both empty when there is none."""
+    """(stems, names, legacy) for a registry; all empty when there is none.
+
+    `legacy` maps each legacy tag to its folder's name, for `[Tag]` brackets."""
     if reg is None:
-        return [], []
-    names = [n for n in reg.project_names() if n]
-    return sorted(reg.code_family()), names
+        return [], [], {}
+    names = [n for n in reg.code_names() if n]
+    legacy = {}
+    for f in reg.folders:
+        for t in f.legacy_tags:
+            if t and t not in legacy:
+                legacy[t] = f.name
+    return sorted(reg.code_stems()), names, legacy
 
 
-def configure_codes(reg=None, stems=None, names=None):
+def configure_codes(reg=None, stems=None, names=None, legacy=None):
     """Build CODE, CODE_RE, PREAMBLE_RE and CODE_COLON_RE from the user's codes.
 
-    Pass a registry, or `stems` and `names` directly. Longer names are tried
-    first so `Web-Shop` wins over `Web` when both are registered.
+    Pass a registry, or `stems`, `names` and `legacy` directly. Longer names are
+    tried first so `Web-Shop` wins over `Web` when both are registered.
     """
-    global CODE_STEMS, CODE_NAMES, CODE, CODE_RE, PREAMBLE_RE, CODE_COLON_RE
+    global CODE_STEMS, CODE_NAMES, CODE, CODE_RE, PREAMBLE_RE, CODE_COLON_RE, LEGACY_FOLDERS
     if reg is not None:
-        stems, names = code_vocabulary(reg)
+        stems, names, legacy = code_vocabulary(reg)
+    LEGACY_FOLDERS = dict(legacy or {})
     CODE_STEMS = sorted(set(stems or []))
     CODE_NAMES = sorted(set(names or []), key=lambda n: (-len(n), n))
     alts = []
@@ -494,6 +508,8 @@ def parse_open(lines, stale_days, today, stale_days_p1=STALE_DAYS_P1):
             bracket = bm.group(1) if bm else ''
             if bracket and (re.fullmatch(CODE, bracket) or bracket == 'General'):
                 proj, inline_code = bracket, True
+            elif bracket and bracket in LEGACY_FOLDERS:
+                proj, inline_code = LEGACY_FOLDERS[bracket], True
             else:
                 cm = CODE_RE.search(l)
                 inline_code = bool(cm)
@@ -1846,8 +1862,14 @@ def main():
     # writes, so the data folder's own manifest decides what a project code is.
     # A registry that will not parse is left to the write path, which refuses
     # loudly; the parser keeps the vocabulary it had.
+    # Two HQ folders side by side is the one registry refusal every subcommand
+    # has to stop on here, with the engine's JSON refusal and before anything
+    # is read or written, because no one of the two can be picked.
     try:
         configure_codes(get_registry(args))
+    except tasklists.TaskListError as e:
+        if e.code == 'registry-ambiguous-hq':
+            tasklists.fail(e)
     except Exception:
         pass
     {'list': cmd_list, 'apply': cmd_apply, 'add': cmd_add, 'find': cmd_find,
