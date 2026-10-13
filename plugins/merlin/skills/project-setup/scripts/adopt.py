@@ -19,6 +19,8 @@ It reads the business folder, the HQ folder and the manifest from that JSON and 
           manifest's own folder: `../NAME` in an HQ manifest, `NAME` in the older flat layout.
           An empty `projects: []` becomes a list. Every other byte of the manifest stays as
           it was. Writes nothing but the manifest, through a temporary file renamed into place.
+          Refused, with nothing written, while the --where JSON reports an unfinished move of
+          Merlin's own files into the HQ folder (`unfinished_move`).
 
 Exit 0 on success, 1 on a refusal (the JSON says why), 2 on a usage error. Standard library
 only.
@@ -228,10 +230,13 @@ def skip_reason(name, path, hq, data_paths, regs):
     return None
 
 
-def list_candidates(w, layout, business, manifest, hq):
+def candidates(w, business, manifest, hq):
+    """(registered, candidates, skipped) for the business folder: the manifest's projects, every
+    folder that is not one yet with what it already holds, and every folder skipped with why.
+    Writes nothing. setup.py's report reads this too, so it names the same folders --list offers."""
     regs = registered(read_lines(manifest), manifest)
     data_paths = {real(w[k]) for k in DATA_KEYS if w.get(k)}
-    candidates, skipped = [], []
+    found, skipped = [], []
     for name in sorted(os.listdir(business)):
         path = os.path.join(business, name)
         if not os.path.isdir(path):
@@ -244,10 +249,15 @@ def list_candidates(w, layout, business, manifest, hq):
         for item in HOLDS:
             p = os.path.join(path, item.rstrip('/'))
             has[item] = os.path.isdir(p) if item.endswith('/') else os.path.isfile(p)
-        candidates.append({'name': name, 'path': path, 'has': has})
+        found.append({'name': name, 'path': path, 'has': has})
+    return regs, found, skipped
+
+
+def list_candidates(w, layout, business, manifest, hq):
+    regs, found, skipped = candidates(w, business, manifest, hq)
     return emit({'business': business, 'layout': layout, 'manifest': manifest,
                  'registered': [{'name': r['name'], 'path': r['path']} for r in regs],
-                 'candidates': candidates, 'skipped': skipped})
+                 'candidates': found, 'skipped': skipped})
 
 
 # ------------------------------------------------------------------ --register
@@ -274,7 +284,23 @@ def write_atomic(path, text):
         raise
 
 
+def move_refusal(w, business):
+    """The plain refusal while a move of Merlin's own files into the HQ folder is unfinished, or None.
+    setup.py --where reports such a move as unfinished_move (the record's path), found by the same
+    check setup's own writing steps use, so this script keeps no second copy of it."""
+    rec = w.get('unfinished_move')
+    if not rec:
+        return None
+    return Refusal('Merlin cannot add a project yet: moving Merlin\'s own files into the HQ folder of %s (the '
+                   'folder where Merlin keeps its own files) stopped before it finished. Nothing was deleted. The '
+                   'move record, %s, lists what moved. Finish the move first (say: move my Merlin files into the HQ '
+                   'folder), then add the project again. Nothing was written.' % (business, rec))
+
+
 def register(w, layout, business, manifest, hq, name):
+    blocked = move_refusal(w, business)
+    if blocked:
+        raise blocked
     if not name or name in ('.', '..') or '/' in name or os.sep in name or '\n' in name or '\r' in name:
         raise Refusal('%r is not a folder name. Give the name of one folder in the business folder.' % name)
     path = os.path.join(business, name)
@@ -292,8 +318,8 @@ def register(w, layout, business, manifest, hq, name):
         raise Refusal('%s holds Merlin\'s own files, not a project.' % name)
     i = projects_line(lines)
     if i is None:
-        raise Refusal('Merlin\'s settings file has no list of projects (projects:): %s. Run merlin:setup to '
-                      'repair it, then run this again. Nothing was written.' % manifest)
+        raise Refusal('Merlin\'s settings file (%s) has no list of projects. Run merlin:setup to repair it, '
+                      'then run this again. Nothing was written.' % manifest)
 
     nl = '\r\n' if lines[i].endswith('\r\n') else '\n'
     m = PROJECTS_RE.match(lines[i])

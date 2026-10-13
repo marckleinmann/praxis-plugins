@@ -31,7 +31,7 @@ Modes (one per run):
                           write the pointer ~/.merlin/instance.json (preview without --yes).
                           Refuses when --data (the plugin option) names a different folder, and
                           when this Mac already has a business folder (the option or the pointer
-                          names a folder whose about-me holds more than README.md) and DIR is
+                          names a folder whose about-me holds more than its starter files) and DIR is
                           another one: that is the change-folder step, --change-to.
   --change-to DIR [--yes] [--name N]
                           the change-folder step: name the current business folder, refuse DIR for
@@ -120,6 +120,10 @@ def home(*parts):
 
 
 POINTER = home('.merlin', 'instance.json')
+# The pointer as the user reads it: plain words first, the file name once in parentheses.
+POINTER_WORDS = 'this computer\'s note of your business folder (~/.merlin/instance.json)'
+# The last Merlin version the start-up hook saw on this computer, beside the pointer.
+LAST_VERSION = home('.merlin', 'last-version')
 RECORD = home('.merlin', 'setup-record.json')
 SETTINGS = home('.claude', 'settings.json')
 CODEX_DIR = home('.codex')
@@ -210,12 +214,12 @@ def pointer_check(data):
     ptr = read_pointer()
     if ptr is None:
         if os.path.exists(POINTER):
-            return 'problem', 'The pointer file ~/.merlin/instance.json exists but cannot be read. Run setup\'s folder step to record the business folder again.'
-        return 'missing', 'The pointer file ~/.merlin/instance.json does not exist yet. Run setup\'s folder step to record this business folder.'
+            return 'problem', 'This computer\'s note of your business folder (~/.merlin/instance.json) exists but cannot be read. Run setup\'s folder step to record the business folder again.'
+        return 'missing', 'This computer\'s note of your business folder (~/.merlin/instance.json) does not exist yet. Run setup\'s folder step to record this business folder.'
     named = ptr.get('data_root')
     if data and named and canon(named) == data:
-        return 'ok', 'The pointer file ~/.merlin/instance.json names this business folder.'
-    return 'mismatch', 'The pointer file ~/.merlin/instance.json names %s, not this business folder. The plugin setting wins: the start-up hook rewrites the pointer from it at the next session start.' % named
+        return 'ok', 'This computer\'s note of your business folder (~/.merlin/instance.json) names this business folder.'
+    return 'mismatch', 'This computer\'s note of your business folder (~/.merlin/instance.json) names %s, not this business folder. The plugin setting wins: Merlin rewrites that note from it at the next session start.' % named
 
 
 def settings_has(data):
@@ -810,14 +814,19 @@ def option_value(option):
     return option.strip() if option and not option.startswith('${') and option.strip() else None
 
 
+# The about-me files setup itself copies into every new folder. They are not notes about anyone.
+ABOUT_ME_STARTERS = ('README.md', 'email-template.html')
+
+
 def holds_about_me(d):
-    """True when D's about-me folder (through paths()) holds any file other than README.md."""
+    """True when D's about-me folder (through paths()) holds any file other than its starter files
+    (ABOUT_ME_STARTERS: the README and the starter email template)."""
     about = paths(d)['about_me']
     if not about or not os.path.isdir(about):
         return False
     for dirpath, dirnames, filenames in os.walk(about):
         dirnames[:] = [n for n in dirnames if not n.startswith('.')]
-        if any(f != 'README.md' and not f.startswith('.') for f in filenames):
+        if any(f not in ABOUT_ME_STARTERS and not f.startswith('.') for f in filenames):
             return True
     return False
 
@@ -825,7 +834,7 @@ def holds_about_me(d):
 def existing_business(option):
     """The business folder this Mac already uses, or None. Pointer-based only, never a disk search:
     the folder the plugin option names, else the one the pointer names, when it is there and its
-    about-me holds a file other than README.md, or when it holds two HQ folders. A folder named as an
+    about-me holds a file other than its starter files, or when it holds two HQ folders. A folder named as an
     HQ stands for its business."""
     named = []
     opt = option_value(option)
@@ -990,6 +999,13 @@ def choose(root, target, option, yes):
     if os.path.exists(want) and not os.path.isdir(want):
         say('setup: %s is a file, not a folder. Pick another place. Nothing was written.' % want)
         return 2
+    # The same places --suggest and the change-folder step refuse, by the same check: a home
+    # folder, a Desktop or a synced folder's top is never a business folder.
+    ok, words = open_folder_check(want, allow_missing=True)
+    if not ok:
+        say('setup: %s cannot be the business folder: %s. Pick another folder. '
+            'Nothing was written.' % (want, words))
+        return 2
     base = nearest_existing(want)
     if not os.path.isdir(want) and not writable_dir(base):
         say('setup: read-only. %s does not exist and %s cannot be written by this account. Nothing was written.' % (want, base))
@@ -1003,14 +1019,19 @@ def choose(root, target, option, yes):
     if not os.path.isdir(want):
         steps.append('create the folder %s' % want)
     if named == want:
-        pass
+        # Already recorded, but written by another version of Merlin: the pointer is written again so
+        # it names this version. Only the version line changes; the folder it names stays the same.
+        old, now = pointer_version(ptr), plugin_version(root) if root else 'unknown'
+        if now != 'unknown' and old != now:
+            steps.append('write %s again, so it names this version of Merlin '
+                         '(%s; it now says %s)' % (POINTER_WORDS, now, old or 'no version'))
     elif named:
-        steps.append('change the pointer file ~/.merlin/instance.json from %s to %s' % (named, want))
+        steps.append('change %s from %s to %s' % (POINTER_WORDS, named, want))
     else:
-        steps.append('write the pointer file ~/.merlin/instance.json naming %s' % want)
+        steps.append('write %s naming %s' % (POINTER_WORDS, want))
     say('Business folder: %s' % want)
     if not steps:
-        say('Already recorded: the folder exists and the pointer file names it. Nothing to do.')
+        say('Already recorded: the folder exists and this computer\'s note of your business folder names it. Nothing to do.')
         return 0
     say('Setup will:')
     for i, st in enumerate(steps, 1):
@@ -1022,8 +1043,17 @@ def choose(root, target, option, yes):
     if not os.path.isdir(want):
         os.makedirs(want)
     write_pointer(root, want)
-    say('Done. The folder exists and ~/.merlin/instance.json names it. It counts from now on, in this session too.')
+    say('Done. The folder exists and %s names it. It counts from now on, in this session too.' % POINTER_WORDS)
     return 0
+
+
+WRITTEN_BY_RE = re.compile(r'^merlin plugin (\S+?),')
+
+
+def pointer_version(ptr):
+    """The Merlin version the pointer's written_by line names, or None when it names none."""
+    m = WRITTEN_BY_RE.match(str((ptr or {}).get('written_by') or ''))
+    return m.group(1) if m else None
 
 
 def write_pointer(root, want):
@@ -1092,7 +1122,7 @@ def change_to(root, target, option, yes, biz_name=None):
             'instead, change the plugin setting. Nothing was written.' % (canon(opt), want))
         return 2
     if current and same_business(want, current) and named == want:
-        say('Already the business folder: the pointer file names it. Nothing to change. To check it, run setup again.')
+        say('Already the business folder: this computer\'s note of your business folder names it. Nothing to change. To check it, run setup again.')
         return 0
     ok, words = open_folder_check(want, allow_missing=True)
     if not ok:
@@ -1107,9 +1137,9 @@ def change_to(root, target, option, yes, biz_name=None):
     if not os.path.isdir(want):
         steps.append('create the folder %s' % want)
     if named:
-        steps.append('change the pointer file ~/.merlin/instance.json from %s to %s' % (named, want))
+        steps.append('change %s from %s to %s' % (POINTER_WORDS, named, want))
     else:
-        steps.append('write the pointer file ~/.merlin/instance.json naming %s' % want)
+        steps.append('write %s naming %s' % (POINTER_WORDS, want))
     p = paths(want) if os.path.isdir(want) else None
     if p and p['rule'] in (1, 2):
         steps.append('fill in only the starter files missing from its HQ folder (the folder where Merlin keeps '
@@ -1133,8 +1163,9 @@ def change_to(root, target, option, yes, biz_name=None):
         os.makedirs(want)
     write_pointer(root, want)
     created, kept = copy_skeleton(root, want, biz_name)
-    say('Done. ~/.merlin/instance.json names %s. Starter files: %d created, %d already there and left as they '
-        'were. It counts from now on, in this session too.' % (want, len(created), len(kept)))
+    say('Done. This computer\'s note of your business folder (~/.merlin/instance.json) names %s. Starter files: %d '
+        'created, %d already there and left as they were. It counts from now on, in this session too.'
+        % (want, len(created), len(kept)))
     if current and current != want:
         say('The old folder, %s, was not changed.' % current)
     return 0
@@ -1521,7 +1552,7 @@ def move_to_hq(root, target, data, yes):
         for fd in held:
             os.close(fd)
     if busy:
-        say('setup: the task engine is writing the task list right now. Try again in a minute. Nothing was written.')
+        say('setup: Merlin\'s task tool is writing the task list right now. Try again in a minute. Nothing was written.')
         return 2
     if not yes:
         say('Preview only. Nothing was changed. Run again with --yes after the user says yes.')
@@ -1599,6 +1630,13 @@ def resume_move(root, d, pending, yes):
     if marked and has_flat and os.path.lexists(aside):
         say(stuck % ('the old settings file is in both its old and its new place', rec_path))
         return 2
+    # A hard stop between a step and its record write leaves the record one step behind the disk.
+    # Like the renames, the settings file's two steps are read from the disk, so a record whose
+    # last write was lost still ends up saying what landed.
+    if marked:
+        rec['manifest_edited'] = True
+        if not has_flat and os.path.lexists(aside):
+            rec['manifest_moved_aside'] = True
     changes = None
     if not marked:
         try:
@@ -1621,7 +1659,7 @@ def resume_move(root, d, pending, yes):
         for fd in held:
             os.close(fd)
     if busy:
-        say('setup: the task engine is writing the task list right now. Try again in a minute. Nothing was written.')
+        say('setup: Merlin\'s task tool is writing the task list right now. Try again in a minute. Nothing was written.')
         return 2
     if not yes:
         say('Preview only. Nothing was changed. Run again with --yes after the user says yes.')
@@ -1638,6 +1676,22 @@ def resume_move(root, d, pending, yes):
     finally:
         for fd in held:
             os.close(fd)
+
+
+def _stop_reason(e):
+    """The plain reason a move step failed, for the words in brackets after the step. A disk error
+    gives its own short text. A refusal from a helper (it exits with a sentence of its own) loses
+    its "setup:" opening and its "Nothing was written.", which would be untrue part-way through a
+    move. Anything else is named as an unexpected error, never shown as a traceback."""
+    if isinstance(e, OSError):
+        return e.strerror or str(e)
+    if isinstance(e, SystemExit):
+        text = str(e.code if e.code is not None else '').strip()
+        if text.startswith('setup: '):
+            text = text[len('setup: '):]
+        text = text.replace(' Nothing was written.', '').rstrip('.').strip()
+        return text or 'a refusal with no reason given'
+    return 'an error Merlin did not expect (technical detail: %s)' % (str(e).strip() or type(e).__name__)
 
 
 def _execute_move(root, d, hq, rec, rec_path, todo, write_manifest, move_aside):
@@ -1700,14 +1754,16 @@ def _execute_move(root, d, hq, rec, rec_path, todo, write_manifest, move_aside):
             rec['manifest_moved_aside'] = True
             step = 'writing the move record'
             write_json_atomic(rec_path, rec)
-    except (OSError, ValueError) as e:
+    # Any failure, not only a disk error, stops here: the record says which step it stopped at and the
+    # user gets plain words naming the record, never a traceback with the record left "in progress".
+    except (Exception, SystemExit) as e:
         rec['status'] = 'stopped while %s' % step
         try:
             write_json_atomic(rec_path, rec)
         except OSError:
             pass
         say('setup: the move stopped part-way, while %s (%s). Nothing was deleted. The move record, %s, lists '
-            'what moved and what did not. %s' % (step, getattr(e, 'strerror', None) or e, rec_path, MOVE_HELP))
+            'what moved and what did not. %s' % (step, _stop_reason(e), rec_path, MOVE_HELP))
         return 1
 
     after = paths(d)
@@ -1719,13 +1775,18 @@ def _execute_move(root, d, hq, rec, rec_path, todo, write_manifest, move_aside):
             % ('missing ' + ', '.join(lost) if lost else 'the folder does not read as having one HQ folder', rec_path,
                MOVE_HELP))
         return 1
+    # copy_skeleton refuses by exiting with a sentence of its own (a broken plugin folder, for one).
+    # Inside the move that refusal is caught too, so the record says where it stopped and is named.
     try:
         created, kept = copy_skeleton(root, d, during_move=True)
-    except OSError as e:
+    except (Exception, SystemExit) as e:
         rec['status'] = 'stopped while filling in the starter files'
-        write_json_atomic(rec_path, rec)
+        try:
+            write_json_atomic(rec_path, rec)
+        except OSError:
+            pass
         say('setup: the move stopped part-way, while filling in the starter files (%s). Nothing was deleted. The move '
-            'record, %s, lists what moved. %s' % (e.strerror or e, rec_path, MOVE_HELP))
+            'record, %s, lists what moved. %s' % (_stop_reason(e), rec_path, MOVE_HELP))
         return 1
     missing = [after[k] for k in DATA_KEYS if not os.path.exists(after[k])]
     if missing:
@@ -1992,7 +2053,7 @@ def remove(data, yes, keys):
     rec = load_record()
     plan = []
     if os.path.exists(POINTER):
-        plan.append('delete the pointer file ~/.merlin/instance.json')
+        plan.append('delete %s' % POINTER_WORDS)
     s = rec.get('settings')
     if s:
         plan.append('take %s back out of ~/.claude/settings.json' % s['added'])
@@ -2014,6 +2075,8 @@ def remove(data, yes, keys):
         plan.append('delete this computer\'s task numbers lane file %s, which setup wrote (the lane stays listed in '
                     'your settings file, so setup\'s task numbers step gives this computer the same lane back)'
                     % tilde(lane['file']))
+    if os.path.exists(LAST_VERSION):
+        plan.append('delete the note of the last Merlin version this computer used (~/.merlin/last-version)')
     if os.path.exists(RECORD):
         plan.append('delete setup\'s own record, ~/.merlin/setup-record.json')
     say('Remove: this reverses what Merlin wrote outside your business folder.')
@@ -2089,7 +2152,9 @@ def remove(data, yes, keys):
             say('Task numbers: the lane file %s changed since setup wrote it, so it was left as it is.' % tilde(lane['file']))
     if os.path.exists(POINTER):
         os.remove(POINTER)
-        say('Pointer: ~/.merlin/instance.json deleted.')
+        say('Deleted %s.' % POINTER_WORDS)
+    if os.path.exists(LAST_VERSION):
+        os.remove(LAST_VERSION)
     if os.path.exists(RECORD):
         os.remove(RECORD)
     try:
@@ -2098,7 +2163,7 @@ def remove(data, yes, keys):
         pass
     say('Next: remove the Merlin plugin straight away. In the Claude app: the Plugins screen. In a terminal: '
         'claude plugin uninstall merlin@praxis-plugins. If the plugin setting "Your business folder" is set, '
-        'the start-up hook writes the pointer file again at the next session start while the plugin stays installed.')
+        'Merlin writes that note again at the next session start while the plugin stays installed.')
     return 0
 
 
@@ -2178,7 +2243,7 @@ def task_lane_check(st):
     if s == 'ok':
         return ('ok', 'Task numbers on this computer (per-folder task lists are on): set, lane %d' % st['lane'])
     if s == 'no-engine':
-        return ('problem', 'Task numbers on this computer: setup cannot find the task engine in the plugin folder. Reinstall the Merlin plugin.')
+        return ('problem', 'Task numbers on this computer: setup cannot find Merlin\'s task tool in the plugin folder. Reinstall the Merlin plugin.')
     if s == 'no-lanes-key':
         return ('missing', 'Task numbers on this computer: per-folder task lists are on, but the task_lists block in '
                 'Merlin\'s settings file (manifest.yaml) has no "lanes: []" line. Add that line under task_lists, then '
@@ -2196,21 +2261,21 @@ def task_lane(root, data, yes):
     st = task_lane_status(root, data)
     if st is None:
         say('Task numbers: per-folder task lists are not switched on in Merlin\'s settings file (manifest.yaml), so this '
-            'computer needs no lane. Nothing to change.')
+            'computer needs no digit of its own. Nothing to change.')
         return 0
     if st['state'] == 'ok':
-        say('Task numbers: this computer already has lane %d (%s). Nothing to change.' % (st['lane'], tilde(st['lane_file'])))
+        say('Task numbers: this computer already has its own digit, %d (%s). Nothing to change.' % (st['lane'], tilde(st['lane_file'])))
         return 0
     if st['state'] in ('no-engine', 'no-lanes-key'):
         say('%s Nothing was written.' % task_lane_check(st)[1])
         return 2
     claim = os.path.join(root, 'lib', 'engine', 'triage-tasks', 'claim_id.py')
     say('Task numbers: per-folder task lists are on, and this computer has %s.' % (
-        'no lane yet' if st['state'] == 'missing' else 'a lane file copied from another computer'))
-    say('Setup will run the task engine\'s enrolment once. It takes the lowest free lane, a digit from 0 to 9, '
-        'for this computer and writes two things:')
-    say('  1. the lane file %s, outside your business folder' % tilde(st['lane_file']))
-    say('  2. one entry in the lanes list of %s' % st['manifest'])
+        'no digit of its own yet' if st['state'] == 'missing' else 'a digit copied from another computer'))
+    say('Setup will ask Merlin\'s task tool, once, to give this computer the lowest free digit from 0 to 9. That digit '
+        'marks the tasks added on this computer (a lane; the step is called enrolment). It writes two things:')
+    say('  1. a small file outside your business folder that holds the digit, %s' % tilde(st['lane_file']))
+    say('  2. one line in Merlin\'s settings file that records the digit as taken (%s)' % st['manifest'])
     say('This computer then gives out only task numbers that end in its digit, so two computers never give out the '
         'same number. Numbers skip as a result (WS3, WS13, WS23); that is expected.')
     if not yes:
@@ -2226,7 +2291,7 @@ def task_lane(root, data, yes):
             msg = json.loads(msg).get('message', msg)
         except ValueError:
             pass
-        say('Task numbers: the task engine refused: %s' % msg)
+        say('Task numbers: Merlin\'s task tool refused: %s' % msg)
         say('Nothing was recorded by setup.')
         return 2
     say('Task numbers: %s.' % r.stdout.strip())
@@ -2248,14 +2313,54 @@ STARTER_WORDS = {'manifest': 'Merlin\'s settings file (manifest.yaml)',
                  'task_ids': 'the folder that keeps task numbers from repeating (.task-ids)',
                  'run_state': 'the folder Merlin keeps its own working notes in (state)'}
 
+ADOPT_SHOWN = 5
+
+
+def unadopted(root, p):
+    """The names of the folders in the business folder that are not Merlin projects yet, or [].
+
+    The list comes from project-setup's adopt step itself (its candidates()), so the report names
+    exactly the folders that step would offer: it skips the HQ folder, hidden folders, folders the
+    settings file already lists as projects, and Merlin's own folders in the older flat layout.
+    Read only. When the adopt script cannot be loaded, the report simply names nothing."""
+    if root is None or p['rule'] not in (1, 2, 3) or not os.path.isfile(p.get('manifest') or ''):
+        return []
+    script = os.path.join(root, 'skills', 'project-setup', 'scripts', 'adopt.py')
+    try:
+        import importlib.util
+        spec = importlib.util.spec_from_file_location('merlin_adopt', script)
+        mod = importlib.util.module_from_spec(spec)
+        keep, sys.dont_write_bytecode = sys.dont_write_bytecode, True
+        try:
+            spec.loader.exec_module(mod)
+        finally:
+            sys.dont_write_bytecode = keep
+        _regs, found, _skipped = mod.candidates(p, p['business'], p['manifest'], p['hq'])
+    except Exception:
+        return []
+    return [c['name'] for c in found]
+
+
+def adopt_words(names):
+    """One plain line naming folders that are not projects yet, the first few by name, and the step
+    that adds them."""
+    shown = ', '.join(names[:ADOPT_SHOWN])
+    more = len(names) - ADOPT_SHOWN
+    if more > 0:
+        shown += ', and %d more' % more
+    return ('Folders in your business folder that are not Merlin projects yet: %s. To add %s, run '
+            'merlin:project-setup and say: adopt my existing projects.' % (shown, 'it' if len(names) == 1 else 'them'))
+
+
 def report(root, data, source, created=None, kept=None):
     say('Merlin setup report')
     say('')
     checks = []
+    names = []
     if data is None:
         checks.append(('missing', 'Business folder: none chosen yet. Run setup\'s folder step: it asks which folder to use and records it.'))
     else:
-        where = 'plugin setting' if source == 'option' else 'pointer file'
+        where = 'plugin setting' if source == 'option' else POINTER_WORDS
         if os.path.isdir(data):
             checks.append(('ok', 'Business folder: %s (from the %s)' % (data, where)))
         else:
@@ -2263,7 +2368,8 @@ def report(root, data, source, created=None, kept=None):
                 data, where, 'run setup\'s folder step to record the new place.' if source != 'option' else 'change the plugin setting to the new place.')))
         if os.path.isdir(data):
             checks.append(('ok' if writable_dir(data) else 'problem', 'Writable by this account' if writable_dir(data) else 'Not writable by this account: Merlin stays read-only'))
-            for rec_path, _rec in unfinished_moves(data):
+            moving = unfinished_moves(data)
+            for rec_path, _rec in moving:
                 checks.append(('problem', '%s Until then Merlin stays read-only.' % move_problem(rec_path)))
             p = paths(data)
             if p['rule'] == AMBIGUOUS:
@@ -2288,6 +2394,11 @@ def report(root, data, source, created=None, kept=None):
                 lane_line = task_lane_check(task_lane_status(root, data))
                 if lane_line:
                     checks.append(lane_line)
+                # Folders the user already has that are not projects yet. Not named while a move is
+                # unfinished: a half-made HQ folder would read as one of them.
+                names = [] if moving else unadopted(root, p)
+                if names:
+                    checks.append(('optional', adopt_words(names)))
         status, msg = pointer_check(data)
         checks.append(('problem' if status == 'mismatch' else status, msg))
         checks.append(('ok' if settings_has(data) else 'optional', 'Folder access in ~/.claude/settings.json: %s' % ('granted' if settings_has(data) else 'not granted (offered on a yes)')))
@@ -2304,6 +2415,8 @@ def report(root, data, source, created=None, kept=None):
     say(MEMORY_NOTE)
     say('')
     nxt = next((m for s, m in checks if s in ('missing', 'problem')), None)
+    if not nxt and names:
+        nxt = adopt_words(names)
     say('Next action: %s' % (nxt if nxt else 'nothing is missing. Next: set up your first project, a folder inside your business folder for one job, client or area of work.'))
     return 0
 
@@ -2323,6 +2436,12 @@ def where(data, source):
     else:
         out = paths(data)
         out['source'] = source
+    # The record of a move into the HQ folder that stopped before it finished, or None. Read by the
+    # same check every writing step here uses (unfinished_moves), so a script that only reads this
+    # JSON, such as project-setup's adopt step, refuses exactly when setup does.
+    biz = (out.get('business') or data) if data else None
+    pending = unfinished_moves(biz) if biz and os.path.isdir(biz) else []
+    out['unfinished_move'] = pending[0][0] if pending else None
     print(json.dumps(out, indent=2, ensure_ascii=False))
     return 0
 

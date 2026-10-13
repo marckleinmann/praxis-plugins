@@ -1612,6 +1612,21 @@ CLAIM_FLOOR_FILE = os.path.join(
     '.task-ids', 'CLAIM-FLOOR')
 
 
+def claim_floor_path(reg):
+    """The floor `lint` reads: beside the frozen ledger, else CLAIM_FLOOR_FILE.
+
+    The frozen ledger and the floor share one folder in every layout: the data
+    root on the older flat tree, and `<HQ>/live/` once Merlin's files move into
+    an HQ folder, where a flat join on the data root misses both. A registry
+    with no frozen ledger (a copied build's, or none at all) keeps the old path.
+    `read_claim_floor()` stays registry-free on purpose, so a caller that passes
+    no path (`split.py`) can never start raising on a registry it never asked for.
+    """
+    if reg is not None and reg.frozen_ledger:
+        return os.path.join(os.path.dirname(reg.frozen_ledger), '.task-ids', 'CLAIM-FLOOR')
+    return CLAIM_FLOOR_FILE
+
+
 def read_claim_floor(path=None):
     """Lowest id the unclaimed-id check will judge. None means "do not check".
 
@@ -1717,7 +1732,16 @@ def cmd_lint(args, today):
         holders, companions = scan_all_tids(lines)
         # Unclaimed ids: filesystem check, whole file, floor-gated. See
         # read_claim_floor for why the floor exists and why it never advances.
-        floor_path = getattr(args, 'claim_floor_file', None) or CLAIM_FLOOR_FILE
+        floor_path = getattr(args, 'claim_floor_file', None)
+        if not floor_path:
+            # A registry that will not load is not lint's to refuse: main() has
+            # already let it pass, the same way, so the floor falls back to the
+            # old path, which the scope line below names.
+            try:
+                reg = get_registry(args)
+            except Exception:
+                reg = None
+            floor_path = claim_floor_path(reg)
         floor = read_claim_floor(floor_path)
         if floor is None:
             # Missing and unreadable are both UNCHECKED, but they need different

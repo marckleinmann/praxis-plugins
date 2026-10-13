@@ -45,6 +45,10 @@ python3 <engine>/triage.py add --registry <merlin-manifest> \
    `"orphan_routed": true`. Tell the user which folder it went to. `lint` will
    flag that tag as an unknown project until a row names it. `--tag General`
    is such a tag unless a row is named General.
+   When you ask, offer only the folders the rows name, plus `General`. When the
+   start-up note says "Open on: a folder outside the business folder.", that
+   open folder is not a project: never offer it, or its name, as a folder or a
+   tag.
 3. **Read the report rather than assuming.** `id` is the new id, `list` the file
    written, `folder` the folder. The first task for a folder creates its list.
 4. Leave off `--commit` for a preview. A preview reserves no id, so the id may

@@ -1,0 +1,29 @@
+<!-- Email template.
+Merlin builds every email it drafts from this file. Edit it to change how your emails look.
+
+Two spots in the file below get filled in. Keep each one exactly as written, once:
+  {{body}}       where the text of the email goes
+  {{signature}}  where your signature goes, taken from email-signature.md in this folder
+
+Write the colours and fonts on each line, the way the lines below do, because many email apps
+ignore anything else. Use tables to lay things out, for the same reason.
+This note is removed when an email is built, so nobody receives it.
+-->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Email</title>
+</head>
+<body style="margin:0;padding:0;background-color:#ffffff;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
+<tr>
+<td align="left" style="padding:0;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.5;color:#222222;">
+{{body}}
+{{signature}}
+</td>
+</tr>
+</table>
+</body>
+</html>

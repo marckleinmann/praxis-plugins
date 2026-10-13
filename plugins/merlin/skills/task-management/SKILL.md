@@ -149,6 +149,10 @@ the conflict.
 ## When the user says "add a task"
 
 1. Identify the project (ask if unclear). The tag is what groups the task.
+   When you ask, offer only the projects in the `projects:` list of
+   `<merlin-manifest>`, plus `General`. When the start-up note says "Open on:
+   a folder outside the business folder.", that open folder is not a project:
+   never offer it, or its name, as a project or a tag.
 2. Pick the section: hard deadline this week is `active` with `{P1}`, active
    work is `active`, blocked on someone is `waiting`, future is `upcoming`.
 3. Run `add`. Report the id.

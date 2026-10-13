@@ -296,6 +296,43 @@ ${OPEN_ON}" ;;
     STATUS="Status: no business folder chosen yet. This is not read-only. Before other Merlin work, tell the user once, in plain words, to run /merlin:setup: it asks which folder to use and records it after their yes. Until a folder is chosen, Merlin writes nothing except what merlin:setup writes after the user's yes. A folder merlin:setup records counts from then on, in this session too, with no new session needed. In Codex, merlin:setup records the folder the same way." ;;
 esac
 
+# The update line: the first start after Merlin's version changes on this computer asks the model to
+# say so once in its first reply, because this start-up note is never shown to the user. The last
+# version seen sits in ~/.merlin/last-version, beside the pointer. Only a recorded version that
+# differs counts. With no record yet, the version in the pointer's written_by line stands in for it
+# ("merlin plugin X, ..."; setup.py's WRITTEN_BY_RE reads the same line), because an install from
+# before the record existed has none: a pointer written by another version says it once, and a
+# first install, whose pointer this version wrote, says nothing. Either way the version is then
+# recorded. Nothing is read or written while the folder is read-only or none is chosen, an unknown
+# version never counts, and a failed write never stops the start-up.
+UPDATE_LINE=""
+LAST_VERSION="${POINTER_DIR}/last-version"
+if [ "$VERSION" != "unknown" ] && { [ "$STATE" = "ready" ] || [ "$STATE" = "notsetup" ]; }; then
+  LAST=""
+  RECORD=0
+  if [ -f "$LAST_VERSION" ]; then
+    LAST=$(head -n1 "$LAST_VERSION" 2>/dev/null | tr -cd 'A-Za-z0-9.+_-' | cut -c1-64)
+    [ "$LAST" != "$VERSION" ] && RECORD=1
+  else
+    RECORD=1
+    LAST=$(pointer_value written_by 2>/dev/null | head -n1 | sed -n 's/^merlin plugin \([^[:space:],]\{1,\}\),.*/\1/p' 2>/dev/null | tr -cd 'A-Za-z0-9.+_-' | cut -c1-64)
+    [ "$LAST" = "unknown" ] && LAST=""
+  fi
+  if [ -n "$LAST" ] && [ "$LAST" != "$VERSION" ]; then
+    UPDATE_LINE="Update: Merlin was updated to version ${VERSION} since the last session on this computer. In your first reply, tell the user once, in one plain line, that Merlin was updated to version ${VERSION}. Do not say it again in this session."
+  fi
+  if [ "$RECORD" = 1 ]; then
+    if mkdir -p "$POINTER_DIR" 2>/dev/null; then
+      VTMP="${POINTER_DIR}/.last-version.$$"
+      if ! { printf '%s\n' "$VERSION" > "$VTMP" && mv -f "$VTMP" "$LAST_VERSION"; } 2>/dev/null; then
+        rm -f "$VTMP" 2>/dev/null
+      fi
+    fi
+  fi
+fi
+[ -n "$UPDATE_LINE" ] && STATUS="${STATUS}
+${UPDATE_LINE}"
+
 DIGEST=""
 if [ -f "$ROOT/rules/digest.md" ]; then
   DIGEST=$(grep -v -F "$BUILD_MARKER" "$ROOT/rules/digest.md")

@@ -58,10 +58,11 @@ import time
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import tasklists  # noqa: E402
 
-# The defaults live in the data root. An optional roots resolver names it; with
-# no resolver in reach, or one that refuses, it is this engine's own tree three
-# levels up. Callers normally pass --file explicitly, so the default rarely
-# matters.
+# The legacy defaults live in the data root. An optional roots resolver names
+# it; with no resolver in reach, or one that refuses, it is this engine's own
+# tree three levels up. With no --file, main() takes the registry's frozen
+# ledger first and falls back to DEFAULT_TASKS_FILE only when the registry names
+# none. Callers normally pass --file explicitly, so the default rarely matters.
 _DATA_ROOT = tasklists.data_root() or os.path.join(
     os.path.dirname(os.path.abspath(__file__)), "..", "..", "..")
 DEFAULT_TASKS_FILE = os.path.join(_DATA_ROOT, "TASKS.md")
@@ -316,7 +317,7 @@ def _write_lane_file(lane, machine):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--file", default=DEFAULT_TASKS_FILE, help="path to the task list (for the starting-point hint and the prefix header)")
+    ap.add_argument("--file", default=None, help="path to the task list (for the starting-point hint and the prefix header); default: the registry's frozen ledger, else TASKS.md in the data root")
     ap.add_argument("--claims-dir", default=None, help="path to the claim-file directory (default: `.task-ids/` beside the list)")
     ap.add_argument("--prefix", default=None, help="override the prefix; normally read from the list header")
     ap.add_argument("--full-id", action="store_true", help="print AB12 rather than the bare integer 12")
@@ -332,8 +333,14 @@ def main():
                      ' (already enrolled)' if r['already_enrolled'] else ''))
             return
 
-        reg = tasklists.load_registry(args.registry,
-                                      start=os.path.dirname(os.path.abspath(args.file)))
+        # The registry comes first, because with no --file it names the list:
+        # under an HQ folder the ledger sits in `<HQ>/live/`, where a flat join
+        # on the data root misses it. A bare call seeds the walk from the
+        # current directory; in a plugin install that finds an HQ only through
+        # --registry or MERLIN_TASK_REGISTRY, which the plugin's callers pass.
+        start = os.path.dirname(os.path.abspath(args.file)) if args.file else os.getcwd()
+        reg = tasklists.load_registry(args.registry, start=start)
+        args.file = args.file or reg.frozen_ledger or DEFAULT_TASKS_FILE
         tasklists.check_writable_state(reg, 'allocation')
         prefix = resolve_prefix(args.file, args.prefix, reg)
         claims_dir = resolve_claims_dir(args.file, args.claims_dir)
