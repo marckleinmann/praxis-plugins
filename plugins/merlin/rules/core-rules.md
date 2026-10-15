@@ -77,7 +77,7 @@ When the business folder cannot be reached (missing, on a drive that is not conn
 
 ## 4. Where Merlin may write
 
-**One project per chat.** A chat writes only to the project it was opened on. The start-up status line's "Open on:" line says which project that is. Work for another project becomes a task tagged with that project (section 7), never a write into its folder. A chat opened on the business folder itself, or on Merlin's HQ folder, asks which project before writing to one. Setting up or adopting a project with `merlin:project-setup` is the exception: it writes that project's starter files from a chat open on the business folder. Reading stays free anywhere in the business folder; say which file you read.
+**One project per chat.** A chat writes only to the project it was opened on. The start-up status line's "Open on:" line says which project that is. Work for another project becomes a task tagged with that project (section 7), never a write into its folder. A chat opened on the business folder itself, or on Merlin's HQ folder, asks which project before writing to one. Setting up or adopting a project with `merlin:project-setup` is the exception: it writes that project's starter files, and a copy of a folder the user brings in, from a chat open on the business folder. Reading stays free anywhere in the business folder; say which file you read.
 
 Inside the business folder, and only there:
 
