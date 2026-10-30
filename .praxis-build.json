@@ -13,8 +13,8 @@
   ],
   "plugins": {
     "merlin": {
-      "version": "1.0.18",
-      "hash": "249151a8fbaeb4d7f3ba8bcdc637e5f5cdb5f0bf2761cba1142884908d8a41b2",
+      "version": "1.0.19",
+      "hash": "c2c2fae8c6ee71a7c5003f26278d7a1765f81b1abd0bbcbae3940503e1b8bf78",
       "skills": [
         "about-me-setup",
         "anti-slop",
@@ -28,8 +28,8 @@
         "task-management"
       ],
       "files": {
-        ".claude-plugin/plugin.json": "699a3b5e4c271938a4f2a6111f56c874fc05253f29c5306c07da965e98b668ac",
-        ".codex-plugin/plugin.json": "46d395c439894e05fd19df6793526d1eeb13839a6b5e9798335c878ce1da8c8f",
+        ".claude-plugin/plugin.json": "e44d14dcbca1d0008c413cdc36f96a91a72bc0ee5840b05b20514eb6f9e416d5",
+        ".codex-plugin/plugin.json": "71e7271a3a6edc72765239a7392f6e2e9282782f63af5acd39db8221880d8cf8",
         "LICENSE": "3a4a1539d3e265d98a43af998a13e28d4f04fcc35c283bec1e9bf7a86b266ef7",
         "NOTICE": "1863fb9732bca2fe9d55462186ab2c7f411e4bd1ec0a1bccbd783ae7657e5935",
         "hooks/hooks.json": "711f730a5f7ac15b0198f0e73e7cefac2070d48c09602b6b888a5093609b6e4a",
@@ -53,7 +53,7 @@
         "skills/about-me-setup/SKILL.md": "86f87c91796a9219ad18df751028d9654dfff804cb6cbc1d5084156588669149",
         "skills/anti-slop/SKILL.md": "4c6495b468b763c72fd0eeb146a9499830c0735bc09c89b48386c6a7aeb4a68b",
         "skills/company-info-setup/SKILL.md": "a8ae6b191f204165f8cb6fe3e0983c26b6ca229baa17afd1bcd40d228aebd0de",
-        "skills/draft-email/SKILL.md": "9a6c3de64c801f655f8c799954903ff11a45f94664f27bc018d964262571959a",
+        "skills/draft-email/SKILL.md": "3ba2d835a3d5fbc5f082534f3b49bb74e918af3b7d2ce22dfbda6f537c3564c7",
         "skills/draft-email/scripts/render_email.py": "4380636adeddc5d22f71d8a52b8e9752423e1a2d4ca5a2da13a6042e5f627eb1",
         "skills/meeting-dissect/SKILL.md": "c2052689c114955f8976803d20f2ffe69688ad864b802c2aaba9a10d2a1257e0",
         "skills/meeting-dissect/extraction-prompt.md": "6601d060a3aa5ffa35a2449c7327a3e84876f04cc5a3180c77894b41aa213995",
@@ -67,7 +67,7 @@
         "skills/project-setup/scripts/copy_in.py": "610919ebead6e1acea28f1ce7f50f42a393a428cd17cdbfa2fc8875afdd2bf6b",
         "skills/rules/SKILL.md": "492faceb0f608933e4f1586d3a75fd7726162a98efa3129eb3d6957a6b988498",
         "skills/save-and-close/SKILL.md": "9ce7f548729460b3f279404c6a2e740de349e1f0f80896f7fd12a0662e6d8a66",
-        "skills/save-and-close/continuation.md": "b17a02298be907737b6fe5a73c9e08ce4e9cc7de6de8c7658820395315525602",
+        "skills/save-and-close/continuation.md": "86982ab2af11cdfb295309d5eea7e21cad888d6b0a81b9598351d5d07ff7ebdb",
         "skills/setup/SKILL.md": "3e79b39c7b0cf990c4580e4d8b934a45c6ade5373bd74c9a9f2bb190d6798e8c",
         "skills/setup/scripts/setup.py": "e72f592b9f80dcfe6877debb65657d3da18c6f61fd2f76c8298a9b7431bd29b3",
         "skills/setup/scripts/setup.sh": "82e8593675ff7d435df528a9e14986fc8daa0479324cf1cd0f001bf89e5de340",

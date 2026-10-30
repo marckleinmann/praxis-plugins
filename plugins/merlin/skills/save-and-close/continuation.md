@@ -61,7 +61,11 @@ Continuing elsewhere keeps work open; it does not say the work is finished.
    context: what is being decided in plain words, why now, the facts with
    full file paths, each option and its cost, and a recommendation. The next
    session cannot rebuild a decision from a label or a task id.
-4. Give the user the block below once, to paste into the new session.
+4. Hand the work over with the app's own hand-off tool
+   (`hand_off_to_session`, in the Claude desktop app's Code tab), passing the
+   block below, filled in, as its remaining plan. The new session opens with
+   it, so the user pastes nothing. Only where that tool is not available,
+   give the user the block once to paste into a new session.
 5. Then stop working on that scope, so two sessions never edit the same files.
    End with "Checkpoint saved; work remains open." Never use the
    save-and-close success line for a checkpoint or a handover.
