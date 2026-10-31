@@ -13,8 +13,8 @@
   ],
   "plugins": {
     "merlin": {
-      "version": "1.0.19",
-      "hash": "c2c2fae8c6ee71a7c5003f26278d7a1765f81b1abd0bbcbae3940503e1b8bf78",
+      "version": "1.0.21",
+      "hash": "4b9f6a506009c37ff41129ae226c826543fd2e576d1c8c037a373feb7f5b3dc6",
       "skills": [
         "about-me-setup",
         "anti-slop",
@@ -28,8 +28,8 @@
         "task-management"
       ],
       "files": {
-        ".claude-plugin/plugin.json": "e44d14dcbca1d0008c413cdc36f96a91a72bc0ee5840b05b20514eb6f9e416d5",
-        ".codex-plugin/plugin.json": "71e7271a3a6edc72765239a7392f6e2e9282782f63af5acd39db8221880d8cf8",
+        ".claude-plugin/plugin.json": "a2405597701640b1aae8a6433ac01141de5c3c2c306bcbb960c5d7d35212de67",
+        ".codex-plugin/plugin.json": "7cf757723a0c104fa4e04c87dd3d0400306e74ffa62b890a6f3d23a7384f2c66",
         "LICENSE": "3a4a1539d3e265d98a43af998a13e28d4f04fcc35c283bec1e9bf7a86b266ef7",
         "NOTICE": "1863fb9732bca2fe9d55462186ab2c7f411e4bd1ec0a1bccbd783ae7657e5935",
         "hooks/hooks.json": "711f730a5f7ac15b0198f0e73e7cefac2070d48c09602b6b888a5093609b6e4a",
@@ -53,8 +53,9 @@
         "skills/about-me-setup/SKILL.md": "86f87c91796a9219ad18df751028d9654dfff804cb6cbc1d5084156588669149",
         "skills/anti-slop/SKILL.md": "4c6495b468b763c72fd0eeb146a9499830c0735bc09c89b48386c6a7aeb4a68b",
         "skills/company-info-setup/SKILL.md": "a8ae6b191f204165f8cb6fe3e0983c26b6ca229baa17afd1bcd40d228aebd0de",
-        "skills/draft-email/SKILL.md": "3ba2d835a3d5fbc5f082534f3b49bb74e918af3b7d2ce22dfbda6f537c3564c7",
-        "skills/draft-email/scripts/render_email.py": "4380636adeddc5d22f71d8a52b8e9752423e1a2d4ca5a2da13a6042e5f627eb1",
+        "skills/draft-email/SKILL.md": "d2919ccb5d0c4d94e5ede7d2ce8a54910f913b4bf70964c656de60df2f038676",
+        "skills/draft-email/scripts/build_review.py": "7645abe2994793d4fadc8fd68058cd5edf2e368a1e2dffdf3110298be8fa8391",
+        "skills/draft-email/scripts/render_email.py": "58361740304f676f2e1974249948f0c8fe72f0b7dc52e7e896b22bbc0c040bd9",
         "skills/meeting-dissect/SKILL.md": "c2052689c114955f8976803d20f2ffe69688ad864b802c2aaba9a10d2a1257e0",
         "skills/meeting-dissect/extraction-prompt.md": "6601d060a3aa5ffa35a2449c7327a3e84876f04cc5a3180c77894b41aa213995",
         "skills/meeting-dissect/scripts/carry_forward.py": "c70519625860055b2522efa1806ff05e990c251814d368e51ada48a57c035372",
