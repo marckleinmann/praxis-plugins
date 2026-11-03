@@ -29,6 +29,10 @@ file, the Keychain) runs only after the user says yes to that step.
    `git`, `python3` and `node` and installs nothing. For each one marked missing,
    tell the user the install route the script printed. Without `python3`, stop here:
    the task list and the rest of setup need it.
+   - **Windows, marked `[fix]`.** Python is installed as `python` only. Run
+     `bash <setup> --python3-copy`, show the user the two paths it prints, and ask
+     whether to copy `python.exe` to `python3.exe` beside it. On their yes, run
+     `bash <setup> --python3-copy --yes`, then `--prereqs` again.
 2. **Choose the business folder.** Run `bash <setup> --check --data "${user_config.data_dir}"`
    and read the report. It writes nothing.
    - If it names a business folder that is there and writable, say which folder and go on.

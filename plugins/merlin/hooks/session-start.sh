@@ -63,6 +63,36 @@ expand_home() {
   esac
 }
 
+trim() { # strips leading and trailing whitespace
+  local s=$1
+  s=${s#"${s%%[![:space:]]*}"}
+  s=${s%"${s##*[![:space:]]}"}
+  printf '%s' "$s"
+}
+
+# A Windows path (G:\My Drive\Acme or G:/My Drive/Acme) becomes the form bash on Windows
+# reads (/g/My Drive/Acme): through cygpath when Git Bash has it, by hand otherwise. Any other
+# value comes back as it was.
+to_posix() {
+  local p=$1 d rest
+  case "$p" in
+    [A-Za-z]:[\\/]*|[A-Za-z]:)
+      if command -v cygpath >/dev/null 2>&1 && cygpath -u "$p" 2>/dev/null; then return 0; fi
+      d=$(printf '%s' "${p%%:*}" | tr 'A-Z' 'a-z')
+      rest=${p#?:}
+      rest=${rest//\\//}
+      printf '/%s%s' "$d" "$rest" ;;
+    *) printf '%s' "$p" ;;
+  esac
+}
+
+# The pointer is read by Python too, which on Windows needs G:/My Drive, not /g/My Drive. With no
+# cygpath (Mac, Linux) the path is written as it is.
+to_native() {
+  if command -v cygpath >/dev/null 2>&1 && cygpath -m "$1" 2>/dev/null; then return 0; fi
+  printf '%s' "$1"
+}
+
 json_field() { # $1 JSON text, $2 key: prints that key's string value, or nothing
   # Reads pretty-printed and one-line JSON alike: a hand-written or compact pointer
   # must never read as "no folder".
@@ -166,13 +196,23 @@ find_move() { # $1 canonical folder: sets MOVE_REC to the first unfinished recor
 VERSION=$(sed -n 's/^[[:space:]]*"version":[[:space:]]*"\([^"]*\)".*/\1/p' "$ROOT/.claude-plugin/plugin.json" 2>/dev/null | head -n1)
 [ -n "$VERSION" ] || VERSION="unknown"
 
+# The option counts only when it is a full path. The Windows app shows it as a plain text box, so
+# a bare name ("Acme") is a common entry: it is ignored with a notice and the pointer is used,
+# never read-only, because a wrong entry in that box would otherwise win over the folder setup
+# recorded.
 DATA=""
 SOURCE=""
+OPTION_NOTE=""
+OPTION=$(trim "$OPTION")
 if [ -n "$OPTION" ]; then
-  DATA=$(expand_home "$OPTION")
-  SOURCE="option"
-else
-  DATA=$(pointer_value data_root)
+  OPT=$(to_posix "$(expand_home "$OPTION")")
+  case "$OPT" in
+    /*) DATA=$OPT; SOURCE="option" ;;
+    *) OPTION_NOTE="The plugin setting \"Your business folder\" holds \"${OPTION}\", which is not a full path, so Merlin ignored it. Tell the user once to clear that box in the plugin's settings and leave it blank: Merlin uses the folder merlin:setup records." ;;
+  esac
+fi
+if [ -z "$SOURCE" ]; then
+  DATA=$(to_posix "$(pointer_value data_root)")
   [ -n "$DATA" ] && SOURCE="pointer"
 fi
 
@@ -182,7 +222,7 @@ POINTER_NOTE=""
 if [ -z "$DATA" ]; then
   STATE="unset"
 elif [ "${DATA#/}" = "$DATA" ]; then
-  STATE="readonly"; REASON="the folder setting is not a full path (it should start with /)"
+  STATE="readonly"; REASON="the folder setting is not a full path (it should start with / on a Mac, or a drive letter such as C:\\ on Windows)"
 elif [ ! -e "$DATA" ]; then
   STATE="readonly"; REASON="the folder does not exist (moved, renamed, or a drive that is not connected)"
 elif [ ! -d "$DATA" ]; then
@@ -209,13 +249,13 @@ fi
 
 # Pointer: written only from the plugin option, only for a reachable folder.
 if [ "$SOURCE" = "option" ] && { [ "$STATE" = "ready" ] || [ "$STATE" = "notsetup" ]; }; then
-  CURRENT=$(pointer_value data_root)
+  CURRENT=$(to_posix "$(pointer_value data_root)")
   if [ -f "$POINTER" ] && [ "$CURRENT" = "$DATA" ]; then
     POINTER_NOTE="The pointer file ~/.merlin/instance.json already names this folder."
   else
     if mkdir -p "$POINTER_DIR" 2>/dev/null; then
       TMP="${POINTER_DIR}/.instance.json.$$"
-      D=$(json_escape "$DATA")
+      D=$(json_escape "$(to_native "$DATA")")
       NOW=$(date -u +%Y-%m-%dT%H:%M:%SZ)
       if printf '{\n  "data_root": "%s",\n  "praxis_root": "%s",\n  "written_by": "merlin plugin %s, session-start hook",\n  "written_at": "%s",\n  "data_access": "local"\n}\n' \
           "$D" "$D" "$VERSION" "$NOW" > "$TMP" 2>/dev/null && mv -f "$TMP" "$POINTER" 2>/dev/null; then
@@ -332,6 +372,8 @@ if [ "$VERSION" != "unknown" ] && { [ "$STATE" = "ready" ] || [ "$STATE" = "nots
 fi
 [ -n "$UPDATE_LINE" ] && STATUS="${STATUS}
 ${UPDATE_LINE}"
+[ -n "$OPTION_NOTE" ] && STATUS="${STATUS}
+${OPTION_NOTE}"
 
 DIGEST=""
 if [ -f "$ROOT/rules/digest.md" ]; then

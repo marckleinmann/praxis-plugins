@@ -35,6 +35,7 @@ Before asking, show exactly what will happen: the recipient and the text, the pa
 Inside the business folder only:
 
 - the open project's `outputs/` for finished work, `updates/` for dated session logs, and `knowledge/meetings/` for meeting transcripts and their notes;
+- a new folder the user names inside the open project, such as `invoices/`, and the files they ask to put in it. Show its full path first and create it on their yes;
 - the open project's `CONTINUITY.md`, which records current state, recent decisions, open loops and the next move, updated at the end of a session that changed something;
 - from any chat, Merlin's own files at the paths the status line names: the about-me and memory folders when the user asks or through the setup interview, the task list only through the task engine (below), and the run-state folder for a script's or plugin's own run state.
 

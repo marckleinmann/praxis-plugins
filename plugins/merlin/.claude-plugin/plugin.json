@@ -1,6 +1,6 @@
 {
   "name": "merlin",
-  "version": "1.0.21",
+  "version": "1.0.23",
   "description": "Merlin, by Praxis. The core: your business folder, the always-on rules, setup, tasks, sessions, meetings, email drafts and writing in your own voice.",
   "author": {
     "name": "Praxis"
@@ -9,8 +9,8 @@
     "data_dir": {
       "type": "directory",
       "title": "Your business folder",
-      "description": "Where Merlin keeps your about-me, tasks, projects and outputs. Pick a folder you back up.",
-      "required": true
+      "description": "Leave this blank. Merlin uses the business folder you choose when you run /merlin:setup. Fill it only with a full path, such as ~/Dropbox/Acme or G:\\My Drive\\Acme.",
+      "required": false
     }
   }
 }

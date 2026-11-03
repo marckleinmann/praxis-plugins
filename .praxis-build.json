@@ -13,8 +13,8 @@
   ],
   "plugins": {
     "merlin": {
-      "version": "1.0.21",
-      "hash": "4b9f6a506009c37ff41129ae226c826543fd2e576d1c8c037a373feb7f5b3dc6",
+      "version": "1.0.23",
+      "hash": "bc47b7872b61f47fdb04593388e27b3e6e81d60eb70e9fab6f3172f1c6b21515",
       "skills": [
         "about-me-setup",
         "anti-slop",
@@ -28,18 +28,18 @@
         "task-management"
       ],
       "files": {
-        ".claude-plugin/plugin.json": "a2405597701640b1aae8a6433ac01141de5c3c2c306bcbb960c5d7d35212de67",
-        ".codex-plugin/plugin.json": "7cf757723a0c104fa4e04c87dd3d0400306e74ffa62b890a6f3d23a7384f2c66",
+        ".claude-plugin/plugin.json": "e0fb8a2794cc4bb3d36456ff4fef7c55f8d9be2cba998604ec2fe89a699784d5",
+        ".codex-plugin/plugin.json": "233c697c34e7ca8e8768f1d097ec21d11a04dca3c82f07fb25e6137e278031c3",
         "LICENSE": "3a4a1539d3e265d98a43af998a13e28d4f04fcc35c283bec1e9bf7a86b266ef7",
         "NOTICE": "1863fb9732bca2fe9d55462186ab2c7f411e4bd1ec0a1bccbd783ae7657e5935",
         "hooks/hooks.json": "711f730a5f7ac15b0198f0e73e7cefac2070d48c09602b6b888a5093609b6e4a",
-        "hooks/session-start.sh": "e0d47a349358de582ae9c4cc9d559d04a04cb61342ef849c8dc46b0478f2bfbb",
+        "hooks/session-start.sh": "c14ae0151faff86a4541cf7a00c1fb537e8156e264114467e019689706c714db",
         "lib/engine/triage-tasks/claim_id.py": "d73daac9ea11694b21b332de93e23636984896cae3c4c19900367e6c9d59c7be",
         "lib/engine/triage-tasks/tasklists.py": "3e48d42fc9647feabafd1b31a11a167826bc7edab7c2f66556667f098b29858e",
         "lib/engine/triage-tasks/triage.py": "493b38ba4650ba190e7597c442d2ad3543b305de92e14112502a985b2dd53b53",
         "output-styles/merlin.md": "7d213ae0965bafafa5e5ab014a68de490383c6a71db3f106f852ffcadbe0e7d2",
-        "rules/core-rules.md": "dd454cd7505ee392dc83e450cc6483747824ecfb7d6bf8940c9b3bde7dd93270",
-        "rules/digest.md": "046a8eb990068000f1d28644dc5d7733c5368fcc47640180d311bf38dc723bc2",
+        "rules/core-rules.md": "1a1a64f2d8a5b0336b361eef1c72ab925582c774bc90d4c55c5559709b56a4db",
+        "rules/digest.md": "c98d5b12e49ee5c5436dacbb50b1c775107a453bea4c4e786447d524395a2012",
         "skeleton/HQ/context/ABOUT-ME/README.md": "335b24af3698375bb24d53679da7e4e471f3041a6caac3b31c1e6f900fd47d74",
         "skeleton/HQ/context/ABOUT-ME/email-template.html": "0a9e57496c9a88fa2166904cfa70b9384a639e3c1c57d0529176159a1d47ad8a",
         "skeleton/HQ/context/memory/businesses/README.md": "c2cda9f6034d07ff479d8902e28d4f91331861614709f12260340fbf0aab4109",
@@ -69,9 +69,9 @@
         "skills/rules/SKILL.md": "492faceb0f608933e4f1586d3a75fd7726162a98efa3129eb3d6957a6b988498",
         "skills/save-and-close/SKILL.md": "9ce7f548729460b3f279404c6a2e740de349e1f0f80896f7fd12a0662e6d8a66",
         "skills/save-and-close/continuation.md": "86982ab2af11cdfb295309d5eea7e21cad888d6b0a81b9598351d5d07ff7ebdb",
-        "skills/setup/SKILL.md": "3e79b39c7b0cf990c4580e4d8b934a45c6ade5373bd74c9a9f2bb190d6798e8c",
-        "skills/setup/scripts/setup.py": "e72f592b9f80dcfe6877debb65657d3da18c6f61fd2f76c8298a9b7431bd29b3",
-        "skills/setup/scripts/setup.sh": "82e8593675ff7d435df528a9e14986fc8daa0479324cf1cd0f001bf89e5de340",
+        "skills/setup/SKILL.md": "8d289657e4f320d94754361e43956dab101931b03b9e056e7adbec2ef26f7d82",
+        "skills/setup/scripts/setup.py": "c4b519cec4c8254959e1a3063cf8f39e945cb0f3721e44da16b682be19b48a0c",
+        "skills/setup/scripts/setup.sh": "2ca5d26131ac57ccd573663eec2dc650717aa7f5570ca206ae42114f39b4e138",
         "skills/task-management/SKILL.md": "34732dc0bef952b5d35fc486048b371d013439622c8f60605d6a67dce5f0396b",
         "skills/task-management/per-folder.md": "6e02acbe1eba03cdbdbee0667726191934cc64059c058472dc4e5db40eb8db4f",
         "skills/task-management/stale-triage.md": "739576ceef3799ba37368c6dabedcf0fea879e7ce4d20117d30012e66219fd03"

@@ -143,8 +143,14 @@ def plugin_root(explicit=None):
         d = nxt
 
 
+GITBASH_DRIVE_RE = re.compile(r'^/([A-Za-z])(/|$)')
+
+
 def canon(p):
     """Absolute, with ~ expanded, symlinks resolved through the deepest existing folder."""
+    if os.name == 'nt':
+        # Git Bash writes G:\\My Drive as /g/My Drive; Windows Python reads that as C:\\g\\My Drive.
+        p = GITBASH_DRIVE_RE.sub(lambda m: m.group(1).upper() + ':/', p)
     p = os.path.abspath(os.path.expanduser(p))
     head, tail = p, []
     while not os.path.exists(head):
@@ -163,9 +169,27 @@ def read_pointer():
         return None
 
 
+def option_value(arg):
+    """The plugin option when it names a full path, else None.
+
+    The Windows app shows the option as a plain text box, so a bare folder name is a common
+    entry. A name like that is ignored, never resolved against the current folder: a wrong
+    entry would otherwise win over the folder setup recorded.
+    """
+    if not arg or arg.startswith('${'):
+        return None
+    v = os.path.expanduser(arg.strip())
+    if not v:
+        return None
+    if os.path.isabs(v) or re.match(r'^[A-Za-z]:[\\/]', v) or (os.name == 'nt' and GITBASH_DRIVE_RE.match(v)):
+        return v
+    return None
+
+
 def data_folder(arg):
-    if arg and not arg.startswith('${') and arg.strip():
-        return canon(arg.strip()), 'option'
+    opt = option_value(arg)
+    if opt:
+        return canon(opt), 'option'
     ptr = read_pointer()
     if ptr and ptr.get('data_root'):
         return canon(ptr['data_root']), 'pointer'
@@ -807,11 +831,6 @@ def folder_status(path):
 ONE_MAC = ('Use the business folder from one Mac at a time: two Macs writing to it at once can leave '
            '"conflicted copy" files.')
 CHANGE_STEP = 'say: change my business folder'
-
-
-def option_value(option):
-    """The plugin option as a folder, or None when it is unset or still an unfilled ${...}."""
-    return option.strip() if option and not option.startswith('${') and option.strip() else None
 
 
 # The about-me files setup itself copies into every new folder. They are not notes about anyone.

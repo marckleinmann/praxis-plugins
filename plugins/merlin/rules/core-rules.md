@@ -65,7 +65,7 @@ Each project folder holds:
 - `CONTINUITY.md`: current state, recent decisions, open loops, risks and the best next move.
 - `outputs/`: finished work. The "done" pile.
 - `updates/`: dated session logs and progress notes.
-- `knowledge/`: reference material the user reads. Read-only inputs, except `knowledge/meetings/` (section 6).
+- `knowledge/`: reference material the user reads. Read-only inputs, except `knowledge/meetings/` (section 6) and a folder the user names there (section 4).
 
 `merlin:project-setup` creates these. A project may add a `setup/` folder later for anything designed here but meant to be installed somewhere else; each file there starts with a status line: DRAFT, READY-TO-DEPLOY or DEPLOYED with a date.
 
@@ -83,8 +83,9 @@ Inside the business folder, and only there:
 
 1. The open project's `outputs/`, `updates/` and `setup/`.
 2. The open project's `knowledge/meetings/`, under the meeting rules in section 6.
-3. The open project's `CONTINUITY.md`, at the end of any session that changed the project's state.
-4. Merlin's own files, from any chat, at the paths the start-up status line names:
+3. A new folder the user names inside the open project, such as `invoices/`, and the files the user asks to put in it. The user owns the project, so this is normal work, not an exception to ask about twice: show the full path, create it on their yes, and write there only what they ask for.
+4. The open project's `CONTINUITY.md`, at the end of any session that changed the project's state.
+5. Merlin's own files, from any chat, at the paths the start-up status line names:
    - the about-me and memory folders, when the user asks or through the setup interview;
    - the task list, only through the task engine (section 7);
    - the `task_lists:` block of the settings file, only to switch on per-folder task lists or add a folder's row, after the user sees the edit and says yes;
