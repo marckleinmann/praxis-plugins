@@ -13,8 +13,8 @@
   ],
   "plugins": {
     "merlin": {
-      "version": "1.0.23",
-      "hash": "bc47b7872b61f47fdb04593388e27b3e6e81d60eb70e9fab6f3172f1c6b21515",
+      "version": "1.0.24",
+      "hash": "9118da6d34e528be458cfce1f79c2da5d48874bc4f1becf03b851865b65571d1",
       "skills": [
         "about-me-setup",
         "anti-slop",
@@ -28,8 +28,8 @@
         "task-management"
       ],
       "files": {
-        ".claude-plugin/plugin.json": "e0fb8a2794cc4bb3d36456ff4fef7c55f8d9be2cba998604ec2fe89a699784d5",
-        ".codex-plugin/plugin.json": "233c697c34e7ca8e8768f1d097ec21d11a04dca3c82f07fb25e6137e278031c3",
+        ".claude-plugin/plugin.json": "9221ef2c90284f4ad689655707fd8f7f6621e818f302ac4c3b83f56f23e828ca",
+        ".codex-plugin/plugin.json": "87ab3bac5dc9c67b4d1164895062b7c91086d281642b54bf065b450145e50524",
         "LICENSE": "3a4a1539d3e265d98a43af998a13e28d4f04fcc35c283bec1e9bf7a86b266ef7",
         "NOTICE": "1863fb9732bca2fe9d55462186ab2c7f411e4bd1ec0a1bccbd783ae7657e5935",
         "hooks/hooks.json": "711f730a5f7ac15b0198f0e73e7cefac2070d48c09602b6b888a5093609b6e4a",
@@ -54,7 +54,7 @@
         "skills/anti-slop/SKILL.md": "4c6495b468b763c72fd0eeb146a9499830c0735bc09c89b48386c6a7aeb4a68b",
         "skills/company-info-setup/SKILL.md": "a8ae6b191f204165f8cb6fe3e0983c26b6ca229baa17afd1bcd40d228aebd0de",
         "skills/draft-email/SKILL.md": "d2919ccb5d0c4d94e5ede7d2ce8a54910f913b4bf70964c656de60df2f038676",
-        "skills/draft-email/scripts/build_review.py": "7645abe2994793d4fadc8fd68058cd5edf2e368a1e2dffdf3110298be8fa8391",
+        "skills/draft-email/scripts/build_review.py": "2794d116ce15c0f4227758c9e319b208b9dcc4e0e34f1fddd4cedfedbec81ec4",
         "skills/draft-email/scripts/render_email.py": "58361740304f676f2e1974249948f0c8fe72f0b7dc52e7e896b22bbc0c040bd9",
         "skills/meeting-dissect/SKILL.md": "c2052689c114955f8976803d20f2ffe69688ad864b802c2aaba9a10d2a1257e0",
         "skills/meeting-dissect/extraction-prompt.md": "6601d060a3aa5ffa35a2449c7327a3e84876f04cc5a3180c77894b41aa213995",
@@ -75,6 +75,19 @@
         "skills/task-management/SKILL.md": "34732dc0bef952b5d35fc486048b371d013439622c8f60605d6a67dce5f0396b",
         "skills/task-management/per-folder.md": "6e02acbe1eba03cdbdbee0667726191934cc64059c058472dc4e5db40eb8db4f",
         "skills/task-management/stale-triage.md": "739576ceef3799ba37368c6dabedcf0fea879e7ce4d20117d30012e66219fd03"
+      }
+    },
+    "praxis-connect": {
+      "version": "1.0.1",
+      "hash": "41a6d59bcb3406a153650a5c5a80110eb86cefb8c001da5ca088d0ab36bc4ee6",
+      "skills": [
+        "connect"
+      ],
+      "files": {
+        ".claude-plugin/plugin.json": "e21496decbed52c4e793f1f1a0247748547b78e1448c661449f1e7ef0ac3714d",
+        ".codex-plugin/plugin.json": "b73117c212185d282ef1bcac865207f8c02d512848cdb2e5583b9d9d1b6bdc86",
+        "scripts/praxis-connect.mjs": "853acb85af36c99fdc4d9d46eda0e6e4af78a67b85ffa17047860eb16b024aad",
+        "skills/connect/SKILL.md": "c61fb9231c5f34bcf3751f08a1c4d0ed623a3544320550247193ccee526261fb"
       }
     }
   }

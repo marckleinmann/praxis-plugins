@@ -12,7 +12,13 @@
       "name": "merlin",
       "source": "./plugins/merlin",
       "description": "Merlin, by Praxis: the core plugin.",
-      "version": "1.0.23"
+      "version": "1.0.24"
+    },
+    {
+      "name": "praxis-connect",
+      "source": "./plugins/praxis-connect",
+      "description": "Praxis connect: link this computer to your Praxis account.",
+      "version": "1.0.1"
     }
   ]
 }

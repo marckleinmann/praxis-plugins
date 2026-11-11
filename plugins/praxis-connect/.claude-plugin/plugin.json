@@ -1,0 +1,8 @@
+{
+  "name": "praxis-connect",
+  "version": "1.0.1",
+  "description": "Praxis connect, by Praxis. Connects this computer to your Praxis account, so the paid Merlin for Construction plugins can install and run. Holds no paid content. Keeps this computer's key in your home folder, readable only by you, and changes your Claude Code settings only after you say yes.",
+  "author": {
+    "name": "Praxis"
+  }
+}

@@ -11,11 +11,13 @@ page is written to EMAIL_review.html beside it.
 DRAFT.md is a draft that render_email.py (or the praxis send-email renderer) has already built:
 DRAFT.html must sit beside it. The page shows To, Cc, From, Subject and the rendered body exactly
 as it goes out, with copy buttons, and is written to DRAFT_review.html beside the draft. Nothing
-else is written.
+else is written. Files listed under attachments: (paths relative to the draft's own folder, as the
+send-email renderer reads them) show in an Attached row, each a link that opens the file in a new
+tab with its size; a file that is not there shows as missing.
 
 The page comes from --template, else ABOUT_ME_FOLDER/../templates/email-paste-artifact.html (the
 Praxis install), else a plain page built in. Prints one JSON object: review, template, to,
-subject. A refusal prints a plain reason on standard error, writes nothing and exits 2.
+subject, attachments. A refusal prints a plain reason on standard error, writes nothing and exits 2.
 Standard library only.
 """
 
@@ -25,6 +27,7 @@ import json
 import os
 import re
 import sys
+from urllib.parse import quote
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from render_email import Refusal, addresses, parse_draft, unquote  # noqa: E402
@@ -61,6 +64,11 @@ body{margin:0;background:#f4f4f2;color:#222;font-family:system-ui,-apple-system,
 """
 
 
+SUBJECT_ROW = re.compile(r'<div class="mrow">[^\n]*?\[SUBJECT\][^\n]*?</div>')
+LINK_STYLE = 'color:var(--orange-d,#1a5fb4);text-decoration:underline'
+MISSING_STYLE = 'color:var(--mute,#777)'
+
+
 def esc(s):
     return html.escape(s, quote=True)
 
@@ -75,6 +83,44 @@ def display_name(named):
     if m and m.group(1).strip():
         return m.group(1).strip()
     return named.split('@')[0]
+
+
+def file_size(n):
+    if n < 1024:
+        return '%d bytes' % n
+    if n < 1024 * 1024:
+        return '%.1f KB' % (n / 1024)
+    return '%.1f MB' % (n / (1024 * 1024))
+
+
+def attachment_items(fm, draft_dir, page_dir):
+    """One entry per attachments: line item. Paths are relative to the draft's own folder, the same
+    rule as the send-email renderer. A file that is not there is reported, never a crash."""
+    out = []
+    for item in (x.strip() for x in fm.get('attachments', '').split(',')):
+        item = unquote(item)
+        if not item:
+            continue
+        path = os.path.normpath(os.path.join(draft_dir, os.path.expanduser(item)))
+        found = os.path.isfile(path)
+        href = os.path.relpath(path, page_dir).replace(os.sep, '/')
+        out.append({'name': os.path.basename(path), 'path': path, 'href': quote(href, safe='/'),
+                    'size': os.path.getsize(path) if found else None})
+    return out
+
+
+def attachments_row(items):
+    """An Attached row for the To/Subject panel: each file opens in a new tab (a PDF shows inline)."""
+    lines = []
+    for a in items:
+        if a['size'] is None:
+            lines.append('<div>%s <span style="%s">&middot; missing</span></div>' % (esc(a['name']), MISSING_STYLE))
+        else:
+            lines.append('<div><a href="%s" target="_blank" rel="noopener" style="%s">%s</a> '
+                         '<span style="%s">&middot; %s</span></div>'
+                         % (esc(a['href']), LINK_STYLE, esc(a['name']), MISSING_STYLE, file_size(a['size'])))
+    return ('<div class="mrow attachments"><span class="mlab">Attached</span><span class="mval">%s</span></div>'
+            % ''.join(lines))
 
 
 def build(draft, about_me, template=None, note=None, direct=None):
@@ -93,6 +139,7 @@ def build(draft, about_me, template=None, note=None, direct=None):
                           'review page. Nothing was written.' % rendered_path)
         fm, _ = parse_draft(draft)
         out = draft[:-3] + '_review.html'
+    attachments = attachment_items(fm, os.path.dirname(draft), os.path.dirname(out)) if not direct else []
     to, to_named = addresses(fm, 'to', True)
     cc, cc_named = addresses(fm, 'cc', False)
     subject = unquote(fm.get('subject', ''))
@@ -111,6 +158,12 @@ def build(draft, about_me, template=None, note=None, direct=None):
     else:
         page = PLAIN_PAGE
     page = STEPS.sub(lambda m: OUR_STEPS, page, count=1)
+    if attachments:
+        row = attachments_row(attachments)
+        page, n = SUBJECT_ROW.subn(lambda m: m.group(0) + '\n    ' + row, page, count=1)
+        if not n:
+            # A template with no Subject row: the attachments go right above the email body.
+            page = page.replace('<div id="emailBody">', '<div class="meta">%s</div>\n<div id="emailBody">' % row, 1)
     with open(rendered_path, encoding='utf-8') as f:
         email_body = body_of(f.read())
     summary = [note or 'not yet sent']
@@ -129,7 +182,7 @@ def build(draft, about_me, template=None, note=None, direct=None):
     }
     # One pass, so text inside the email body is never scanned for a token.
     page = TOKEN.sub(lambda m: fill[m.group(1)], page)
-    return out, page, template, to, subject
+    return out, page, template, to, subject, attachments
 
 
 def main(argv=None):
@@ -154,7 +207,7 @@ def main(argv=None):
     about_me = os.path.abspath(os.path.expanduser(a.about_me)) if a.about_me else None
     template = os.path.abspath(os.path.expanduser(a.template)) if a.template else None
     try:
-        out, page, used, to, subject = build(draft, about_me, template, a.note, direct)
+        out, page, used, to, subject, attachments = build(draft, about_me, template, a.note, direct)
     except Refusal as err:
         sys.stderr.write('draft-email: %s\n' % err)
         return 2
@@ -164,7 +217,9 @@ def main(argv=None):
         return 2
     with open(out, 'w', encoding='utf-8', newline='\n') as f:
         f.write(page)
-    sys.stdout.write(json.dumps({'review': out, 'template': used, 'to': to, 'subject': subject},
+    sys.stdout.write(json.dumps({'review': out, 'template': used, 'to': to, 'subject': subject,
+                                 'attachments': [{'name': a['name'], 'path': a['path'], 'href': a['href'],
+                                                  'missing': a['size'] is None} for a in attachments]},
                                 ensure_ascii=False) + '\n')
     return 0
 
