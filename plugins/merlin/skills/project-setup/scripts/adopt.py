@@ -3,6 +3,7 @@
 
     python3 adopt.py --where-json JSON_OR_PATH --list
     python3 adopt.py --where-json JSON_OR_PATH --register NAME
+    python3 adopt.py --where-json JSON_OR_PATH --unregister NAME
 
 --where-json takes the output of `setup.sh --where`: the JSON text itself, a file holding
 it, or `-` to read it from standard input. This script holds no folder resolver of its own.
@@ -26,6 +27,12 @@ It reads the business folder, the HQ folder and the manifest from that JSON and 
           it was. Writes nothing but the manifest, through a temporary file renamed into place.
           Refused, with nothing written, while the --where JSON reports an unfinished move of
           Merlin's own files into the HQ folder (`unfinished_move`).
+--unregister NAME
+          removes the project named NAME from the manifest's `projects:` list: its `- name:`
+          line and the lines that belong to that entry. Used when a flat `<Client>-<Job>` folder
+          moves into a client folder, before `--register <Client>/<Job>` adds it back under its
+          new path. Touches no folder and no file but the manifest. Refused, with nothing
+          written, when no entry has that name or the list is written on one line.
 
 Exit 0 on success, 1 on a refusal (the JSON says why), 2 on a usage error. Standard library
 only.
@@ -421,6 +428,54 @@ def register(w, layout, business, manifest, hq, name):
     return emit({'registered': pname, 'folder': name, 'path': rel, 'manifest': manifest})
 
 
+# ------------------------------------------------------------------ --unregister
+
+def unregister(w, manifest, name):
+    blocked = move_refusal(w, os.path.dirname(manifest))
+    if blocked:
+        raise blocked
+    lines = read_lines(manifest)
+    i = projects_line(lines)
+    if i is None:
+        raise Refusal('Merlin\'s settings file (%s) has no list of projects. Nothing was written.' % manifest)
+    if strip_comment(PROJECTS_RE.match(lines[i]).group('rest')).strip():
+        raise Refusal('The list of projects in Merlin\'s settings file (%s) is written on one line. Write it '
+                      'as one project per line, then run this again. Nothing was written.' % manifest)
+    end = block_end(lines, i)
+    starts = [j for j in range(i + 1, end + 1) if re.match(r'^\s*- ', lines[j]) or lines[j].strip() == '-']
+    hits = []
+    for n, j in enumerate(starts):
+        stop = starts[n + 1] if n + 1 < len(starts) else end + 1
+        ename = None
+        for raw in lines[j:stop]:
+            t = strip_comment(raw.rstrip('\r\n')).strip()
+            if t.startswith('- '):
+                t = t[2:].strip()
+                if ':' not in t:
+                    ename = unquote(t)
+                    continue
+            k, _, v = t.partition(':')
+            if k.strip() == 'name':
+                ename = unquote(v)
+        if ename == name:
+            hits.append((j, stop))
+    if not hits:
+        raise Refusal('No project named %s is in Merlin\'s settings file (%s). Nothing was written.'
+                      % (name, manifest))
+    if len(hits) > 1:
+        raise Refusal('Merlin\'s settings file (%s) lists %s more than once. Fix it by hand. Nothing was '
+                      'written.' % (manifest, name))
+    j, stop = hits[0]
+    while stop > j + 1 and not lines[stop - 1].strip():
+        stop -= 1
+    del lines[j:stop]
+    write_atomic(manifest, ''.join(lines))
+    if any(r['name'] == name for r in registered(read_lines(manifest), manifest)):
+        raise Refusal('Wrote Merlin\'s settings file (%s) but %s is still listed. Check the file.'
+                      % (manifest, name))
+    return emit({'unregistered': name, 'manifest': manifest})
+
+
 # ------------------------------------------------------------------ main
 
 def main(argv):
@@ -429,12 +484,15 @@ def main(argv):
     g = ap.add_mutually_exclusive_group(required=True)
     g.add_argument('--list', action='store_true')
     g.add_argument('--register', metavar='NAME')
+    g.add_argument('--unregister', metavar='NAME')
     a = ap.parse_args(argv)
     try:
         w = read_where(a.where_json)
         layout, business, manifest, hq = check_where(w)
         if a.list:
             return list_candidates(w, layout, business, manifest, hq)
+        if a.unregister is not None:
+            return unregister(w, manifest, a.unregister)
         return register(w, layout, business, manifest, hq, a.register)
     except Refusal as e:
         return emit({'refused': str(e)}, 1)

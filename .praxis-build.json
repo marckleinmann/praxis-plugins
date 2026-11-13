@@ -13,8 +13,8 @@
   ],
   "plugins": {
     "merlin": {
-      "version": "1.0.26",
-      "hash": "23a35d29eb941df9400e031fa4b4f728159df735da36830101b9cc8a360fbf72",
+      "version": "1.0.27",
+      "hash": "d981ee85679ff41f5969a21c212b1f3a87a65d0f3d08d23510c5c776bed81860",
       "skills": [
         "about-me-setup",
         "anti-slop",
@@ -28,8 +28,8 @@
         "task-management"
       ],
       "files": {
-        ".claude-plugin/plugin.json": "bcab17732f34731111dbbfd63b1cc2778bc9741a094c52852266afb87b7f11e9",
-        ".codex-plugin/plugin.json": "5dfbfe92b5ce69114c7a68f779b0c32f3e9e9f8294894f37a127c6b9b03b2f03",
+        ".claude-plugin/plugin.json": "22e246e911f48a246943eab51929c97b4d03e4bebc02297a6104b81c6c2417de",
+        ".codex-plugin/plugin.json": "01b4c8ab577c0ae1fb6330f0ecbe9026d6d95b24ba6b4c1fc4ae301e93e49ec6",
         "LICENSE": "3a4a1539d3e265d98a43af998a13e28d4f04fcc35c283bec1e9bf7a86b266ef7",
         "NOTICE": "1863fb9732bca2fe9d55462186ab2c7f411e4bd1ec0a1bccbd783ae7657e5935",
         "hooks/hooks.json": "711f730a5f7ac15b0198f0e73e7cefac2070d48c09602b6b888a5093609b6e4a",
@@ -63,8 +63,8 @@
         "skills/meeting-dissect/scripts/diff_passes.py": "d654bbe2d3f96d06ae9db92496dc07c0cf1e117239b5cd520e00e933dd236c21",
         "skills/meeting-dissect/scripts/dissect_lib.py": "554044a9e0ed175251f35a6dfb8a6b0c9a53e07d2c7257a6b4b25630fa6b87c2",
         "skills/meeting-dissect/scripts/validate.py": "3877d888a30bd0b5f3d7644f82ceac6f3eebee5f8c62a8d8bc9c515aa701560f",
-        "skills/project-setup/SKILL.md": "29315f030c0a65e7803da1a2b0187232997a5b2017bf062b00e8b6c377677823",
-        "skills/project-setup/scripts/adopt.py": "f4775d27b0fe26786bf746450fe4d1757ab6c79d79f371367c00ce7f296a6f04",
+        "skills/project-setup/SKILL.md": "6f834fa54415c1f66612b3e39e9fc33ff9ed885a0e420391a7d91d897728236b",
+        "skills/project-setup/scripts/adopt.py": "e64bfd171790df26e2bd7f26952b9b2284c13249bf6ea9ae9611953ae78806bb",
         "skills/project-setup/scripts/copy_in.py": "239b67161eff2740305b17c60166e5b86ee47f197958f422b8df972eedd1117d",
         "skills/rules/SKILL.md": "492faceb0f608933e4f1586d3a75fd7726162a98efa3129eb3d6957a6b988498",
         "skills/save-and-close/SKILL.md": "b8a23e0b4df8768036778caf01276aef46b4dc528abfd10808333771bce7a0d3",

@@ -12,11 +12,36 @@ Create a new project inside the business folder. A short interview, then
 the standard folder skeleton, filled from the answers. Nothing is written
 until the user approves the plan.
 
-Every project lives at `<merlin-data>/<Project>/`, or, for a client with
-several jobs, at `<merlin-data>/<Client>/<Job>/` (see **Client folders**
-below). If the business folder
-cannot be reached, stop, write nothing, and tell the user to run
-`merlin:setup`.
+## The four levels
+
+A business folder holds three kinds of folder. Here is one window
+contractor's, with the business folder `ClearView`:
+
+```
+ClearView/                     the business folder (<merlin-data>). Never a client, never a project.
+├── ClearView-HQ/              Merlin's own files. Never a client, never a project.
+├── Website-Refresh/           a project of the business itself (flat)
+├── AcmeCo-Onboarding/         a client with one job (flat)
+└── JordanLee/                 a client folder: a client with several jobs
+    ├── CLAUDE.md              the client's facts, with the line <!-- merlin:client-folder -->
+    ├── 112-Oak-St/            a job: one project
+    └── 48-Pine-Ave/           another job: another project
+```
+
+A **client** is someone the business works for: a builder, a homeowner, a
+company. The business folder and its HQ folder are never client folders, even
+when the business name looks like a client's.
+
+| Kind | Folder | Project name and task tag |
+|---|---|---|
+| The business's own project | `Website-Refresh/` | `Website-Refresh` |
+| A client with one job | `AcmeCo-Onboarding/` | `AcmeCo-Onboarding` |
+| A job in a client folder | `JordanLee/112-Oak-St/` | `JordanLee-112-Oak-St` |
+
+The client folder `JordanLee/` itself has no project name and no tag.
+
+If the business folder cannot be reached, stop, write nothing, and tell the
+user to run `merlin:setup`.
 
 Two modes. A new project runs the interview below. "Adopt my existing
 projects" runs **Adopt existing projects** further down, for folders the user
@@ -36,6 +61,9 @@ already has, inside the business folder or anywhere else on the Mac.
   - `bash <setup> --where --data "<merlin-data>" | python3 <adopt> --where-json - --register <Project>`
     adds one project to the manifest's `projects:` list, with the right path
     for the layout. It writes nothing but the manifest.
+  - The same with `--unregister <Project>` removes one project's entry from
+    that list by name, and touches no folder. Use it only in **Move flat
+    projects into a client folder** below.
 - `<plugin-root>/skills/project-setup/scripts/copy_in.py`, written `<copy_in>`
   below. It reads the same JSON and copies a folder from elsewhere on the Mac
   into the business folder:
@@ -60,10 +88,14 @@ settings file, not by the folder's name).
 - The project name is the folder name. Short, readable, no spaces: use
   hyphens (`Website-Refresh`, `Acme-Onboarding`).
 - For work for a client, start with the client: `<Client>-<Project>`.
+- Write a client's name as one word, with no spaces or hyphens: `JordanLee`,
+  `BrightHomes`. The hyphen then shows where the client ends and the job
+  begins.
 - For a job inside a client folder, the folder is `<Client>/<Job>/` and the
   project name is `<Client>-<Job>`, for example the folder
-  `Sharif-Munir/12-Elm-St/` is the project `Sharif-Munir-12-Elm-St`. Tasks are
-  tagged with that project name.
+  `JordanLee/112-Oak-St/` is the project `JordanLee-112-Oak-St`. Tasks
+  are tagged with that project name. A job named after a site address uses the
+  address: `112-Oak-St`.
 - Before suggesting a name, list the folders already in `<merlin-data>` and
   pick one that does not collide. Never reuse an existing folder.
 
@@ -123,8 +155,54 @@ Client folder. Each subfolder is one job and one Merlin project
 ```
 
 A flat `<Client>-<Project>` folder stays right for a client with one job.
-Moving a client's existing flat folders into a client folder is a separate
-step the user asks for; this skill never moves folders on its own.
+
+### Add a job to a client you already have
+
+Trigger: "set up a project" (or "new job", "new address") for a client that
+already has a client folder. Run it from a chat on the business folder.
+
+1. Ask which client and the job's name, usually the site address.
+2. Find the client folder: a folder in the business folder whose `CLAUDE.md`
+   carries `<!-- merlin:client-folder -->`. Say "This is a new job in
+   <Client>/" and go on with the interview from Step 1 question 4.
+3. The job folder is `<Client>/<Job>/` and its project name is
+   `<Client>-<Job>`. Do not write a new client `CLAUDE.md`; the client's facts
+   are already there. If the user gives a new client fact, offer to add it to
+   that file, as its own question.
+4. Register with `--register <Client>/<Job>`, never by hand.
+5. Tell the user to close this chat and open a new one on the job folder.
+
+### Move flat projects into a client folder
+
+This skill never moves folders on its own. Run this only when the user asks,
+for example "put my Jordan Lee projects in a client folder". Run it from a
+chat on the business folder. Show the whole plan, every folder and every
+project-list change, and write nothing until the user says yes.
+
+1. **Close old chats.** Ask the user to close every chat opened on a folder
+   that will move. A chat whose folder moves breaks.
+2. **List.** Show each flat project to move, its folder now, its folder after
+   (`Jordan Lee-112 Oak St/` becomes `JordanLee/112-Oak-St/`), and its
+   project name after (`JordanLee-112-Oak-St`).
+3. **Client folder.** Create `<Client>/` with its `CLAUDE.md` from the template
+   above, unless it already exists. Draft the client's facts from the moving
+   projects' `CLAUDE.md` and `brief.md`. Show it before writing.
+4. **Move.** Move each project folder into the client folder as a job. Move,
+   never copy. Read the folder back after the move and check every file is
+   there.
+5. **Old entry off.** Run `--unregister <old project name>` for each moved
+   project. `--register` refuses a job whose name is still on the list.
+6. **New entry on.** Run `--register <Client>/<Job>` for each job. It writes
+   the full project name, `<Client>-<Job>`. Never write the name by hand.
+7. **Paths.** Check each job's `CLAUDE.md`, `CONTINUITY.md` and
+   `.claude/settings*.json` for paths that pointed at the old folder, and for
+   `../` paths that broke one level deeper. List each with its fix; fix each
+   on its own yes.
+8. **Tasks.** If a project name changed, retag its open tasks through
+   `merlin:task-management`.
+9. **Confirm.** Show the project list from the manifest. Ask the user to open
+   a new chat on one job folder and check it names the project
+   `<Client>-<Job>`.
 
 ## Flow
 
@@ -368,6 +446,7 @@ manifest, each on its own yes. It does not create `knowledge/`, `outputs/` or
   of a folder the user brings in.
 - A client folder is never a project. Never give it a `brief.md` or
   `CONTINUITY.md`, and never register it in the manifest.
+- The business folder and its HQ folder are never client folders.
 - Never overwrite an existing folder. If `<merlin-data>/<Project>/` exists,
   say so and ask for another name.
 - Never fill in answers on the user's behalf. If they do not know, write
