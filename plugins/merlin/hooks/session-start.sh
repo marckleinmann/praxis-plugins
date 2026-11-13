@@ -309,6 +309,17 @@ if [ "$STATE" = "ready" ]; then
         OPEN_ON="Open on: Merlin's HQ folder."
       elif [ "$HQ_RULE" = 3 ] && case "$SEG" in ABOUT-ME|memory|state|.task-ids|.task-tmp) true ;; *) false ;; esac; then
         OPEN_ON="Open on: Merlin's own files."
+      elif [ -f "$HQ_BIZ/$SEG/CLAUDE.md" ] && head -c 8192 "$HQ_BIZ/$SEG/CLAUDE.md" 2>/dev/null | grep -q 'merlin:client-folder'; then
+        # A client folder holds the client's facts and one folder per job. A chat belongs to
+        # one job (project <Client>-<Job>), never to the client folder itself.
+        REST=${CWD_CANON#"$HQ_BIZ/$SEG"}
+        REST=${REST#/}
+        JOB=${REST%%/*}
+        if [ -z "$JOB" ]; then
+          OPEN_ON="Open on: the client folder ${SEG}, not a project. Ask the user to close this chat and open a new one on one job folder inside ${SEG}. Write nothing here except the client facts in ${SEG}/CLAUDE.md, and only when the user asks."
+        else
+          OPEN_ON="Open on: project ${SEG}-${JOB}, the job folder ${SEG}/${JOB} inside the client folder ${SEG}."
+        fi
       else
         OPEN_ON="Open on: project ${SEG}."
       fi

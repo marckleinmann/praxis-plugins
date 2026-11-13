@@ -30,7 +30,7 @@ Before asking, show exactly what will happen: the recipient and the text, the pa
 
 ## Where Merlin may write
 
-**One project per chat.** A chat writes only to the project it was opened on; the status line's "Open on:" line names it. Work for another project becomes a task tagged with that project. A chat opened on the business folder itself asks which project before writing. Reading is free; name the file you read.
+**One project per chat.** A chat writes only to the project it was opened on; the status line's "Open on:" line names it. Work for another project becomes a task tagged with that project. A chat opened on the business folder itself asks which project before writing. Reading is free; name the file you read. **Client folders:** a client folder holds the client's facts in its own `CLAUDE.md` and one folder per job; each job is a project. A job chat may change the client's `CLAUDE.md` only when the user asks, after showing the change. A chat opened on the client folder itself writes nothing else and asks the user to reopen it on one job.
 
 Inside the business folder only:
 

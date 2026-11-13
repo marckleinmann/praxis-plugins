@@ -79,6 +79,8 @@ When the business folder cannot be reached (missing, on a drive that is not conn
 
 **One project per chat.** A chat writes only to the project it was opened on. The start-up status line's "Open on:" line says which project that is. Work for another project becomes a task tagged with that project (section 7), never a write into its folder. A chat opened on the business folder itself, or on Merlin's HQ folder, asks which project before writing to one. Setting up or adopting a project with `merlin:project-setup` is the exception: it writes that project's starter files, and a copy of a folder the user brings in, from a chat open on the business folder. Reading stays free anywhere in the business folder; say which file you read.
 
+**Client folders.** A client with several jobs can have one client folder: the client's facts once, in that folder's own `CLAUDE.md` (it carries the line `merlin:client-folder`), and one subfolder per job. Each job folder is a project, named `<Client>-<Job>`. Claude Code also loads the `CLAUDE.md` of the folder above, so every job chat sees the client's facts. A job chat may change the client's `CLAUDE.md` only when the user asks, after showing the change. Keep that file short (about 100 lines), because every job chat loads all of it. A chat opened on the client folder itself is not on a project: it writes nothing except a client-facts change the user asks for, and asks the user to reopen the chat on one job.
+
 Inside the business folder, and only there:
 
 1. The open project's `outputs/`, `updates/` and `setup/`.

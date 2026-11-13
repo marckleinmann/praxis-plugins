@@ -39,7 +39,9 @@ the user the state to save by hand. That is not a successful close. If no busine
 
 Work out which project this session belongs to: the folder the session was
 opened in, inside `<merlin-data>`. The start-up status line's "Open on:" line
-names it. Read its `CONTINUITY.md` and only the task
+names it. For a job inside a client folder, that line names the project
+`<Client>-<Job>` and its folder `<Client>/<Job>`; the `CONTINUITY.md` is in
+the job folder, never in the client folder. Read its `CONTINUITY.md` and only the task
 lines and files this session touched. If the project has no `CONTINUITY.md`
 and is not brand new, or the project is unclear, stop and ask. For a brand
 new project, create `CONTINUITY.md` with the five sections in § The

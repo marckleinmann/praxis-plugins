@@ -13,10 +13,15 @@ It reads the business folder, the HQ folder and the manifest from that JSON and 
           CONTINUITY.md). It skips the HQ folder, hidden folders, folders the manifest's
           `projects:` list already names (by name or by path), and Merlin's own folders
           (ABOUT-ME, memory and state in the older flat layout).
+          A client folder (its CLAUDE.md carries the line `merlin:client-folder`) is
+          never a project itself: it is skipped as `client-folder`, and each job folder inside
+          it is listed instead, named `<Client>-<Job>` with `folder` set to `<Client>/<Job>`.
           Writes nothing.
 --register NAME
           adds NAME to the manifest's `projects:` list, with the path written from the
           manifest's own folder: `../NAME` in an HQ manifest, `NAME` in the older flat layout.
+          NAME may be `<Client>/<Job>`, a job folder inside a client folder: the project is then
+          named `<Client>-<Job>` and its path is `../<Client>/<Job>` (or `<Client>/<Job>`).
           An empty `projects: []` becomes a list. Every other byte of the manifest stays as
           it was. Writes nothing but the manifest, through a temporary file renamed into place.
           Refused, with nothing written, while the --where JSON reports an unfinished move of
@@ -37,6 +42,23 @@ HOLDS = ('CLAUDE.md', 'AGENTS.md', '.claude/skills/', 'brief.md', 'CONTINUITY.md
 DATA_KEYS = ('about_me', 'memory', 'task_list', 'task_ids', 'run_state')
 PROJECTS_RE = re.compile(r'^projects:(?P<rest>.*?)(?P<nl>\r?\n)?$')
 PLAIN_NAME_RE = re.compile(r'[A-Za-z0-9][A-Za-z0-9 _.()+-]*')
+# A client folder holds the client's facts once, in its own CLAUDE.md, and one subfolder per
+# job. Claude Code loads parent-folder CLAUDE.md files, so every job chat sees the client facts. The
+# marker line makes the folder's role explicit instead of guessed from what it holds.
+CLIENT_MARK = 'merlin:client-folder'
+
+
+def is_client_folder(path):
+    """True when PATH/CLAUDE.md carries the client-folder marker line."""
+    f = os.path.join(path, 'CLAUDE.md')
+    if not os.path.isfile(f):
+        return False
+    try:
+        with open(f, 'rb') as fh:
+            head = fh.read(8192)
+    except OSError:
+        return False
+    return CLIENT_MARK.encode() in head
 
 
 NO_WHERE = ('Merlin could not read where its own files are. Run merlin:setup\'s check (say: check my Merlin '
@@ -237,6 +259,14 @@ def candidates(w, business, manifest, hq):
     regs = registered(read_lines(manifest), manifest)
     data_paths = {real(w[k]) for k in DATA_KEYS if w.get(k)}
     found, skipped = [], []
+
+    def holds(path):
+        has = {}
+        for item in HOLDS:
+            p = os.path.join(path, item.rstrip('/'))
+            has[item] = os.path.isdir(p) if item.endswith('/') else os.path.isfile(p)
+        return has
+
     for name in sorted(os.listdir(business)):
         path = os.path.join(business, name)
         if not os.path.isdir(path):
@@ -245,11 +275,21 @@ def candidates(w, business, manifest, hq):
         if why:
             skipped.append({'name': name, 'reason': why})
             continue
-        has = {}
-        for item in HOLDS:
-            p = os.path.join(path, item.rstrip('/'))
-            has[item] = os.path.isdir(p) if item.endswith('/') else os.path.isfile(p)
-        found.append({'name': name, 'path': path, 'has': has})
+        if is_client_folder(path):
+            skipped.append({'name': name, 'reason': 'client-folder'})
+            for job in sorted(os.listdir(path)):
+                jpath = os.path.join(path, job)
+                if not os.path.isdir(jpath):
+                    continue
+                pname = '%s-%s' % (name, job)
+                jwhy = 'hidden' if job.startswith('.') else skip_reason(pname, jpath, hq, data_paths, regs)
+                if jwhy:
+                    skipped.append({'name': pname, 'folder': '%s/%s' % (name, job), 'reason': jwhy})
+                    continue
+                found.append({'name': pname, 'folder': '%s/%s' % (name, job), 'client': name,
+                              'path': jpath, 'has': holds(jpath)})
+            continue
+        found.append({'name': name, 'folder': name, 'path': path, 'has': holds(path)})
     return regs, found, skipped
 
 
@@ -301,17 +341,41 @@ def register(w, layout, business, manifest, hq, name):
     blocked = move_refusal(w, business)
     if blocked:
         raise blocked
-    if not name or name in ('.', '..') or '/' in name or os.sep in name or '\n' in name or '\r' in name:
-        raise Refusal('%r is not a folder name. Give the name of one folder in the business folder.' % name)
-    path = os.path.join(business, name)
-    if not os.path.isdir(path):
-        raise Refusal('%s is not a folder in the business folder %s.' % (name, business))
+    bad = Refusal('%r is not a folder name. Give the name of one folder in the business folder, or '
+                  '<Client>/<Job> for a job folder inside a client folder.' % name)
+    if not name or '\n' in name or '\r' in name or (os.sep != '/' and os.sep in name):
+        raise bad
+    parts = name.split('/')
+    if len(parts) > 2 or any(p in ('', '.', '..') for p in parts):
+        raise bad
     lines = read_lines(manifest)
     regs = registered(lines, manifest)
     data_paths = {real(w[k]) for k in DATA_KEYS if w.get(k)}
-    why = skip_reason(name, path, hq, data_paths, regs)
+    if len(parts) == 2:
+        client, job = parts
+        cpath = os.path.join(business, client)
+        if not os.path.isdir(cpath) or not is_client_folder(cpath):
+            raise Refusal('%s is not a client folder in the business folder %s. A client folder\'s CLAUDE.md '
+                          'carries the line %s. Nothing was written.' % (client, business, CLIENT_MARK))
+        if skip_reason(client, cpath, hq, data_paths, regs) in ('hq', 'merlin-data', 'hidden'):
+            raise Refusal('%s holds Merlin\'s own files, not a client. Nothing was written.' % client)
+        path = os.path.join(cpath, job)
+        pname = '%s-%s' % (client, job)
+        if not os.path.isdir(path):
+            raise Refusal('%s is not a folder in the client folder %s.' % (job, cpath))
+        why = 'hidden' if job.startswith('.') else skip_reason(pname, path, hq, data_paths, regs)
+    else:
+        path = os.path.join(business, name)
+        pname = name
+        if not os.path.isdir(path):
+            raise Refusal('%s is not a folder in the business folder %s.' % (name, business))
+        why = skip_reason(name, path, hq, data_paths, regs)
+        if why is None and is_client_folder(path):
+            raise Refusal('%s is a client folder. It holds the client\'s facts and one folder per job, and is '
+                          'never a project itself. Adopt a job inside it as %s/<Job>. Nothing was written.'
+                          % (name, name))
     if why == 'registered':
-        raise Refusal('%s is already a project in Merlin\'s settings file (%s).' % (name, manifest))
+        raise Refusal('%s is already a project in Merlin\'s settings file (%s).' % (pname, manifest))
     if why == 'hidden':
         raise Refusal('%s is a hidden folder; Merlin does not adopt hidden folders.' % name)
     if why in ('hq', 'merlin-data'):
@@ -342,8 +406,8 @@ def register(w, layout, business, manifest, hq, name):
             dash = dm.group(1)
             break
     rel = '../' + name if layout == 'hq' else name
-    plain = yaml_scalar(name) == name
-    entry = ['%s- name: %s%s' % (dash, yaml_scalar(name), nl),
+    plain = all(yaml_scalar(x) == x for x in parts)
+    entry = ['%s- name: %s%s' % (dash, yaml_scalar(pname), nl),
              '%s  path: %s%s' % (dash, rel if plain else json.dumps(rel, ensure_ascii=False), nl)]
     if not lines[end].endswith('\n'):
         lines[end] += nl
@@ -351,10 +415,10 @@ def register(w, layout, business, manifest, hq, name):
     write_atomic(manifest, ''.join(lines))
 
     after = registered(read_lines(manifest), manifest)
-    if not any(r['name'] == name and r['resolved'] == real(path) for r in after):
+    if not any(r['name'] == pname and r['resolved'] == real(path) for r in after):
         raise Refusal('Wrote Merlin\'s settings file (%s) but cannot read the project %s back from it. Check '
-                      'the file.' % (manifest, name))
-    return emit({'registered': name, 'path': rel, 'manifest': manifest})
+                      'the file.' % (manifest, pname))
+    return emit({'registered': pname, 'folder': name, 'path': rel, 'manifest': manifest})
 
 
 # ------------------------------------------------------------------ main

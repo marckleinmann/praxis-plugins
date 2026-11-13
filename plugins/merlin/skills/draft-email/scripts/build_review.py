@@ -64,6 +64,7 @@ body{margin:0;background:#f4f4f2;color:#222;font-family:system-ui,-apple-system,
 """
 
 
+TO_ROW = re.compile(r'<div class="mrow">[^\n]*?\[TO_EMAIL\][^\n]*?</div>')
 SUBJECT_ROW = re.compile(r'<div class="mrow">[^\n]*?\[SUBJECT\][^\n]*?</div>')
 LINK_STYLE = 'color:var(--orange-d,#1a5fb4);text-decoration:underline'
 MISSING_STYLE = 'color:var(--mute,#777)'
@@ -158,6 +159,12 @@ def build(draft, about_me, template=None, note=None, direct=None):
     else:
         page = PLAIN_PAGE
     page = STEPS.sub(lambda m: OUR_STEPS, page, count=1)
+    if cc_named:
+        cc_row = ('<div class="mrow cc"><span class="mlab">Cc</span><span class="mval">%s</span></div>'
+                  % esc(', '.join(cc_named)))
+        page, n = TO_ROW.subn(lambda m: m.group(0) + '\n    ' + cc_row, page, count=1)
+        if not n:
+            page = page.replace('<div id="emailBody">', '<div class="meta">%s</div>\n<div id="emailBody">' % cc_row, 1)
     if attachments:
         row = attachments_row(attachments)
         page, n = SUBJECT_ROW.subn(lambda m: m.group(0) + '\n    ' + row, page, count=1)
@@ -167,8 +174,6 @@ def build(draft, about_me, template=None, note=None, direct=None):
     with open(rendered_path, encoding='utf-8') as f:
         email_body = body_of(f.read())
     summary = [note or 'not yet sent']
-    if cc_named:
-        summary.append('Cc: ' + ', '.join(cc_named))
     if sender:
         summary.append('From: ' + sender)
     fill = {

@@ -4,6 +4,9 @@
     python3 copy_in.py --where-json JSON_OR_PATH --from FOLDER --as NAME          preview
     python3 copy_in.py --where-json JSON_OR_PATH --from FOLDER --as NAME --yes    copy
 
+NAME may be <Client>/<Job>: the copy lands as a job folder inside an existing client folder
+(it becomes the project <Client>-<Job>).
+
 --where-json takes the output of `setup.sh --where`, as adopt.py does: the JSON text itself, a
 file holding it, or `-` to read it from standard input. The business folder, the HQ folder, the
 manifest and the run-state folder come from that JSON and nothing else.
@@ -128,13 +131,19 @@ def cloud_service(name):
 
 def name_refusal(w, business, manifest, hq, name):
     """Why NAME cannot be the new project folder, or None."""
-    if not PLAIN_NAME_RE.fullmatch(name or ''):
+    parts = (name or '').split('/')
+    if len(parts) > 2 or not all(PLAIN_NAME_RE.fullmatch(x) for x in parts):
         return Refusal('"%s" is not a plain folder name. Use letters, digits and hyphens, with no spaces, for '
-                       'example Old-Website. Nothing was written.' % name)
+                       'example Old-Website, or <Client>/<Job> for a job inside a client folder. Nothing was '
+                       'written.' % name)
+    if len(parts) == 2 and not A.is_client_folder(os.path.join(business, parts[0])):
+        return Refusal('%s is not a client folder in the business folder %s. Create the client folder first '
+                       '(merlin:project-setup does this), then copy the job into it. Nothing was written.'
+                       % (parts[0], business))
     path = os.path.join(business, name)
     regs = A.registered(A.read_lines(manifest), manifest)
     data_paths = {A.real(w[k]) for k in A.DATA_KEYS if w.get(k)}
-    why = A.skip_reason(name, path, hq, data_paths, regs)
+    why = A.skip_reason(name.replace('/', '-'), path, hq, data_paths, regs)
     if why == 'registered':
         return Refusal('%s is already a project in Merlin\'s settings file (%s). Pick another name. Nothing was '
                        'written.' % (name, manifest))
@@ -463,9 +472,16 @@ def write_record(run_state, row):
     return path
 
 
+def partial_path(business, name):
+    """The temporary copy, beside the target folder so the final rename stays on one disk. For a job
+    (`<Client>/<Job>`) that is inside the client folder."""
+    parent = os.path.dirname(os.path.join(business, name))
+    return os.path.join(parent, '.merlin-copy-%s.partial' % os.path.basename(name))
+
+
 def copy_in(w, business, name, src, s, stale):
     target = os.path.join(business, name)
-    tmp = os.path.join(business, '.merlin-copy-%s.partial' % name)
+    tmp = partial_path(business, name)
     if stale:
         remove_own(tmp)
     try:
@@ -490,8 +506,10 @@ def copy_in(w, business, name, src, s, stale):
         raise
     out = report(src, target, s, None)
     out['mode'] = 'copied'
-    row = {'date': datetime.now().astimezone().isoformat(timespec='seconds'), 'source': src, 'project': name,
+    row = {'date': datetime.now().astimezone().isoformat(timespec='seconds'), 'source': src, 'project': name.replace('/', '-'),
            'files': out['files'], 'bytes': out['bytes']}
+    if '/' in name:
+        row['folder'] = name
     try:
         out['record'] = write_record(w['run_state'], row)
     except (OSError, KeyError, TypeError) as e:
@@ -527,7 +545,7 @@ def main(argv):
         if bad:
             raise bad
         s = survey(src)
-        tmp = os.path.join(business, '.merlin-copy-%s.partial' % a.name)
+        tmp = partial_path(business, a.name)
         stale = tmp if os.path.lexists(tmp) else None
         if a.yes:
             return copy_in(w, business, a.name, src, s, stale)
