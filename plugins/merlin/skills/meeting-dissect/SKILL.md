@@ -43,6 +43,9 @@ transcript is the only source, and every item carries its quote and line number.
   `<merlin-data>/<Project>/updates/dissect-work/<YYYY-MM-DD>_<slug>/`.
 - The scripts: `<plugin-root>/skills/meeting-dissect/scripts/`, standard-library Python.
   `python3 <script> --help` prints each one's contract. Written `<scripts>` below.
+- A Granola meeting's screenshots:
+  `<merlin-data>/<Project>/knowledge/meetings/meeting_<YYYY-MM-DD>_<slug>_screenshots/`
+  (Step 1, "Save the meeting's screenshots").
 - If the business folder cannot be reached, stop, write nothing, and say which folder is
   missing. If no business folder is chosen yet, tell the user to run `/merlin:setup`, which asks for one.
 
@@ -97,6 +100,57 @@ coverage: FULL          # or PARTIAL, with a note
 Path: `<merlin-data>/<Project>/knowledge/meetings/meeting_<YYYY-MM-DD>_<slug>.md`. If that
 file already exists, never overwrite it: add `_v2` to the name and say so. A saved transcript
 is never edited afterwards, not to fix a typo and not when the user corrects a fact.
+
+### Save the meeting's screenshots (Granola)
+
+Granola captures the screens shared during a call: settings pages, errors, documents the
+words only point at. Whenever the transcript came from Granola (the connector at step 2, a
+paste from the Granola app, or a file on disk whose `source` names Granola), save those
+screenshots beside the transcript, right after the transcript is on disk. Every workflow
+that pulls a meeting from Granola runs this step. Set 2026-11-15.
+
+1. **Find the Granola meeting id.** Any of the three works: the meeting UUID the connector
+   uses, the API's `not_` id, or the note's Granola URL. For a paste, look the meeting up
+   with the connector's `search_meetings` by title and date, or ask for the note's link.
+2. **Run the script:**
+   ```bash
+   python3 <scripts>/granola_screenshots.py --meeting <id> --transcript <the saved meeting_<date>_<slug>.md>
+   ```
+   It writes `meeting_<date>_<slug>_screenshots/` beside the transcript. Each image is named
+   `<nnn>_<MM>m<SS>s.<ext>`: its order, then its offset from the first transcript line, the
+   same clock as Granola's own `[m:ss]` transcript times. Beside them, `index.md` and
+   `index.json` list each one's offset, clock time, file name, attachment id, size, and the
+   verbatim transcript words being spoken when it was taken, so a row matches its
+   transcript line with a search. The images download straight to disk and never pass
+   through this conversation. It retries on rate limits and server errors, skips files a
+   previous run already saved, and creates no folder for a meeting with none. On
+   2026-11-15 it saved a 142-screenshot install call (88 MB) in 25 seconds.
+3. **Read its last line,** a JSON summary.
+   - `count: 0`: say the meeting has no screenshots. Nothing was written.
+   - `status: partial` (exit 5): `index.md` marks the failed rows. Run the same command once
+     more; it fetches only the missing ones.
+   - Exit 2, no API key or a rejected one: use the fallback below, and tell the user they
+     can store a key once (Granola app, Settings, Connectors, API keys, then
+     `security add-generic-password -a GRANOLA_API_KEY -s Merlin -U -w`).
+4. **Report the folder and the count** to the user with the transcript path.
+
+**Fallback without an API key.** Call the connector's `get_meeting_attachment` with only
+the meeting id. It pages through every screenshot, five at most per call; continue with
+`pagination.next_offset` as `offset` until there is none. It needs no `get_meetings` call.
+For each image, download its signed `url` at once with `curl -sf -o <file> "<url>"` (the link
+expires in 10 minutes), name it the same way, and write the same `index.md` columns. Each
+image enters the conversation on this path, so for more than 20 run it in a sub-agent that
+returns only the index.
+
+**Screenshots and the source rule.** Granola writes a short description of every
+screenshot. Like its summary, that text is AI-written and is never a source: the script
+discards it on receipt, and on the fallback path drop it before writing the index. A
+screenshot is admissible only once you have opened and viewed the image itself. Anything
+taken from one cites the file and its offset, for example `014_23m10s.png at 23:10`, in the
+place a quote's line number would go. Never cite a screenshot you have not opened, never
+describe one from its index row, and never treat a blank or thumbnail-sized image as
+evidence. An ask, spec or promise in the Step 2 list still needs a speaker's verbatim quote
+and line number; a screenshot can only back one up, in the item's note.
 
 ### Substance check
 

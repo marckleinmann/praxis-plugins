@@ -44,22 +44,36 @@ Links this computer to the person's Praxis account. The paid Merlin for Construc
    node "<plugin-root>/scripts/praxis-connect.mjs" link
    ```
 
-   It prints a code like `ABCD-2345` and an address. Show the person both, the address as a clickable link, and say:
+   It prints three lines: `Code: <code>`, `Open: <address>` and a line about the 10 minutes.
 
-   1. Open the link and sign in with your email, the same way you sign in to the Praxis field app.
-   2. Check that the code on the page matches the one here, and that the computer's name looks right.
-   3. Press **Connect this computer**.
+   **Hard rule: always show the full address from the `Open:` line, word for word, on its own line as a clickable link, every time you show the code.** The address already ends in `?code=<code>`. Copy it exactly as printed; never shorten it, rebuild it, or drop it. A code with no address leaves the person stuck, because the code alone does nothing. If you cannot see the `Open:` line, run `link` again rather than showing the code alone.
 
-   The code works for 10 minutes.
+   Say this, with the real address and code filled in:
 
-3. **Wait for the approval.** Right after showing the link, run this with a 10-minute time limit on the command:
+   > Open this page to connect this computer:
+   >
+   > https://fieldapp.praxisatwork.com/connect?code=ABCD-2345
+   >
+   > Your code is **ABCD-2345**. You do not need to type it anywhere unless the page asks for it.
+   >
+   > 1. Open the page and sign in with your email.
+   > 2. If the page shows a code box, check it shows the same code as here, then press **Check the code**.
+   > 3. Check the computer's name looks right, then press **Connect this computer**.
+   >
+   > The code works for 10 minutes.
+
+   This code links **this computer** only. It has nothing to do with the Praxis field app on a phone: the field app needs only a sign-in, never a code. Do not mention the field app here.
+
+3. **Wait for the approval.** Right after showing the address, run this with a 10-minute time limit on the command:
 
    ```bash
    node "<plugin-root>/scripts/praxis-connect.mjs" link --wait
    ```
 
+   While it waits, say one line with the full address again, word for word, as a clickable link: "Waiting for you to press Connect this computer on https://fieldapp.praxisatwork.com/connect?code=ABCD-2345". The person must never have to ask for the address.
+
    - "Connected": tell the person which account this computer is now linked to.
-   - "Still waiting": ask whether they pressed the button, then run the same command again.
+   - "Still waiting": show the full address again, ask whether they pressed **Connect this computer**, then run the same command again.
    - "expired" or any other message: show the message in plain words and offer to start again from step 2.
 
 4. **Show the settings change, then ask.** Run:
@@ -92,4 +106,4 @@ Links this computer to the person's Praxis account. The paid Merlin for Construc
   node "<plugin-root>/scripts/praxis-connect.mjs" unlink --settings
   ```
 
-  Then tell them to press **Remove** next to this computer on https://app.praxisatwork.com/connect, so the account's list matches.
+  Then tell them to press **Remove** next to this computer on https://fieldapp.praxisatwork.com/connect, so the account's list matches.

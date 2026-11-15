@@ -127,16 +127,17 @@ async function linkStart(name) {
   if (r.status !== 200 || !r.data.code || !r.data.poll_secret) {
     fail(r.data.message || `Praxis did not give a code (status ${r.status}). Try again in a minute.`);
   }
+  const address = `${r.data.connect_url}?code=${encodeURIComponent(r.data.code)}`;
   writePrivate(PENDING, JSON.stringify({
     poll_secret: r.data.poll_secret,
     code: r.data.code,
+    address,
     expires_at: r.data.expires_at,
     poll_seconds: r.data.poll_seconds || 3,
   }));
-  const address = `${r.data.connect_url}?code=${encodeURIComponent(r.data.code)}`;
   say(`Code: ${r.data.code}`);
   say(`Open: ${address}`);
-  say(`The code works for 10 minutes. Sign in there, check the computer's name and the code, then press Connect this computer.`);
+  say(`The code works for 10 minutes. Open the address above and sign in with your email. The code is already in the address, so type it only if the page asks; then press Check the code. Check the computer's name, then press Connect this computer.`);
 }
 
 async function linkWait() {
@@ -182,7 +183,7 @@ async function linkWait() {
     removeIfThere(PENDING);
     fail("The code expired before it was approved. Start again with: link");
   }
-  fail("Still waiting for the code to be approved. Run link --wait again to keep waiting.", 4);
+  fail(`Still waiting for the code to be approved.${pending.address ? ` Open: ${pending.address}` : ""} Run link --wait again to keep waiting.`, 4);
 }
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));

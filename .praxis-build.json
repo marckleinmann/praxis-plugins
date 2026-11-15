@@ -13,8 +13,8 @@
   ],
   "plugins": {
     "merlin": {
-      "version": "1.0.28",
-      "hash": "d92b103ccb029a1a0aee8689f68b7b2bd212d818b8aec68f998be310b91d164f",
+      "version": "1.0.29",
+      "hash": "864c81263761ef94ea59c313e9ce7abe38d05c9958290649ace4afc6c4f8eaca",
       "skills": [
         "about-me-setup",
         "anti-slop",
@@ -28,8 +28,8 @@
         "task-management"
       ],
       "files": {
-        ".claude-plugin/plugin.json": "a3806e84d5e711e71358e34c55e65b94c45face185e3b1456883416abf205034",
-        ".codex-plugin/plugin.json": "51a79a0ca25b01c8d2de80e88451395145ee26c2d402b8a13281071ed0a0f9f1",
+        ".claude-plugin/plugin.json": "45d3b6cb3511664ba697ebdb3c2e6b09275c51e1d854a031480e72d2af458f1c",
+        ".codex-plugin/plugin.json": "5b7c3693caddbd98f73d19e7cfcf20ec86fad35ea5c55821d2ef6627e0bd35dd",
         "LICENSE": "3a4a1539d3e265d98a43af998a13e28d4f04fcc35c283bec1e9bf7a86b266ef7",
         "NOTICE": "1863fb9732bca2fe9d55462186ab2c7f411e4bd1ec0a1bccbd783ae7657e5935",
         "hooks/hooks.json": "711f730a5f7ac15b0198f0e73e7cefac2070d48c09602b6b888a5093609b6e4a",
@@ -56,12 +56,13 @@
         "skills/draft-email/SKILL.md": "d2919ccb5d0c4d94e5ede7d2ce8a54910f913b4bf70964c656de60df2f038676",
         "skills/draft-email/scripts/build_review.py": "278e69600925b52153f4b8bff55623ce34e983eda0b96af97eaacfa209bd155f",
         "skills/draft-email/scripts/render_email.py": "58361740304f676f2e1974249948f0c8fe72f0b7dc52e7e896b22bbc0c040bd9",
-        "skills/meeting-dissect/SKILL.md": "c2052689c114955f8976803d20f2ffe69688ad864b802c2aaba9a10d2a1257e0",
+        "skills/meeting-dissect/SKILL.md": "c5ea82853eed84ae2514a2bf2418d5ecbac51c9756c8e0dfcc4463aed2134914",
         "skills/meeting-dissect/extraction-prompt.md": "6601d060a3aa5ffa35a2449c7327a3e84876f04cc5a3180c77894b41aa213995",
         "skills/meeting-dissect/scripts/carry_forward.py": "c70519625860055b2522efa1806ff05e990c251814d368e51ada48a57c035372",
         "skills/meeting-dissect/scripts/coverage.py": "032025ac3f323cd353a72fcf47467fefc3592aa2ac0f76eb2bd2726b667abc54",
         "skills/meeting-dissect/scripts/diff_passes.py": "d654bbe2d3f96d06ae9db92496dc07c0cf1e117239b5cd520e00e933dd236c21",
         "skills/meeting-dissect/scripts/dissect_lib.py": "554044a9e0ed175251f35a6dfb8a6b0c9a53e07d2c7257a6b4b25630fa6b87c2",
+        "skills/meeting-dissect/scripts/granola_screenshots.py": "adc4afe8b37548b9d0b7fe4ff1dd50651f8c07a904f06c250ee628b2fc2edd91",
         "skills/meeting-dissect/scripts/validate.py": "3877d888a30bd0b5f3d7644f82ceac6f3eebee5f8c62a8d8bc9c515aa701560f",
         "skills/project-setup/SKILL.md": "6f834fa54415c1f66612b3e39e9fc33ff9ed885a0e420391a7d91d897728236b",
         "skills/project-setup/scripts/adopt.py": "e64bfd171790df26e2bd7f26952b9b2284c13249bf6ea9ae9611953ae78806bb",
@@ -78,16 +79,16 @@
       }
     },
     "praxis-connect": {
-      "version": "1.0.2",
-      "hash": "b7bb4ae166397fb1ba75ccb02bc0df217e5bf28bbfe3965b5849d5c4cd536b23",
+      "version": "1.0.3",
+      "hash": "2f0212ff79608de4191761f12adc75da3b5ff6515f8f1dfe418dcbde4cd3abbe",
       "skills": [
         "connect"
       ],
       "files": {
-        ".claude-plugin/plugin.json": "4942f95dc14b47cd7b9fdcbccf5069c65d6ea0560bf91c2f0668a745325cb05e",
-        ".codex-plugin/plugin.json": "10ec88d8680bbe5786226b50f6b919c315c0673456a5810a4c2b617985e969d8",
-        "scripts/praxis-connect.mjs": "94572c1a88c5a8a09ffc4eebf9ac3c64591a24e7e467d64aa70f64964df83b25",
-        "skills/connect/SKILL.md": "c3102a8e8c77290c8c2e5444507bb446ec170c89f7bfca53f1754805136f6a28"
+        ".claude-plugin/plugin.json": "17486e85dbed3b6bd070c9ac7c77d32444463f1290e6b57e677359613129a4ce",
+        ".codex-plugin/plugin.json": "80c946e1ec6ee2ebf892d94ad601c23ed39eac5b61a670183355028214273f23",
+        "scripts/praxis-connect.mjs": "60379f085fbf1dc8f06529236f6d9243c489882bb7cc64a084946e63e0eb4751",
+        "skills/connect/SKILL.md": "f3a9fc096a9eafae88b3bbd80b51e9af09e46b83d384d8ff57fbc9b4c964573c"
       }
     }
   }
