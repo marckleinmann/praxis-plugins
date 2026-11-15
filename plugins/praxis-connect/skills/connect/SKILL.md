@@ -18,6 +18,16 @@ Links this computer to the person's Praxis account. The paid Merlin for Construc
 
 ## Steps
 
+0. **Check for Node.** Run `node --version`. If it shows v24 or later, go on to step 1.
+
+   If it fails, or shows an older version, connecting cannot work yet. Install Node now, with no yes or no question. First tell the person in one line: "Connecting needs Node, so I'm installing it now. It takes a few minutes, and you quit and reopen the Claude app afterwards." Then run the route for this computer:
+
+   - Windows: `winget install --id OpenJS.NodeJS.LTS -e --source winget`. Tell them to accept any Windows permission window. If `winget` is not found or fails, give them the LTS installer link, https://nodejs.org/en/download.
+   - Mac with Homebrew (`brew` runs): `brew install node`.
+   - Mac without Homebrew: make a new empty temp folder. Download `SHASUMS256.txt` from https://nodejs.org/dist/latest-v24.x/ and the `.pkg` file it lists into that folder, and check the `.pkg` with `shasum -a 256 -c` against its line. On a match, `open` the `.pkg` and tell them to click through the installer and enter their Mac password. On a mismatch, stop and give the nodejs.org link instead.
+
+   Then tell them to quit and reopen the Claude app fully, start a new chat in the same folder, and say "connect this computer" again. Stop here until `node --version` shows v24 or later.
+
 1. **Check first.** Run:
 
    ```bash

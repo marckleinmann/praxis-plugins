@@ -21,7 +21,8 @@ not fill it in), leave `--data` off: the script then reads the folder from
 
 **Two rules for every step.** Explain what a step changes before it changes it. A
 step that writes outside the business folder (Claude Code settings, the Codex
-file, the Keychain) runs only after the user says yes to that step.
+file, the Keychain) runs only after the user says yes to that step. The one exception
+is installing Node in step 1, which is told and then done.
 
 ## Steps
 
@@ -33,6 +34,26 @@ file, the Keychain) runs only after the user says yes to that step.
      `bash <setup> --python3-copy`, show the user the two paths it prints, and ask
      whether to copy `python.exe` to `python3.exe` beside it. On their yes, run
      `bash <setup> --python3-copy --yes`, then `--prereqs` again.
+   - **node marked `[needed for Praxis paid plugins]`.** The core of Merlin runs
+     without Node, so setup goes on either way. Install it now, with no yes or no
+     question: this is the one step outside the business folder that does not wait
+     for a yes. First tell the user in one line: "Installing Node now. Praxis paid
+     plugins need it. It takes a few minutes, and you quit and reopen the Claude app
+     afterwards." Then run the route the script printed for this computer:
+     - Windows: `winget install --id OpenJS.NodeJS.LTS -e --source winget`. Tell the
+       user to accept any Windows permission window. If `winget` is not found or
+       fails, give them the LTS installer link, https://nodejs.org/en/download.
+     - Mac with Homebrew: `brew install node`.
+     - Mac without Homebrew: make a new empty temp folder. Download `SHASUMS256.txt`
+       from https://nodejs.org/dist/latest-v24.x/ and the `.pkg` file it lists into
+       that folder, and check the `.pkg` with `shasum -a 256 -c` against its line.
+       On a match, `open` the `.pkg` and tell the user to click through the installer
+       and enter their Mac password. On a mismatch, delete nothing, stop, and give the
+       nodejs.org link instead.
+
+     Then tell the user to quit and reopen the Claude app fully and start a new chat
+     in the same folder. Node is ready once `node --version` shows v24 or later. Go on
+     with step 2 in this chat: the rest of setup does not need Node.
 2. **Choose the business folder.** Run `bash <setup> --check --data "${user_config.data_dir}"`
    and read the report. It writes nothing.
    - If it names a business folder that is there and writable, say which folder and go on.

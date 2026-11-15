@@ -57,12 +57,36 @@ prereqs() {
     echo "[missing]  python3: not found. The task list and setup need it. On a Mac, macOS offers Apple's free command line developer tools in a window: click Install, wait for it to finish, then run Merlin's setup again. Or install Python from python.org."
     missing=1
   fi
-  if command -v node >/dev/null 2>&1; then
-    echo "[ok]       node: $(node --version 2>/dev/null)"
-  else
-    echo "[optional] node: not found. The core of Merlin does not need it. Some add-on plugins do; install it from nodejs.org when one asks."
-  fi
+  node_line
   return $missing
+}
+
+# Node is not needed by the core of Merlin, so it never sets `missing`. Praxis paid plugins need
+# Node 24 or later (praxis-connect runs on it, takeoff's PDF tools need v24), so a missing or old
+# Node gets its own mark and the install route for this computer.
+node_route() {
+  if is_windows; then
+    echo "Claude installs it in the Code tab with winget install --id OpenJS.NodeJS.LTS -e --source winget, or download the LTS installer from nodejs.org."
+  elif command -v brew >/dev/null 2>&1; then
+    echo "Claude installs it in the Code tab with brew install node."
+  else
+    echo "Claude downloads the LTS macOS installer from nodejs.org, checks it, and opens it: click through it and enter your Mac password."
+  fi
+  echo "           Then quit and reopen the Claude app and check that node --version shows v24 or later."
+}
+node_line() {
+  local v major
+  if ! command -v node >/dev/null 2>&1; then
+    echo "[needed for Praxis paid plugins] node: not found. The core of Merlin runs without it. Praxis paid plugins (praxis-connect, takeoff) need Node 24 or later. $(node_route)"
+    return 0
+  fi
+  v=$(node --version 2>/dev/null); major=${v#v}; major=${major%%.*}
+  case "$major" in ''|*[!0-9]*) major=0 ;; esac
+  if [ "$major" -ge 24 ]; then
+    echo "[ok]       node: $v"
+  else
+    echo "[needed for Praxis paid plugins] node: $v found, but Praxis paid plugins need Node 24 or later. $(node_route)"
+  fi
 }
 
 # Windows only: Merlin's skills run `python3`, and the python.org and winget installs create only

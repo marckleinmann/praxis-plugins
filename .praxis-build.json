@@ -13,8 +13,8 @@
   ],
   "plugins": {
     "merlin": {
-      "version": "1.0.27",
-      "hash": "d981ee85679ff41f5969a21c212b1f3a87a65d0f3d08d23510c5c776bed81860",
+      "version": "1.0.28",
+      "hash": "d92b103ccb029a1a0aee8689f68b7b2bd212d818b8aec68f998be310b91d164f",
       "skills": [
         "about-me-setup",
         "anti-slop",
@@ -28,8 +28,8 @@
         "task-management"
       ],
       "files": {
-        ".claude-plugin/plugin.json": "22e246e911f48a246943eab51929c97b4d03e4bebc02297a6104b81c6c2417de",
-        ".codex-plugin/plugin.json": "01b4c8ab577c0ae1fb6330f0ecbe9026d6d95b24ba6b4c1fc4ae301e93e49ec6",
+        ".claude-plugin/plugin.json": "a3806e84d5e711e71358e34c55e65b94c45face185e3b1456883416abf205034",
+        ".codex-plugin/plugin.json": "51a79a0ca25b01c8d2de80e88451395145ee26c2d402b8a13281071ed0a0f9f1",
         "LICENSE": "3a4a1539d3e265d98a43af998a13e28d4f04fcc35c283bec1e9bf7a86b266ef7",
         "NOTICE": "1863fb9732bca2fe9d55462186ab2c7f411e4bd1ec0a1bccbd783ae7657e5935",
         "hooks/hooks.json": "711f730a5f7ac15b0198f0e73e7cefac2070d48c09602b6b888a5093609b6e4a",
@@ -69,25 +69,25 @@
         "skills/rules/SKILL.md": "492faceb0f608933e4f1586d3a75fd7726162a98efa3129eb3d6957a6b988498",
         "skills/save-and-close/SKILL.md": "b8a23e0b4df8768036778caf01276aef46b4dc528abfd10808333771bce7a0d3",
         "skills/save-and-close/continuation.md": "86982ab2af11cdfb295309d5eea7e21cad888d6b0a81b9598351d5d07ff7ebdb",
-        "skills/setup/SKILL.md": "8d289657e4f320d94754361e43956dab101931b03b9e056e7adbec2ef26f7d82",
+        "skills/setup/SKILL.md": "de95e6f9b9e013b31fc4050b1093bc9fbf0e72c39fd93148e4fc50b01a5bcd69",
         "skills/setup/scripts/setup.py": "c4b519cec4c8254959e1a3063cf8f39e945cb0f3721e44da16b682be19b48a0c",
-        "skills/setup/scripts/setup.sh": "2ca5d26131ac57ccd573663eec2dc650717aa7f5570ca206ae42114f39b4e138",
+        "skills/setup/scripts/setup.sh": "c926ce3fdaa3369026300033171f51041d504205f41db9d4092c4d34de02e3f4",
         "skills/task-management/SKILL.md": "34732dc0bef952b5d35fc486048b371d013439622c8f60605d6a67dce5f0396b",
         "skills/task-management/per-folder.md": "6e02acbe1eba03cdbdbee0667726191934cc64059c058472dc4e5db40eb8db4f",
         "skills/task-management/stale-triage.md": "739576ceef3799ba37368c6dabedcf0fea879e7ce4d20117d30012e66219fd03"
       }
     },
     "praxis-connect": {
-      "version": "1.0.1",
-      "hash": "41a6d59bcb3406a153650a5c5a80110eb86cefb8c001da5ca088d0ab36bc4ee6",
+      "version": "1.0.2",
+      "hash": "b7bb4ae166397fb1ba75ccb02bc0df217e5bf28bbfe3965b5849d5c4cd536b23",
       "skills": [
         "connect"
       ],
       "files": {
-        ".claude-plugin/plugin.json": "e21496decbed52c4e793f1f1a0247748547b78e1448c661449f1e7ef0ac3714d",
-        ".codex-plugin/plugin.json": "b73117c212185d282ef1bcac865207f8c02d512848cdb2e5583b9d9d1b6bdc86",
-        "scripts/praxis-connect.mjs": "853acb85af36c99fdc4d9d46eda0e6e4af78a67b85ffa17047860eb16b024aad",
-        "skills/connect/SKILL.md": "c61fb9231c5f34bcf3751f08a1c4d0ed623a3544320550247193ccee526261fb"
+        ".claude-plugin/plugin.json": "4942f95dc14b47cd7b9fdcbccf5069c65d6ea0560bf91c2f0668a745325cb05e",
+        ".codex-plugin/plugin.json": "10ec88d8680bbe5786226b50f6b919c315c0673456a5810a4c2b617985e969d8",
+        "scripts/praxis-connect.mjs": "94572c1a88c5a8a09ffc4eebf9ac3c64591a24e7e467d64aa70f64964df83b25",
+        "skills/connect/SKILL.md": "c3102a8e8c77290c8c2e5444507bb446ec170c89f7bfca53f1754805136f6a28"
       }
     }
   }

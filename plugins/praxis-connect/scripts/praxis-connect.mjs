@@ -198,9 +198,11 @@ function installSelf() {
 }
 
 // ── settings ─────────────────────────────────────────────────────────────────
-export function settingsEntry() {
-  const helper = WIN
-    ? 'node "%USERPROFILE%\\.praxis\\praxis-connect.mjs" headers'
+// On Windows the helper names the full home path with forward slashes, because Claude Code may run
+// it in cmd, PowerShell or Git Bash, and %USERPROFILE% expands only in cmd.
+export function settingsEntry(win = WIN, home = HOME) {
+  const helper = win
+    ? `node "${home.replace(/\\/g, "/")}/.praxis/praxis-connect.mjs" headers`
     : 'node "$HOME/.praxis/praxis-connect.mjs" headers';
   return {
     source: { source: "url", url: `${BASE}/marketplace.json`, headersHelper: helper },
