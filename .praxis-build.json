@@ -79,16 +79,16 @@
       }
     },
     "praxis-connect": {
-      "version": "1.0.3",
-      "hash": "2f0212ff79608de4191761f12adc75da3b5ff6515f8f1dfe418dcbde4cd3abbe",
+      "version": "1.0.4",
+      "hash": "231cdd73b7ad60e17f3a6a09ae95a8c300b3772337af64abee6ea4f4157dfc7c",
       "skills": [
         "connect"
       ],
       "files": {
-        ".claude-plugin/plugin.json": "17486e85dbed3b6bd070c9ac7c77d32444463f1290e6b57e677359613129a4ce",
-        ".codex-plugin/plugin.json": "80c946e1ec6ee2ebf892d94ad601c23ed39eac5b61a670183355028214273f23",
+        ".claude-plugin/plugin.json": "b94d6e1a62aac0e1823a785fc37bb3884466beedf24803e34139a6b8d9be90c1",
+        ".codex-plugin/plugin.json": "332c3fd8debadfd8ecbe9c116d49c32f87807fc854a605e42d64e96a879add27",
         "scripts/praxis-connect.mjs": "60379f085fbf1dc8f06529236f6d9243c489882bb7cc64a084946e63e0eb4751",
-        "skills/connect/SKILL.md": "f3a9fc096a9eafae88b3bbd80b51e9af09e46b83d384d8ff57fbc9b4c964573c"
+        "skills/connect/SKILL.md": "220b58a001e93403e1319a39107437f2bdebb517eec3b06afa57324c85902000"
       }
     }
   }

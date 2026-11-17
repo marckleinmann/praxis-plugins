@@ -95,7 +95,7 @@ Links this computer to the person's Praxis account. The paid Merlin for Construc
 6. **Finish.** Tell the person:
 
    1. Open a new chat, so Claude Code picks up the Praxis catalog.
-   2. In that chat, ask Claude to install your Praxis plugins. Claude runs `claude plugin install <plugin>@praxis-construction` for each plugin Praxis set up for your account, starting with `takeoff`.
+   2. In that chat, ask Claude to install your Praxis plugins. Claude runs `claude plugin install <plugin>@praxis-construction` for each plugin Praxis set up for your account, starting with `merlin-for-construction`. If `claude plugin list` shows the old `takeoff` plugin from `praxis-construction`, Claude also runs `claude plugin uninstall takeoff@praxis-construction`, because takeoff is now part of Merlin for Construction.
 
 ## Checking or disconnecting
 

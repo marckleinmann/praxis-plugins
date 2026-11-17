@@ -18,7 +18,7 @@
       "name": "praxis-connect",
       "source": "./plugins/praxis-connect",
       "description": "Praxis connect: link this computer to your Praxis account.",
-      "version": "1.0.3"
+      "version": "1.0.4"
     }
   ]
 }
