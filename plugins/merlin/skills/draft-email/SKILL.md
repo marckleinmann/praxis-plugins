@@ -115,11 +115,19 @@ template, and left as a draft. The user sends it.
    `[label](https://...)`, and lists written with `- ` or `1. `. The signature is not written
    into the file: the renderer adds it.
 
+   In the Praxis install, add a `from:` line under `to:`, with the address the email goes
+   out from, written `Name <address>`: the user's name and the address of the Gmail account
+   the draft will go to, or the address an earlier draft in the same `emails/` folder used.
+   Ask once only if neither gives one. The editable preview in Step 8 refuses a draft
+   without one.
+
    If the chat is open on the business folder itself, or on Merlin's own files, ask which
    project the email belongs to. If there is none, give the email as copy-and-paste text
    (Step 8, last option) and write nothing.
 
-7. **Build the email.** Run:
+7. **Build the email.** In the Praxis install, start Step 8's preview first and run this
+   build after it (Step 8, item 4): the preview refuses a draft whose `.html` this script
+   already wrote. Elsewhere, run it now:
 
    ```bash
    python3 "<plugin-root>/skills/draft-email/scripts/render_email.py" "<draft file>" --about-me "<about-me>"
@@ -140,7 +148,32 @@ template, and left as a draft. The user sends it.
    draft file, and run it again. Never edit the `.html` or `.txt` by hand. If `used_starter`
    is true in the Praxis install, stop: that is a defect, not a warning.
 
-8. **Open it for the user, then place it.** First build the review page:
+8. **Open it for the user, then place it.** **In the Praxis install, open the editable
+   preview, never a review page or a dashboard pin** (the user's call, 2026-11-18: one preview
+   window, where they can edit the email and save it). In this order:
+   1. Start it in the background. `<praxis-plugin-root>` is the installed `praxis` plugin's
+      folder, the newest version under `~/.claude/plugins/cache/praxis-plugins-local/praxis/`
+      (the folder `praxis:send-email` runs from). Do not run Step 7 before this: the preview
+      refuses a draft whose `.html` that script wrote. If it did already, delete the draft's
+      `.html` and `.txt` (this task's own build output) and start the preview again.
+
+      ```bash
+      node "<praxis-plugin-root>/skills/send-email/renderer/preview-server.mjs" "<draft file>" --port 5604 --idle-min 60
+      ```
+
+      If 5604 is held by another session's draft, use 5605 and leave the other one alone. If it
+      refuses the draft, tell the user why in plain words, fix the draft file and start it again.
+   2. Open `http://127.0.0.1:5604/` in the Claude browser pane.
+   3. Expand the pane: call the app's show-pane tool (`mcp__ccd_view__show_pane`,
+      `pane: "preview"`; load it with ToolSearch if it is deferred). Skip this where the tool
+      does not exist. A pane popped out into its own window is left where it is.
+   4. The user edits there; every edit saves to the draft file. Before placing the draft
+      below, read the draft file again and re-run Step 7, so the `.html` and `.txt` carry the
+      edited words.
+
+   If the preview server cannot start at all, fall back to the review page below and pin it.
+
+   Outside the Praxis install, build the review page:
 
    ```bash
    python3 "<plugin-root>/skills/draft-email/scripts/build_review.py" "<draft file>" --about-me "<about-me>" --note "not yet sent"
@@ -150,7 +183,7 @@ template, and left as a draft. The user sends it.
    exactly as it goes out, from `<about-me>/../templates/email-paste-artifact.html` in the
    Praxis install and a plain page elsewhere. Put where it will go out in `--note` ("goes out
    through Resend from <sending address>", "goes to your Gmail drafts"). Then open it:
-   - **Praxis install:** pin it on the local dashboard with its `pin.mjs add` command
+   - **Praxis install, fallback only:** pin it on the local dashboard with its `pin.mjs add` command
      (`--project <Project> --name "Email to <name>: <subject>" --file "<review page>"`), and
      open the `http://127.0.0.1:4400/p/...` address it prints in the Claude browser pane.
      Give the user that address, never the file path.

@@ -13,8 +13,8 @@
   ],
   "plugins": {
     "merlin": {
-      "version": "1.1.0",
-      "hash": "40a4d12cb131e7722a632f3780836dda5359017f79ab56c73e68989a5925feeb",
+      "version": "1.1.1",
+      "hash": "c6e618763328286487ae63a1e4048ef925091deef2504d9052b46ffcb0778f29",
       "skills": [
         "about-me-setup",
         "anti-slop",
@@ -29,8 +29,8 @@
         "task-management"
       ],
       "files": {
-        ".claude-plugin/plugin.json": "63fde192badfb72a3e1dfa47a2647fd97ed4ccd78b640ce4f8ace5a9e325b40f",
-        ".codex-plugin/plugin.json": "d1b809d407acb7b51bb5bf1ead6bb87ce4da46264761d263989471e220cdfd27",
+        ".claude-plugin/plugin.json": "16e754e32f857bc359647512c877945495d0f028c72f371391f0c1e9d9dbb1ef",
+        ".codex-plugin/plugin.json": "f34fe8997c4cffaaf3b92310e769947678fa4aa0bdb5db72922c1c1a6579363a",
         "LICENSE": "3a4a1539d3e265d98a43af998a13e28d4f04fcc35c283bec1e9bf7a86b266ef7",
         "NOTICE": "1863fb9732bca2fe9d55462186ab2c7f411e4bd1ec0a1bccbd783ae7657e5935",
         "hooks/hooks.json": "711f730a5f7ac15b0198f0e73e7cefac2070d48c09602b6b888a5093609b6e4a",
@@ -54,7 +54,7 @@
         "skills/about-me-setup/SKILL.md": "86f87c91796a9219ad18df751028d9654dfff804cb6cbc1d5084156588669149",
         "skills/anti-slop/SKILL.md": "4c6495b468b763c72fd0eeb146a9499830c0735bc09c89b48386c6a7aeb4a68b",
         "skills/company-info-setup/SKILL.md": "a8ae6b191f204165f8cb6fe3e0983c26b6ca229baa17afd1bcd40d228aebd0de",
-        "skills/draft-email/SKILL.md": "d2919ccb5d0c4d94e5ede7d2ce8a54910f913b4bf70964c656de60df2f038676",
+        "skills/draft-email/SKILL.md": "8cb69d62c489c0b9223c2d185196446619f8509fde623ab2a9e7db113753aa9c",
         "skills/draft-email/scripts/build_review.py": "278e69600925b52153f4b8bff55623ce34e983eda0b96af97eaacfa209bd155f",
         "skills/draft-email/scripts/render_email.py": "58361740304f676f2e1974249948f0c8fe72f0b7dc52e7e896b22bbc0c040bd9",
         "skills/meeting-dissect/SKILL.md": "c5ea82853eed84ae2514a2bf2418d5ecbac51c9756c8e0dfcc4463aed2134914",
