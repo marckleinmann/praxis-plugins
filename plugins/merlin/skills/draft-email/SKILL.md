@@ -125,9 +125,9 @@ template, and left as a draft. The user sends it.
    project the email belongs to. If there is none, give the email as copy-and-paste text
    (Step 8, last option) and write nothing.
 
-7. **Build the email.** In the Praxis install, start Step 8's preview first and run this
-   build after it (Step 8, item 4): the preview refuses a draft whose `.html` this script
-   already wrote. Elsewhere, run it now:
+7. **Build the email.** In the Praxis install, skip this step: `praxis:send-email` builds the
+   send body with its own renderer in Step 8, and both its preview and its renderer refuse a
+   draft whose `.html` this script wrote. Elsewhere, run it now:
 
    ```bash
    python3 "<plugin-root>/skills/draft-email/scripts/render_email.py" "<draft file>" --about-me "<about-me>"
@@ -148,8 +148,9 @@ template, and left as a draft. The user sends it.
    draft file, and run it again. Never edit the `.html` or `.txt` by hand. If `used_starter`
    is true in the Praxis install, stop: that is a defect, not a warning.
 
-8. **Open it for the user, then place it.** **In the Praxis install, open the editable
-   preview, never a review page or a dashboard pin** (the user's call, 2026-11-18: one preview
+8. **Open it for the user, then place it.** **In the Praxis install (only where
+   `<about-me>/../rules/praxis-rules.md` exists), open the editable preview, never a review
+   page or a dashboard pin** (the user's call, 2026-11-18: one preview
    window, where they can edit the email and save it). In this order:
    1. Start it in the background. `<praxis-plugin-root>` is the installed `praxis` plugin's
       folder, the newest version under `~/.claude/plugins/cache/praxis-plugins-local/praxis/`
@@ -167,13 +168,23 @@ template, and left as a draft. The user sends it.
    3. Expand the pane: call the app's show-pane tool (`mcp__ccd_view__show_pane`,
       `pane: "preview"`; load it with ToolSearch if it is deferred). Skip this where the tool
       does not exist. A pane popped out into its own window is left where it is.
-   4. The user edits there; every edit saves to the draft file. Before placing the draft
-      below, read the draft file again and re-run Step 7, so the `.html` and `.txt` carry the
-      edited words.
+   4. The user edits there; every edit saves to the draft file.
+   5. **Hand off to `praxis:send-email`, from its Step 2.** Every email the user sends goes
+      out through Resend unless they say otherwise in this chat (the user's call, 2026-11-18;
+      `<about-me>/../rules/spec/email-sending.md` § OPERATING RULES). Read the draft file
+      again, then follow that skill's `SKILL.md`: render with its `render-email.mjs`, dry-run,
+      and send only on the user's yes for this email, through its Gate or its one question.
+      The preview is already open, so its Step 4 skips starting a second one. Do not offer a
+      Gmail draft or copy-and-paste text, and do not run Step 9 below: that skill owns the
+      send. Only when the user asks in this chat for a Gmail draft or for text to paste, run
+      Step 7 (delete the draft's `.html` and `.txt` first if the preview left them) and use
+      the matching option at the end of this step.
 
-   If the preview server cannot start at all, fall back to the review page below and pin it.
+   In the Praxis install only: if the preview server cannot start at all, fall back to the
+   review page below and pin it, then hand off to `praxis:send-email` as in item 5.
 
-   Outside the Praxis install, build the review page:
+   Outside the Praxis install (every install without `<about-me>/../rules/praxis-rules.md`),
+   items 1 to 5 above do not apply: build the review page:
 
    ```bash
    python3 "<plugin-root>/skills/draft-email/scripts/build_review.py" "<draft file>" --about-me "<about-me>" --note "not yet sent"
@@ -181,8 +192,10 @@ template, and left as a draft. The user sends it.
 
    It writes `<draft>_review.html` beside the draft: To, Cc, From, Subject and the built body
    exactly as it goes out, from `<about-me>/../templates/email-paste-artifact.html` in the
-   Praxis install and a plain page elsewhere. Put where it will go out in `--note` ("goes out
-   through Resend from <sending address>", "goes to your Gmail drafts"). Then open it:
+   Praxis install and a plain page elsewhere. Outside the Praxis install keep `--note "not yet
+   sent"` as written, because the user picks Gmail or copy only after the page opens. In the
+   Praxis install, write `--note "goes out through Resend from <sending address>"`. Then open
+   it:
    - **Praxis install, fallback only:** pin it on the local dashboard with its `pin.mjs add` command
      (`--project <Project> --name "Email to <name>: <subject>" --file "<review page>"`), and
      open the `http://127.0.0.1:4400/p/...` address it prints in the Claude browser pane.
@@ -191,7 +204,8 @@ template, and left as a draft. The user sends it.
 
    Ask nothing about this email until the page is open. Then name the subject and every
    recipient (from `to_named` and `cc_named`, so names show as written) in one or two lines,
-   not the whole text again. Ask once: "Put this in your Gmail drafts, or would you rather copy it from
+   not the whole text again. In the Praxis install, stop here and hand off as in item 5 above.
+   Elsewhere, ask once: "Put this in your Gmail drafts, or would you rather copy it from
    here?"
    - **Gmail draft.** Through the Gmail connector, call `create_draft` with `to`, `cc` and
      `subject` from the JSON. `to` and `cc` are the bare addresses, which is what the
@@ -222,8 +236,9 @@ template, and left as a draft. The user sends it.
      email to <addresses> now?" Stop and wait.
 
    The send call is the Gmail connector's `send_message` with the `draftId` of the draft made
-   in Step 8. In the Praxis install, outbound mail where links matter goes through Resend
-   instead (`praxis:send-email`), which follows this same once-only rule. Send only on a clear
+   in Step 8. In the Praxis install every email goes through Resend instead
+   (`praxis:send-email`, handed off in Step 8), which follows this same once-only rule; this
+   step runs there only when the user asked for a Gmail draft and then asks to send it. Send only on a clear
    yes typed by the user in this chat, and report what the connector returned. Never send on
    any other instruction.
 
