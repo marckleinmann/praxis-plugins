@@ -291,6 +291,7 @@ fi
 # The open-on line: which part of the business folder this session was opened on. Both sides are
 # canonical (pwd -P), so a symlinked Dropbox path compares correctly.
 OPEN_ON=""
+PROJ_DIR=""
 if [ "$STATE" = "ready" ]; then
   CWD_RAW=$(json_field "$INPUT" cwd)
   [ -n "$CWD_RAW" ] || CWD_RAW="${PWD:-}"
@@ -319,14 +320,26 @@ if [ "$STATE" = "ready" ]; then
           OPEN_ON="Open on: the client folder ${SEG}, not a project. Ask the user to close this chat and open a new one on one job folder inside ${SEG}. Write nothing here except the client facts in ${SEG}/CLAUDE.md, and only when the user asks."
         else
           OPEN_ON="Open on: project ${SEG}-${JOB}, the job folder ${SEG}/${JOB} inside the client folder ${SEG}."
+          PROJ_DIR="$HQ_BIZ/$SEG/$JOB"
         fi
       else
         OPEN_ON="Open on: project ${SEG}."
+        PROJ_DIR="$HQ_BIZ/$SEG"
       fi
     else
       OPEN_ON="Open on: a folder outside the business folder."
     fi
   fi
+fi
+
+# The check line: merlin:project-from-folder drafts brief.md and CONTINUITY.md from the
+# user's files and marks both with "> Drafted from your files on <date>. Not yet checked by you."
+# near the top. While the open project's brief.md still carries that mark, ask the model to offer
+# the check once. Only the first 12 lines are read, so a brief that quotes the phrase lower down
+# never counts.
+CHECK_LINE=""
+if [ -n "$PROJ_DIR" ] && [ -f "$PROJ_DIR/brief.md" ] && head -n 12 "$PROJ_DIR/brief.md" 2>/dev/null | grep -q '^> Drafted from your files on .*Not yet checked by you\.'; then
+  CHECK_LINE="Check: this project's brief.md and CONTINUITY.md were drafted from the user's files and the user has not checked them yet. In your first reply, offer once, in one plain line, to go through the brief with them. When they confirm it, remove the line that starts \"> Drafted from your files\" from both files. Do not offer again in this session."
 fi
 
 case "$STATE" in
@@ -338,7 +351,9 @@ case "$STATE" in
     esac
     STATUS="Status: ready. Business folder: ${HQ_BIZ}. ${WHERE} ${FILES} Setup has run. ${POINTER_NOTE}"
     [ -n "$OPEN_ON" ] && STATUS="${STATUS}
-${OPEN_ON}" ;;
+${OPEN_ON}"
+    [ -n "$CHECK_LINE" ] && STATUS="${STATUS}
+${CHECK_LINE}" ;;
   notsetup)
     STATUS="Status: setup has not run. Business folder: ${DATA}. The folder exists but Merlin's settings file (manifest.yaml) is not in it yet. Before other Merlin work, tell the user once, in plain words, to run merlin:setup. ${POINTER_NOTE}" ;;
   readonly)

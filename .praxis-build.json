@@ -13,14 +13,15 @@
   ],
   "plugins": {
     "merlin": {
-      "version": "1.0.29",
-      "hash": "864c81263761ef94ea59c313e9ce7abe38d05c9958290649ace4afc6c4f8eaca",
+      "version": "1.1.0",
+      "hash": "40a4d12cb131e7722a632f3780836dda5359017f79ab56c73e68989a5925feeb",
       "skills": [
         "about-me-setup",
         "anti-slop",
         "company-info-setup",
         "draft-email",
         "meeting-dissect",
+        "project-from-folder",
         "project-setup",
         "rules",
         "save-and-close",
@@ -28,12 +29,12 @@
         "task-management"
       ],
       "files": {
-        ".claude-plugin/plugin.json": "45d3b6cb3511664ba697ebdb3c2e6b09275c51e1d854a031480e72d2af458f1c",
-        ".codex-plugin/plugin.json": "5b7c3693caddbd98f73d19e7cfcf20ec86fad35ea5c55821d2ef6627e0bd35dd",
+        ".claude-plugin/plugin.json": "63fde192badfb72a3e1dfa47a2647fd97ed4ccd78b640ce4f8ace5a9e325b40f",
+        ".codex-plugin/plugin.json": "d1b809d407acb7b51bb5bf1ead6bb87ce4da46264761d263989471e220cdfd27",
         "LICENSE": "3a4a1539d3e265d98a43af998a13e28d4f04fcc35c283bec1e9bf7a86b266ef7",
         "NOTICE": "1863fb9732bca2fe9d55462186ab2c7f411e4bd1ec0a1bccbd783ae7657e5935",
         "hooks/hooks.json": "711f730a5f7ac15b0198f0e73e7cefac2070d48c09602b6b888a5093609b6e4a",
-        "hooks/session-start.sh": "2a47c8ef37262768efeaf95b2a24eda9c01dd17190a66f263f8a321d0aa5ec49",
+        "hooks/session-start.sh": "ef1a5761652542c820c5e30b6ecec9f4bad6c1ce219b5ad87844a4a83eb79f5a",
         "lib/engine/triage-tasks/claim_id.py": "d73daac9ea11694b21b332de93e23636984896cae3c4c19900367e6c9d59c7be",
         "lib/engine/triage-tasks/tasklists.py": "3e48d42fc9647feabafd1b31a11a167826bc7edab7c2f66556667f098b29858e",
         "lib/engine/triage-tasks/triage.py": "493b38ba4650ba190e7597c442d2ad3543b305de92e14112502a985b2dd53b53",
@@ -64,6 +65,9 @@
         "skills/meeting-dissect/scripts/dissect_lib.py": "554044a9e0ed175251f35a6dfb8a6b0c9a53e07d2c7257a6b4b25630fa6b87c2",
         "skills/meeting-dissect/scripts/granola_screenshots.py": "adc4afe8b37548b9d0b7fe4ff1dd50651f8c07a904f06c250ee628b2fc2edd91",
         "skills/meeting-dissect/scripts/validate.py": "3877d888a30bd0b5f3d7644f82ceac6f3eebee5f8c62a8d8bc9c515aa701560f",
+        "skills/project-from-folder/SKILL.md": "39dc8b5d77bba9c08af01d0de9c74ffeb8a94c55b989114e6fbef37188dff269",
+        "skills/project-from-folder/scripts/inventory.py": "36eca48429c7efc3b80f26a4a75dcbc756c4d84472672029f31d1e21b1e69d19",
+        "skills/project-from-folder/scripts/write_project.py": "17ab2a5b22093e9cd3a07bf9dc01d46720331ee917c2672e325ac923977fdc31",
         "skills/project-setup/SKILL.md": "6f834fa54415c1f66612b3e39e9fc33ff9ed885a0e420391a7d91d897728236b",
         "skills/project-setup/scripts/adopt.py": "e64bfd171790df26e2bd7f26952b9b2284c13249bf6ea9ae9611953ae78806bb",
         "skills/project-setup/scripts/copy_in.py": "239b67161eff2740305b17c60166e5b86ee47f197958f422b8df972eedd1117d",
