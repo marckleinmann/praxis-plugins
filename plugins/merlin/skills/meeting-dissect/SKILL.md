@@ -424,7 +424,9 @@ text. Record the two counts in `turn_coverage:`.
 
 Show, in chat:
 
-1. Red-flag items first, 🔴, with "asked N times, delivered zero".
+1. A five-line overview of what the meeting was about, with the red-flag items, 🔴, "asked N
+   times, delivered zero". The user approves from this; the full list below sits there for
+   checking, never as the thing the user must read to approve.
 2. **This meeting's list, every item, one line each, quote included.** Never a digest, a
    top ten, or "plus 20 more": the user can only spot a missing item in the complete list.
 3. **Every earlier item this meeting touched**, in full: each one said again, and each one
@@ -438,8 +440,7 @@ Show, in chat:
 7. The carry-forward arithmetic, `prior_items N = carried C + closed K`, and the checker's
    result.
 8. The coverage note.
-9. The question: **"Anything missing or misread? Every flagged turn above needs a yes or a new
-   item. Okay to save the corrected list?"**
+9. The question: **"Anything missing or misread in the overview? Okay to save the list?"**
 
 The user can correct an item, add one, or mark one irrelevant. Apply the corrections, then
 re-run `validate.py` and `coverage.py` before anything else reads the file.
