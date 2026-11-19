@@ -65,7 +65,7 @@ remains valid within a session; `tid` is the durable cross-session handle and
 is what ops should use once assigned.
 """
 import sys, os, re, json, argparse, difflib, datetime, tempfile, hashlib
-import contextlib, fcntl, time
+import contextlib, time
 import claim_id
 import tasklists
 
@@ -85,7 +85,9 @@ def file_lock(path, timeout=15.0):
     the inode: a lock held on the original file would not cover the file that
     ends up in its place. flock is released by the kernel when the process exits,
     so a crashed run cannot leave a stale lock behind, which is why this is used
-    rather than an O_EXCL lock file.
+    rather than an O_EXCL lock file. On Windows the lock is msvcrt.locking
+    (tasklists.lock_nb); Windows also frees it on exit, though not always at once,
+    and the retry loop below absorbs that delay.
     """
     lockpath = path + '.lock'
     fd = os.open(lockpath, os.O_CREAT | os.O_RDWR, 0o644)
@@ -93,7 +95,7 @@ def file_lock(path, timeout=15.0):
         deadline = time.time() + timeout
         while True:
             try:
-                fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                tasklists.lock_nb(fd)
                 break
             except BlockingIOError:
                 if time.time() >= deadline:
@@ -109,7 +111,7 @@ def file_lock(path, timeout=15.0):
         yield
     finally:
         try:
-            fcntl.flock(fd, fcntl.LOCK_UN)
+            tasklists.unlock(fd)
         except Exception:
             pass
         os.close(fd)
@@ -1447,16 +1449,16 @@ def write_result(args, original, new_text, report, enforce_ops=False):
         sys.exit(OPS_SKIPPED_EXIT)
 
     bak = args.file + '.bak'
-    with open(bak, 'w', encoding='utf-8') as f:
+    with open(bak, 'w', encoding='utf-8', newline='') as f:
         f.write(original)
     d = os.path.dirname(os.path.abspath(args.file))
     # Keep temporary writes in one grantable directory on the list's filesystem.
     d = os.path.join(d, '.task-tmp')
     os.makedirs(d, exist_ok=True)
     fd, tmp = tempfile.mkstemp(dir=d, suffix='.tmp')
-    with os.fdopen(fd, 'w', encoding='utf-8') as f:
+    with os.fdopen(fd, 'w', encoding='utf-8', newline='') as f:
         f.write(new_text)
-    os.replace(tmp, args.file)
+    tasklists.replace(tmp, args.file)
     out = {'report': report, 'committed': True, 'backup': bak}
     if skipped:
         out['error'] = 'ops-skipped'
@@ -1814,6 +1816,7 @@ def cmd_lint(args, today):
 
 
 def main():
+    tasklists.utf8_stdio()
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest='cmd', required=True)
     pl = sub.add_parser('list')

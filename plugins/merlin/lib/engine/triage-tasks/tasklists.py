@@ -39,6 +39,76 @@ import os
 import re
 import sys
 
+# --- Portable file locking and writing ------------------------------------------
+# Mac and Linux lock with fcntl.flock, exactly as the engine always has. Windows
+# has no fcntl, so there the lock is msvcrt.locking on byte 0 of the same sidecar
+# lock file. The branch is chosen by whether fcntl imports, never by platform name.
+# setup.py carries a twin of lock_nb, unlock and utf8_stdio (it must work when this
+# module cannot be loaded); keep the two the same. test_lock.py checks both.
+try:
+    import fcntl as _fcntl
+    _msvcrt = None
+except ImportError:  # Windows
+    _fcntl = None
+    import msvcrt as _msvcrt
+
+
+def lock_nb(fd):
+    """Take an exclusive lock on FD without waiting. Raises BlockingIOError when
+    another process holds it. Windows frees the lock when the handle closes or the
+    process exits, though after a crash it may take a moment."""
+    if _fcntl is not None:
+        _fcntl.flock(fd, _fcntl.LOCK_EX | _fcntl.LOCK_NB)
+        return
+    import errno
+    os.lseek(fd, 0, os.SEEK_SET)
+    try:
+        _msvcrt.locking(fd, _msvcrt.LK_NBLCK, 1)
+    except OSError as e:
+        if e.errno in (errno.EACCES, errno.EDEADLK):
+            raise BlockingIOError(errno.EAGAIN, 'the lock is held by another process')
+        raise
+
+
+def unlock(fd):
+    """Release a lock taken with lock_nb."""
+    if _fcntl is not None:
+        _fcntl.flock(fd, _fcntl.LOCK_UN)
+        return
+    os.lseek(fd, 0, os.SEEK_SET)
+    _msvcrt.locking(fd, _msvcrt.LK_UNLCK, 1)
+
+
+def replace(src, dst):
+    """os.replace. On Windows only, retry for up to 2 seconds while another program
+    (Dropbox, antivirus, a reader) holds DST open, then raise."""
+    if _fcntl is not None:
+        os.replace(src, dst)
+        return
+    import time
+    deadline = time.time() + 2.0
+    while True:
+        try:
+            os.replace(src, dst)
+            return
+        except PermissionError:
+            if time.time() >= deadline:
+                raise
+            time.sleep(0.1)
+
+
+def utf8_stdio():
+    """Make stdout and stderr UTF-8 when they are not already, as on a Windows
+    console or pipe (cp1252). On a UTF-8 terminal this does nothing."""
+    for stream in (sys.stdout, sys.stderr):
+        enc = (getattr(stream, 'encoding', None) or '').lower().replace('-', '').replace('_', '')
+        if enc != 'utf8' and hasattr(stream, 'reconfigure'):
+            try:
+                stream.reconfigure(encoding='utf-8')
+            except (ValueError, OSError):
+                pass
+
+
 # Bumped whenever the engine's on-disk behaviour changes, so a copy of the engine
 # running an old router can be detected by comparing stamps.
 ENGINE_VERSION = '1.3.0'

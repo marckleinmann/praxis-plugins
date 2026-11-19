@@ -18,6 +18,9 @@ tab with its size; a file that is not there shows as missing.
 The page comes from --template, else ABOUT_ME_FOLDER/../templates/email-paste-artifact.html (the
 Praxis install), else a plain page built in. Prints one JSON object: review, template, to,
 subject, attachments. A refusal prints a plain reason on standard error, writes nothing and exits 2.
+A draft already at status: sent says so: the summary line reads "Sent <when> to <to>",
+with its Resend ID when the draft has one, and the steps say the page is a record of what went out.
+
 Standard library only.
 """
 
@@ -27,6 +30,7 @@ import json
 import os
 import re
 import sys
+from datetime import date, datetime
 from urllib.parse import quote
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -62,6 +66,45 @@ body{margin:0;background:#f4f4f2;color:#222;font-family:system-ui,-apple-system,
 <div id="emailBody">[EMAIL_BODY]</div>
 </div></body></html>
 """
+
+
+SENT_STEPS = ('<ol class="steps">\n'
+              '    <li>This email was already sent. The page is a record of what went out, not a draft waiting for a yes.</li>\n'
+              '    <li>It cannot be changed now. A revision after a send is a new draft file.</li>\n'
+              '  </ol>')
+
+# When a sent draft went out, in the same words as sentLabel() in the praxis send-email renderer
+# (render-email.mjs): "Wed Nov 18, 2026 at 3:49 PM ET". ISO 8601 UTC converts to New York time;
+# a hand-stamped "2026-11-18 15:33 ET" (or EST, EDT, no zone) is already Eastern and only
+# reformatted. Unparseable gives the raw text back; missing gives None.
+WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+ISO_SENT = re.compile(r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d+)?)?(Z|[+-]\d{2}:?\d{2})$')
+LEGACY_SENT = re.compile(r'^(\d{4})-(\d{2})-(\d{2})[ T](\d{1,2}):(\d{2})(?::\d{2})?(?:\s*(?:ET|EST|EDT))?$', re.I)
+
+
+def sent_label(sent_at):
+    s = (sent_at or '').strip().strip('"\'')
+    if not s:
+        return None
+    try:
+        if ISO_SENT.match(s):
+            from zoneinfo import ZoneInfo
+            iso = s[:-1] + '+00:00' if s.endswith('Z') else s
+            t = datetime.fromisoformat(iso).astimezone(ZoneInfo('America/New_York'))
+            y, mo, d, h, mi, wd = t.year, t.month, t.day, t.hour, t.minute, t.weekday()
+        else:
+            m = LEGACY_SENT.match(s)
+            if not m:
+                return s
+            y, mo, d, h, mi = (int(x) for x in m.groups())
+            if h > 23 or mi > 59:
+                return s
+            wd = date(y, mo, d).weekday()
+    except Exception:
+        return s
+    clock = '%d:%02d %s' % (h % 12 or 12, mi, 'AM' if h < 12 else 'PM')
+    return '%s %s %d, %d at %s ET' % (WEEKDAYS[wd], MONTHS[mo - 1], d, y, clock)
 
 
 TO_ROW = re.compile(r'<div class="mrow">[^\n]*?\[TO_EMAIL\][^\n]*?</div>')
@@ -158,7 +201,8 @@ def build(draft, about_me, template=None, note=None, direct=None):
         page = page.replace('Merlin [VERSION] &middot; ', '')
     else:
         page = PLAIN_PAGE
-    page = STEPS.sub(lambda m: OUR_STEPS, page, count=1)
+    sent = (not direct) and fm.get('status', '').strip().strip('"\'').lower() == 'sent'
+    page = STEPS.sub(lambda m: SENT_STEPS if sent else OUR_STEPS, page, count=1)
     if cc_named:
         cc_row = ('<div class="mrow cc"><span class="mlab">Cc</span><span class="mval">%s</span></div>'
                   % esc(', '.join(cc_named)))
@@ -173,7 +217,14 @@ def build(draft, about_me, template=None, note=None, direct=None):
             page = page.replace('<div id="emailBody">', '<div class="meta">%s</div>\n<div id="emailBody">' % row, 1)
     with open(rendered_path, encoding='utf-8') as f:
         email_body = body_of(f.read())
-    summary = [note or 'not yet sent']
+    if sent:
+        # A sent draft says when it went, whatever --note says.
+        label = sent_label(fm.get('sent_at'))
+        line = ('Sent %s' % label if label else 'Sent (time not recorded)') + ' to ' + ', '.join(to_named or to)
+        sent_id = unquote(fm.get('sent_id', ''))
+        summary = [line + (' \u00b7 Resend ID ' + sent_id if sent_id else '')]
+    else:
+        summary = [note or 'not yet sent']
     if sender:
         summary.append('From: ' + sender)
     fill = {

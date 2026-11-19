@@ -49,7 +49,6 @@ Both remain the caller's job; `triage.py add` does both.
 import argparse
 import contextlib
 import datetime
-import fcntl
 import os
 import re
 import sys
@@ -193,7 +192,7 @@ def _manifest_lock(manifest_path, timeout=15.0):
         deadline = time.time() + timeout
         while True:
             try:
-                fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                tasklists.lock_nb(fd)
                 break
             except BlockingIOError:
                 if time.time() >= deadline:
@@ -205,7 +204,7 @@ def _manifest_lock(manifest_path, timeout=15.0):
         yield
     finally:
         try:
-            fcntl.flock(fd, fcntl.LOCK_UN)
+            tasklists.unlock(fd)
         except Exception:
             pass
         os.close(fd)
@@ -248,11 +247,11 @@ def write_lane_entry(manifest_path, lane, machine, today):
                 break
         new = text[:m.end()] + rest[:end] + entry + rest[end:]
     tmp = manifest_path + '.enroll.tmp'
-    with open(tmp, 'w', encoding='utf-8') as f:
+    with open(tmp, 'w', encoding='utf-8', newline='') as f:
         f.write(new)
         f.flush()
         os.fsync(f.fileno())
-    os.replace(tmp, manifest_path)
+    tasklists.replace(tmp, manifest_path)
     return new
 
 
@@ -305,17 +304,18 @@ def _write_lane_file(lane, machine):
     if d:
         os.makedirs(d, exist_ok=True)
     tmp = path + '.tmp'
-    with open(tmp, 'w', encoding='utf-8') as f:
+    with open(tmp, 'w', encoding='utf-8', newline='') as f:
         f.write('# Written by claim_id.py --enroll.\n')
         f.write('lane: %d\n' % lane)
         f.write('machine: %s\n' % machine)
         f.flush()
         os.fsync(f.fileno())
-    os.replace(tmp, path)
+    tasklists.replace(tmp, path)
     return path
 
 
 def main():
+    tasklists.utf8_stdio()
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--file", default=None, help="path to the task list (for the starting-point hint and the prefix header); default: the registry's frozen ledger, else TASKS.md in the data root")
     ap.add_argument("--claims-dir", default=None, help="path to the claim-file directory (default: `.task-ids/` beside the list)")
