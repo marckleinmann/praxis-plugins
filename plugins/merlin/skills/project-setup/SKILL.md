@@ -357,7 +357,9 @@ Tell the user:
 ## Adopt existing projects
 
 Trigger: "adopt my existing projects", "bring in a project folder", "copy in a
-folder". Run it in the Claude desktop app's
+folder". If the user has a folder already full of files and wants the brief
+written from those files with no interview, run `merlin:project-from-folder`
+instead. Run it in the Claude desktop app's
 Code tab, with the chat open on the business folder itself. If the chat is
 open on a project folder instead, ask the user to reopen it on the business
 folder and stop.

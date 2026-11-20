@@ -44,6 +44,9 @@ only on one of these:
 3. The same step fails or is blocked twice.
 4. The session cannot continue, or picking the work up after a compaction
    fails.
+5. A large build is about to start: its plan is approved, and it is
+   estimated at over one hour or touches more than one system. Build it in a
+   fresh session that starts from the plan.
 
 Continuing elsewhere keeps work open; it does not say the work is finished.
 

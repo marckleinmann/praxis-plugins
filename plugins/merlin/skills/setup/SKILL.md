@@ -9,8 +9,8 @@ description: "Sets up Merlin the first time and checks it on any later run: copi
 # Merlin setup
 
 Chooses and sets up the business folder, runs the two short interviews, explains how Merlin
-and Claude's own memory fit together, and offers folder access. A second run is a
-health check. `--remove` undoes everything Merlin wrote outside the business folder.
+and Claude's own memory fit together, and offers folder access and automatic updates for
+Merlin. A second run is a health check. `--remove` undoes everything Merlin wrote outside the business folder.
 
 The setup script is `<plugin-root>/skills/setup/scripts/setup.sh`, written `<setup>`
 below. Run it with `bash`. Pass the plugin option as `--data "${user_config.data_dir}"`.
@@ -180,12 +180,23 @@ is installing Node in step 1, which is told and then done.
    `~/.claude/projects/<folder name>/memory/`, the first 200 lines load each session,
    they are for how-to notes about this computer only, and the business folder
    always wins. Setup does not move or change that memory folder.
-6. **Folder access.** A session opened in a project folder can reach the rest of the
-   business folder only with a grant in the user's Claude Code settings. Run
-   `bash <setup> --grant --data "${user_config.data_dir}"` to show the exact change.
-   Ask: "Okay to add this line to your Claude Code settings?" Only on a yes, run the
-   same command with `--yes`. The script keeps a copy of the old settings file in
-   `<run-state>/setup/backups/` first.
+6. **Your Claude Code settings: folder access and automatic updates.** Two changes,
+   one question.
+   - Folder access: a session opened in a project folder can reach the rest of the
+     business folder only with a grant in the user's Claude Code settings. Run
+     `bash <setup> --grant --data "${user_config.data_dir}"` to show the exact change.
+   - Automatic updates: Praxis releases a new Merlin most weeks, and Claude installs
+     new versions of Merlin only when automatic updates are on. Run
+     `bash <setup> --auto-update --data "${user_config.data_dir}"` to show the exact
+     change. Tell the user in one line: "I'll also turn on automatic updates for Merlin."
+
+   Show both changes, then ask once: "Okay to make these changes to your Claude Code
+   settings?" Only on a yes, run `bash <setup> --grant --yes --data "${user_config.data_dir}"`,
+   then `bash <setup> --auto-update --yes --data "${user_config.data_dir}"`. Leave out a
+   change whose preview says it is already done. If `--auto-update` says Merlin's catalog
+   is not registered on this computer, tell the user what it printed and go on. The
+   script keeps a copy of the old settings file in `<run-state>/setup/backups/` first.
+   Automatic updates take effect in the next new chat.
 7. **Connections.** The core skills use two optional connections, both added by the
    user on claude.ai under Settings, Connectors: Gmail (for `merlin:draft-email` to
    leave drafts) and a meeting recorder such as Granola (for `merlin:meeting-dissect`
@@ -205,7 +216,10 @@ is installing Node in step 1, which is told and then done.
 10. **Report.** Run `bash <setup> --check --data "${user_config.data_dir}"` again and
     give the user its checklist: what passed and what is missing. If it has a line
     about task numbers on this computer that is not `[ok]`, run "Task numbers"
-    below before anything else. That line appears only in a business folder that
+    below before anything else. If it says "Automatic updates for Merlin: off", which
+    happens on a computer that set Merlin up before setup turned them on, show
+    `bash <setup> --auto-update --data "${user_config.data_dir}"` and ask: "Okay to make
+    this change to your Claude Code settings?" Only on a yes, run it with `--yes`. That line appears only in a business folder that
     switched on per-folder task lists. Then offer a first
     project: "Want to set up your first project now? A project is a folder inside
     your business folder for one job, client or area of work." On a yes, run
@@ -302,8 +316,8 @@ into the HQ folder" or "move to the HQ layout":
 When the user asks to remove or uninstall Merlin:
 
 1. Run `bash <setup> --remove --data "${user_config.data_dir}"`. It lists exactly what
-   it will undo: the pointer file, the folder-access line setup added, the Codex
-   block, and setup's own record. Add `--keys NAME,NAME` only if the user wants
+   it will undo: the pointer file, the folder-access line setup added, automatic
+   updates if setup turned them on, the Codex block, and setup's own record. Add `--keys NAME,NAME` only if the user wants
    stored keys deleted too.
 2. Ask: "Okay to remove these?" On a yes, run the same command with `--yes`.
 3. Tell the user their business folder and every file in it are untouched, and

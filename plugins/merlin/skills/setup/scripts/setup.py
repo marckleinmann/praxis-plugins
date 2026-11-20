@@ -51,6 +51,12 @@ Modes (one per run):
                           `name: My Business`; a name already there is never changed
   --grant [--yes]         add the business folder to permissions.additionalDirectories in
                           ~/.claude/settings.json (preview without --yes; backup first)
+  --auto-update [--yes]   turn on automatic updates for Merlin: add "autoUpdate": true to the
+                          praxis-plugins entry under extraKnownMarketplaces in ~/.claude/settings.json,
+                          with the source copied from what the install registered (preview without
+                          --yes; backup first). Claude Code copies it into its own
+                          ~/.claude/plugins/known_marketplaces.json at the next session start, so
+                          setup never writes that file to turn it on
   --codex-status          report Codex: installed, Merlin present, start-up hook trusted
   --codex-block [--yes]   add the managed Merlin block to ~/.codex/AGENTS.md (preview
                           without --yes)
@@ -163,6 +169,8 @@ POINTER_WORDS = 'this computer\'s note of your business folder (~/.merlin/instan
 LAST_VERSION = home('.merlin', 'last-version')
 RECORD = home('.merlin', 'setup-record.json')
 SETTINGS = home('.claude', 'settings.json')
+KNOWN_MARKETPLACES = home('.claude', 'plugins', 'known_marketplaces.json')
+MARKETPLACE = 'praxis-plugins'
 CODEX_DIR = home('.codex')
 CODEX_AGENTS = home('.codex', 'AGENTS.md')
 
@@ -1957,6 +1965,203 @@ def copy_skeleton(root, data, biz_name=None, during_move=False):
     return created, kept
 
 
+# ------------------------------------------------------------------ JSON files Claude Code owns
+
+def write_json_atomic(path, obj):
+    """Write OBJ to PATH through a temp file. Returns None, or a sentence saying why it failed.
+
+    On Windows the replace fails while another program holds the file open."""
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    tmp = path + '.merlin-tmp'
+    try:
+        with open(tmp, 'w', encoding='utf-8') as f:
+            json.dump(obj, f, indent=2)
+            f.write('\n')
+        os.replace(tmp, path)
+    except OSError:
+        try:
+            os.remove(tmp)
+        except OSError:
+            pass
+        return ('%s could not be written: another program may have it open. Close other Claude '
+                'windows and run setup again.' % tilde(path))
+    return None
+
+
+def read_json_file(path):
+    """(object, problem). problem is None, 'missing', 'invalid' or 'not an object'."""
+    try:
+        with open(path, encoding='utf-8') as f:
+            obj = json.load(f)
+    except FileNotFoundError:
+        return None, 'missing'
+    except (OSError, ValueError):
+        return None, 'invalid'
+    if not isinstance(obj, dict):
+        return None, 'not an object'
+    return obj, None
+
+
+def auto_update_status():
+    """Where automatic updates for Merlin stand on this computer. Writes nothing.
+
+    state: 'on', 'off', 'unregistered' or 'problem'. The settings key wins when present,
+    because Claude Code copies it into known_marketplaces.json at each session start; with no
+    key there, known_marketplaces.json says what Claude Code is doing now."""
+    out = {'state': 'off', 'source': None, 'why': None, 'settings': None, 'entry': None}
+    settings, sp = read_json_file(SETTINGS)
+    if sp in ('invalid', 'not an object'):
+        out.update(state='problem', why='~/.claude/settings.json is %s' % ('not valid JSON' if sp == 'invalid' else 'not a JSON object'))
+        return out
+    settings = settings if settings is not None else {}
+    extra = settings.get('extraKnownMarketplaces')
+    if extra is not None and not isinstance(extra, dict):
+        out.update(state='problem', why='"extraKnownMarketplaces" in ~/.claude/settings.json is not an object')
+        return out
+    entry = (extra or {}).get(MARKETPLACE)
+    if entry is not None and not isinstance(entry, dict):
+        out.update(state='problem', why='the %s entry in ~/.claude/settings.json is not an object' % MARKETPLACE)
+        return out
+    known, kp = read_json_file(KNOWN_MARKETPLACES)
+    if kp in ('invalid', 'not an object'):
+        out.update(state='problem', why='~/.claude/plugins/known_marketplaces.json is %s' % ('not valid JSON' if kp == 'invalid' else 'not a JSON object'))
+        return out
+    k_entry = (known or {}).get(MARKETPLACE)
+    k_entry = k_entry if isinstance(k_entry, dict) else None
+    s_src = entry.get('source') if entry else None
+    k_src = k_entry.get('source') if k_entry else None
+    if s_src is not None and k_src is not None and s_src != k_src:
+        out.update(state='problem', why='~/.claude/settings.json and Claude Code\'s own list name different sources for %s' % MARKETPLACE)
+        return out
+    out['source'] = s_src if s_src is not None else k_src
+    out['settings'] = settings
+    out['entry'] = entry
+    out['known_prior'] = ('unregistered' if k_entry is None else
+                          (k_entry['autoUpdate'] if isinstance(k_entry.get('autoUpdate'), bool) else 'absent'))
+    if out['source'] is None or not isinstance(out['source'], dict):
+        out['state'] = 'unregistered'
+        return out
+    if entry is not None and 'autoUpdate' in entry:
+        on = entry.get('autoUpdate') is True
+    else:
+        on = bool(k_entry) and k_entry.get('autoUpdate') is True
+    out['state'] = 'on' if on else 'off'
+    return out
+
+
+def auto_update_check():
+    st = auto_update_status()
+    if st['state'] == 'on':
+        return 'ok', 'Automatic updates for Merlin: on'
+    if st['state'] == 'off':
+        return 'optional', 'Automatic updates for Merlin: off (offered on a yes)'
+    if st['state'] == 'unregistered':
+        return 'optional', ('Automatic updates for Merlin: Merlin\'s catalog is not registered on this computer, '
+                            'so setup cannot turn them on')
+    return 'optional', 'Automatic updates for Merlin: setup cannot read the settings: %s' % st['why']
+
+
+def auto_update(data, yes):
+    st = auto_update_status()
+    if st['state'] == 'problem':
+        say('Automatic updates: %s, so setup will not edit it. Nothing was written.' % st['why'])
+        return 2
+    if st['state'] == 'unregistered':
+        say('Automatic updates: Merlin\'s catalog (%s) is not registered on this computer yet, so setup cannot '
+            'turn them on. Add Merlin in the Claude app, start a new chat, then run setup again. Nothing was written.' % MARKETPLACE)
+        return 2
+    if st['state'] == 'on':
+        say('Automatic updates: already on for Merlin. Nothing to change.')
+        return 0
+    entry = st['entry']
+    say('Automatic updates: setup will turn on automatic updates for Merlin in ~/.claude/settings.json, '
+        'under extraKnownMarketplaces, %s:' % MARKETPLACE)
+    shown = dict(entry) if entry else {'source': st['source']}
+    shown['autoUpdate'] = True
+    say('  "%s": %s' % (MARKETPLACE, json.dumps(shown)))
+    say('Claude then installs each new Merlin in the background, and the new version is there in your next new chat. '
+        'Nothing else in the file changes.')
+    if not yes:
+        say('Preview only. Nothing was written. Run again with --yes after the user says yes.')
+        return 0
+    run_state = paths(data)['run_state']
+    if not writable_dir(data) or run_state is None:
+        say('Automatic updates: %s, so no backup can be kept. Nothing was written.' % (
+            'read-only. The business folder cannot be written' if not writable_dir(data)
+            else 'the business folder holds more than one HQ folder, so Merlin cannot tell where its files go'))
+        return 2
+    exists = os.path.exists(SETTINGS)
+    backup = None
+    if exists:
+        backups = os.path.join(run_state, 'setup', 'backups')
+        os.makedirs(backups, exist_ok=True)
+        backup = os.path.join(backups, 'claude-settings.json.%s' % stamp())
+        shutil.copy2(SETTINGS, backup)
+    settings = st['settings']
+    created_extra = settings.get('extraKnownMarketplaces') is None
+    extra = settings.setdefault('extraKnownMarketplaces', {})
+    created_entry = entry is None
+    if created_entry:
+        extra[MARKETPLACE] = {'source': st['source'], 'autoUpdate': True}
+        prior = 'absent'
+    else:
+        prior = entry['autoUpdate'] if 'autoUpdate' in entry else 'absent'
+        extra[MARKETPLACE]['autoUpdate'] = True
+    err = write_json_atomic(SETTINGS, settings)
+    if err:
+        say('Automatic updates: %s Nothing was changed.' % err)
+        return 2
+    rec = load_record()
+    rec['auto_update'] = {'created_file': not exists, 'created_extra': created_extra, 'created_entry': created_entry,
+                          'prior': prior, 'known_prior': st['known_prior'], 'backup': backup}
+    save_record(rec)
+    say('Automatic updates: turned on. They take effect in your next new chat. %s' % (
+        'Backup of the previous file: %s' % backup if backup else 'The file did not exist before; setup created it.'))
+    return 0
+
+
+def auto_update_undo(rec):
+    """Undo --auto-update one key at a time, from its record. Runs after the folder-access undo."""
+    a = rec.get('auto_update') or {}
+    settings, sp = read_json_file(SETTINGS)
+    if sp in ('invalid', 'not an object'):
+        say('Automatic updates: ~/.claude/settings.json is not valid JSON now, so setup did not edit it. '
+            'Remove "autoUpdate" from the %s entry by hand.' % MARKETPLACE)
+    elif settings is not None:
+        extra = settings.get('extraKnownMarketplaces')
+        entry = extra.get(MARKETPLACE) if isinstance(extra, dict) else None
+        if isinstance(entry, dict):
+            if a.get('created_entry'):
+                extra.pop(MARKETPLACE, None)
+            elif a.get('prior') == 'absent':
+                entry.pop('autoUpdate', None)
+            else:
+                entry['autoUpdate'] = a.get('prior')
+            if not extra and a.get('created_extra'):
+                settings.pop('extraKnownMarketplaces', None)
+            setup_made = a.get('created_file') or (rec.get('settings') or {}).get('created_file')
+            if not settings and setup_made:
+                os.remove(SETTINGS)
+            else:
+                err = write_json_atomic(SETTINGS, settings)
+                if err:
+                    say('Automatic updates: %s' % err)
+    # Claude Code copied the setting into its own list at a session start, and removing the
+    # settings key does not take it back out (probe 2026-11-20). Put that one key back too.
+    known, kp = read_json_file(KNOWN_MARKETPLACES)
+    k_entry = known.get(MARKETPLACE) if known else None
+    if isinstance(k_entry, dict):
+        kprior = a.get('known_prior')
+        if isinstance(kprior, bool):
+            k_entry['autoUpdate'] = kprior
+        else:
+            k_entry.pop('autoUpdate', None)
+        err = write_json_atomic(KNOWN_MARKETPLACES, known)
+        if err:
+            say('Automatic updates: %s' % err)
+    say('Automatic updates: turned back off for Merlin, as they were before setup.')
+
+
 # ------------------------------------------------------------------ settings grant
 
 def grant(data, yes):
@@ -2008,12 +2213,10 @@ def grant(data, yes):
         dirs = []
     dirs = list(dirs) + [data]
     perms['additionalDirectories'] = dirs
-    os.makedirs(os.path.dirname(SETTINGS), exist_ok=True)
-    tmp = SETTINGS + '.merlin-tmp'
-    with open(tmp, 'w', encoding='utf-8') as f:
-        json.dump(settings, f, indent=2)
-        f.write('\n')
-    os.replace(tmp, SETTINGS)
+    err = write_json_atomic(SETTINGS, settings)
+    if err:
+        say('Folder access: %s Nothing was changed.' % err)
+        return 2
     rec = load_record()
     rec['settings'] = {'added': data, 'created_file': not exists, 'created_permissions': created_perms,
                        'created_additional': created_dirs, 'backup': backup,
@@ -2114,6 +2317,9 @@ def remove(data, yes, keys):
         plan.append('take %s back out of ~/.claude/settings.json' % s['added'])
     elif data and settings_has(data):
         plan.append('leave the folder-access line for %s in ~/.claude/settings.json: setup has no record of adding it' % data)
+    if rec.get('auto_update'):
+        plan.append('turn automatic updates for Merlin back off in ~/.claude/settings.json and Claude Code\'s own '
+                    'list, as they were before setup (this also undoes turning them on yourself since)')
     c = rec.get('codex')
     has_block = False
     try:
@@ -2178,6 +2384,8 @@ def remove(data, yes, keys):
                         f.write('\n')
                     os.replace(tmp, SETTINGS)
                 say('Folder access: removed the line for %s. The rest of ~/.claude/settings.json was kept; it had changed since setup.' % s['added'])
+    if rec.get('auto_update'):
+        auto_update_undo(rec)
     if has_block:
         with open(CODEX_AGENTS, encoding='utf-8') as f:
             text = f.read()
@@ -2458,6 +2666,7 @@ def report(root, data, source, created=None, kept=None):
         status, msg = pointer_check(data)
         checks.append(('problem' if status == 'mismatch' else status, msg))
         checks.append(('ok' if settings_has(data) else 'optional', 'Folder access in ~/.claude/settings.json: %s' % ('granted' if settings_has(data) else 'not granted (offered on a yes)')))
+    checks.append(auto_update_check())
     cs = codex_status()
     if cs['codex']:
         checks.append(('ok' if (cs['hook_trusted'] or cs['block_present']) else 'optional',
@@ -2520,7 +2729,7 @@ def main(argv):
     g.add_argument('--move-to-hq', metavar='DIR', nargs='?', const='', help='turn an older flat business folder into the HQ layout (preview without --yes)')
     g.add_argument('--suggest', metavar='NAME', nargs='?', const='')
     g.add_argument('--inspect', metavar='DIR')
-    for m in ('check', 'skeleton-only', 'skeleton', 'grant', 'codex-status', 'codex-block', 'explain-memory', 'remove', 'where',
+    for m in ('check', 'skeleton-only', 'skeleton', 'grant', 'auto-update', 'codex-status', 'codex-block', 'explain-memory', 'remove', 'where',
               'task-lane'):
         g.add_argument('--' + m, action='store_true')
     g.add_argument('--set-name', metavar='NAME', help='write the business name into a manifest.yaml that still says My Business')
@@ -2571,6 +2780,8 @@ def main(argv):
         return set_name(data, a.set_name)
     if a.grant:
         return grant(data, a.yes)
+    if a.auto_update:
+        return auto_update(data, a.yes)
     if a.codex_block:
         return codex_block(data, a.yes)
     if a.task_lane:

@@ -1121,13 +1121,43 @@ def machine_hash():
             uuid = m.group(1) if m else None
         except Exception:
             uuid = None
-    if not uuid:
+    if not uuid and sys.platform == 'win32':
+        # Windows has no ioreg and no /bin/hostname. Its stable machine id is
+        # MachineGuid, written once at install.
         try:
-            uuid = subprocess.check_output(['/bin/hostname'],
-                                           stderr=subprocess.DEVNULL).decode().strip()
+            import winreg
+            key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,
+                                 r'SOFTWARE\Microsoft\Cryptography', 0,
+                                 winreg.KEY_READ | getattr(winreg, 'KEY_WOW64_64KEY', 0))
+            try:
+                uuid = str(winreg.QueryValueEx(key, 'MachineGuid')[0]).strip() or None
+            finally:
+                winreg.CloseKey(key)
         except Exception:
-            uuid = 'unknown-machine'
-    return hashlib.sha256(uuid.encode('utf-8')).hexdigest()[:16]
+            uuid = None
+    if not uuid:
+        for p in ('/etc/machine-id', '/var/lib/dbus/machine-id'):
+            try:
+                with open(p, encoding='utf-8') as f:
+                    uuid = f.read().strip() or None
+            except OSError:
+                uuid = None
+            if uuid:
+                break
+    if not uuid:
+        import socket
+        try:
+            uuid = socket.gethostname().strip() or None
+        except Exception:
+            uuid = None
+    return hashlib.sha256((uuid or LEGACY_UNKNOWN_MACHINE).encode('utf-8')).hexdigest()[:16]
+
+
+# Before the Windows machine-id fix, every Windows PC fell through to /bin/hostname, failed, and
+# hashed this string. A lane enrolled then still carries its hash, so the lane
+# check accepts it rather than refusing every Windows PC enrolled before the fix.
+LEGACY_UNKNOWN_MACHINE = 'unknown-machine'
+LEGACY_UNKNOWN_HASH = hashlib.sha256(LEGACY_UNKNOWN_MACHINE.encode('utf-8')).hexdigest()[:16]
 
 
 def lane_file_path():
@@ -1188,7 +1218,7 @@ def require_lane(reg, prefix, claim_script):
             'written. Set it with:\n    %s'
             % (prefix, ENROLL_HINT % claim_script))
     lane, mach = local
-    if mach and mach != machine_hash():
+    if mach and mach != machine_hash() and mach != LEGACY_UNKNOWN_HASH:
         raise TaskListError(
             'lane-machine-mismatch',
             'the lane file at %s records machine %s and this machine is %s. That '
