@@ -13,8 +13,8 @@
   ],
   "plugins": {
     "merlin": {
-      "version": "1.2.0",
-      "hash": "e6662851441a1b00be2e37e64f0c53730c41b56729f4600085b1384407c2c520",
+      "version": "1.3.0",
+      "hash": "39946d5c7eccdb976388c9a88fa973552292be170bad465102f0529aa26b4811",
       "skills": [
         "about-me-setup",
         "anti-slop",
@@ -29,8 +29,8 @@
         "task-management"
       ],
       "files": {
-        ".claude-plugin/plugin.json": "f1d1d1c74d119114a52655a6b0960c9c9fe8a0d6e5727ff9713b2a63f71b19c6",
-        ".codex-plugin/plugin.json": "95bb60cec054dd29c49491a4b6142381ebf4f48c0f3c27c3e7acffacf7a9156b",
+        ".claude-plugin/plugin.json": "de825c99283049302076deacf8dbf497e6b16d1918f13cdf41e1c5d7a09d5a37",
+        ".codex-plugin/plugin.json": "3c305765d3b137242b637eede047dd42e88f51c0c1e7015f73e7fffafe37ea9d",
         "LICENSE": "3a4a1539d3e265d98a43af998a13e28d4f04fcc35c283bec1e9bf7a86b266ef7",
         "NOTICE": "1863fb9732bca2fe9d55462186ab2c7f411e4bd1ec0a1bccbd783ae7657e5935",
         "hooks/hooks.json": "711f730a5f7ac15b0198f0e73e7cefac2070d48c09602b6b888a5093609b6e4a",
@@ -74,8 +74,8 @@
         "skills/rules/SKILL.md": "492faceb0f608933e4f1586d3a75fd7726162a98efa3129eb3d6957a6b988498",
         "skills/save-and-close/SKILL.md": "b8a23e0b4df8768036778caf01276aef46b4dc528abfd10808333771bce7a0d3",
         "skills/save-and-close/continuation.md": "d59e073428354a2d7c99e337e48871eb48450c9c31faae3762402f61fd051b90",
-        "skills/setup/SKILL.md": "847b5c750eb22fb990d9a4a517d4cde57a5a07f7571676d3f7e1a04be117efcd",
-        "skills/setup/scripts/setup.py": "a093d3fcc55e6e1225292c6f687f49d8eaabfa56d576fc13cd7fbdc5c100dd1d",
+        "skills/setup/SKILL.md": "131842f6123a7809921b84fcc3b0e775f0ace5507e0f431f6b867f1ef1c2cf94",
+        "skills/setup/scripts/setup.py": "0223e7070aaa47c5ca3a8a8ebc475bed59dad032d18fecd55c8e26be208552aa",
         "skills/setup/scripts/setup.sh": "c926ce3fdaa3369026300033171f51041d504205f41db9d4092c4d34de02e3f4",
         "skills/task-management/SKILL.md": "34732dc0bef952b5d35fc486048b371d013439622c8f60605d6a67dce5f0396b",
         "skills/task-management/per-folder.md": "6e02acbe1eba03cdbdbee0667726191934cc64059c058472dc4e5db40eb8db4f",
@@ -83,16 +83,16 @@
       }
     },
     "praxis-connect": {
-      "version": "1.0.4",
-      "hash": "231cdd73b7ad60e17f3a6a09ae95a8c300b3772337af64abee6ea4f4157dfc7c",
+      "version": "1.1.0",
+      "hash": "81f03db1cdd27f53493360250c092cfa2132a782fdec3cc00a2c239bde074d5d",
       "skills": [
         "connect"
       ],
       "files": {
-        ".claude-plugin/plugin.json": "b94d6e1a62aac0e1823a785fc37bb3884466beedf24803e34139a6b8d9be90c1",
-        ".codex-plugin/plugin.json": "332c3fd8debadfd8ecbe9c116d49c32f87807fc854a605e42d64e96a879add27",
-        "scripts/praxis-connect.mjs": "60379f085fbf1dc8f06529236f6d9243c489882bb7cc64a084946e63e0eb4751",
-        "skills/connect/SKILL.md": "220b58a001e93403e1319a39107437f2bdebb517eec3b06afa57324c85902000"
+        ".claude-plugin/plugin.json": "41e05b5a21f0873077d21e884d3260058365231ab79f29802b921bca00106ea1",
+        ".codex-plugin/plugin.json": "b4bd0587e1b5381e34f42e5be828e4ef0d0310cd01064ec6d4ed72f83bb9c5ee",
+        "scripts/praxis-connect.mjs": "69be4bef414ae974c847e95dce6e67165ff4c17ab7f027dcd73a2f9f4ea98dae",
+        "skills/connect/SKILL.md": "19be7a2011a68747e250f6cdf73f3dd6d15e6d97e7309d7974743f7430f3c5ec"
       }
     }
   }

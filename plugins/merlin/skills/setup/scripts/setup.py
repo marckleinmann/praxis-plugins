@@ -8,6 +8,9 @@ the plugin folder is found from this file's own location.
 
 Modes (one per run):
   --check                 report only; writes nothing anywhere
+                          (its second line is "praxis-connect: installed" or "not installed")
+  --connect-present       print only that line: whether Praxis connect is installed, read from
+                          ~/.claude/plugins/installed_plugins.json; writes nothing
   --suggest [NAME]        print the folders to offer, in order. First the open folder (the
                           working folder, or --open DIR) unless it is home, Desktop, Documents or
                           Downloads itself, the top of a synced folder, a system or hidden folder,
@@ -170,6 +173,7 @@ LAST_VERSION = home('.merlin', 'last-version')
 RECORD = home('.merlin', 'setup-record.json')
 SETTINGS = home('.claude', 'settings.json')
 KNOWN_MARKETPLACES = home('.claude', 'plugins', 'known_marketplaces.json')
+INSTALLED_PLUGINS = home('.claude', 'plugins', 'installed_plugins.json')
 MARKETPLACE = 'praxis-plugins'
 CODEX_DIR = home('.codex')
 CODEX_AGENTS = home('.codex', 'AGENTS.md')
@@ -2061,6 +2065,28 @@ def auto_update_check():
     return 'optional', 'Automatic updates for Merlin: setup cannot read the settings: %s' % st['why']
 
 
+def connect_present():
+    """Whether Praxis connect is installed for this user, from Claude Code's own record of installed
+    plugins: a key starting praxis-connect@ with at least one install. A missing, unreadable or
+    odd-shaped file counts as not installed. A plugin loaded only for one session (--plugin-dir)
+    is not in that record, so the setup skill also reads its own skill list."""
+    try:
+        with open(INSTALLED_PLUGINS, encoding='utf-8') as f:
+            d = json.load(f)
+        plugins = d.get('plugins') if isinstance(d, dict) else None
+        if isinstance(plugins, dict):
+            for k, v in plugins.items():
+                if isinstance(k, str) and k.startswith('praxis-connect@') and isinstance(v, list) and v:
+                    return True
+    except Exception:
+        pass
+    return False
+
+
+def connect_line():
+    return 'praxis-connect: %s' % ('installed' if connect_present() else 'not installed')
+
+
 def auto_update(data, yes):
     st = auto_update_status()
     if st['state'] == 'problem':
@@ -2618,6 +2644,7 @@ def adopt_words(names):
 
 def report(root, data, source, created=None, kept=None):
     say('Merlin setup report')
+    say(connect_line())
     say('')
     checks = []
     names = []
@@ -2730,7 +2757,7 @@ def main(argv):
     g.add_argument('--suggest', metavar='NAME', nargs='?', const='')
     g.add_argument('--inspect', metavar='DIR')
     for m in ('check', 'skeleton-only', 'skeleton', 'grant', 'auto-update', 'codex-status', 'codex-block', 'explain-memory', 'remove', 'where',
-              'task-lane'):
+              'task-lane', 'connect-present'):
         g.add_argument('--' + m, action='store_true')
     g.add_argument('--set-name', metavar='NAME', help='write the business name into a manifest.yaml that still says My Business')
     g.add_argument('--key-store', metavar='NAME')
@@ -2741,6 +2768,9 @@ def main(argv):
 
     if a.explain_memory:
         say(MEMORY_NOTE)
+        return 0
+    if a.connect_present:
+        say(connect_line())
         return 0
     if a.suggest is not None:
         if a.open is not None:

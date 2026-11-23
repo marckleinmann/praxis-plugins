@@ -213,23 +213,63 @@ is installing Node in step 1, which is told and then done.
    a short marked block to `~/.codex/AGENTS.md` that names the business folder. Show the
    block with `bash <setup> --codex-block --data "${user_config.data_dir}"`, and add
    it only on a yes, with `--yes`.
-10. **Report.** Run `bash <setup> --check --data "${user_config.data_dir}"` again and
-    give the user its checklist: what passed and what is missing. If it has a line
-    about task numbers on this computer that is not `[ok]`, run "Task numbers"
-    below before anything else. If it says "Automatic updates for Merlin: off", which
-    happens on a computer that set Merlin up before setup turned them on, show
-    `bash <setup> --auto-update --data "${user_config.data_dir}"` and ask: "Okay to make
-    this change to your Claude Code settings?" Only on a yes, run it with `--yes`. That line appears only in a business folder that
-    switched on per-folder task lists. Then offer a first
-    project: "Want to set up your first project now? A project is a folder inside
-    your business folder for one job, client or area of work." On a yes, run
-    `merlin:project-setup`; it asks before it writes anything. On a no, say they can
-    ask for it any time in plain words, such as "set up a project". Also offer to
-    bring in a project folder they already have, anywhere on the Mac: Merlin copies
-    it into the business folder and leaves the original exactly as it is. On a yes,
-    run "adopt my existing projects" in `merlin:project-setup`. If this chat is not
-    open on the business folder, say: in the Code tab, click New, choose the business
-    folder, and type "adopt my existing projects".
+10. **Report.** Choose the branch first, before you write any report. Run
+    `bash <setup> --check --data "${user_config.data_dir}"` again and read its whole
+    output: never pipe it through `head`, `tail` or `grep`, or shorten it in any way
+    that drops a line. Its second line says `praxis-connect: installed` or
+    `praxis-connect: not installed`. Praxis connect counts as there when that line
+    says `installed`, or, second, when a skill named `praxis-connect:connect` is in
+    this session's skill list (a plugin loaded for one session only is not in the
+    record the script reads). Otherwise it is not there.
+
+    Then give the user the checklist: what passed and what is missing. If it has a
+    line about task numbers on this computer that is not `[ok]`, run "Task numbers"
+    below before anything else. That line appears only in a business folder that
+    switched on per-folder task lists. If it says "Automatic updates for Merlin:
+    off", which happens on a computer that set Merlin up before setup turned them
+    on, show `bash <setup> --auto-update --data "${user_config.data_dir}"` and ask:
+    "Okay to make this change to your Claude Code settings?" Only on a yes, run it
+    with `--yes`.
+
+    - **`praxis-connect:connect` is there.** The person has Praxis's paid tools, such
+      as Merlin for Construction. The reply is, in this order: a short report (the
+      checklist lines), the one announcing line below, then the connect skill. Do
+      not end the reply after the report: setup is not finished at the checklist, so
+      go straight on in the same reply. The checklist's "Next action:" line and any
+      "say: ..." hint in it are for a later health check, never a reason to end the
+      reply here.
+      - **First setup** (step 2's first `--check` named no business folder that was
+        already there): first write this one line to the person, as text, before any
+        connect command runs: "Next, I connect this computer to your Praxis
+        account, so your paid tools can install." He must see it, or the link that
+        follows comes with no reason. Then run the
+        `praxis-connect:connect` skill from its first step, in the same reply, with
+        no line for the person to type.
+      - **Health check** (step 2's first `--check` already named a business folder
+        that is there): first run only the "Is this computer connected?" check of
+        `praxis-connect:connect`, which runs its `status` command and then stops.
+        If it says not connected, or that the settings entry is missing, say the one
+        line above, then run `praxis-connect:connect` from its first step in the
+        same reply, with no line for the person to type. Otherwise (connected, even
+        when the account check is paused or Praxis could not be reached), add what
+        it printed to the report in one plain line, such as "This computer is
+        connected to your Praxis account.", and stop there: run none of connect's
+        steps.
+
+      Make neither the first-project offer nor the bring-in-a-folder offer below in
+      this case, and do not put them back: the person's first job comes from Merlin
+      for Construction's own setup, which the connect steps lead to.
+    - **`praxis-connect:connect` is not there.** Never mention connecting, a Praxis
+      account or paid tools. Offer a first project: "Want to set up your first project
+      now? A project is a folder inside your business folder for one job, client or
+      area of work." On a yes, run `merlin:project-setup`; it asks before it writes
+      anything. On a no, say they can ask for it any time in plain words, such as "set
+      up a project". Also offer to bring in a project folder they already have,
+      anywhere on the Mac: Merlin copies it into the business folder and leaves the
+      original exactly as it is. On a yes, run "adopt my existing projects" in
+      `merlin:project-setup`. If this chat is not open on the business folder, say: in
+      the Code tab, click New, choose the business folder, and type "adopt my existing
+      projects".
 
 ## Task numbers
 

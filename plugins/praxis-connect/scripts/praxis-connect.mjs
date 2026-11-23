@@ -8,10 +8,12 @@
 //   node praxis-connect.mjs settings --write  add that entry to ~/.claude/settings.json (only after the person's yes)
 //   node praxis-connect.mjs headers           print the catalog header for Claude Code (exit 1 when not connected)
 //   node praxis-connect.mjs status            say whether this computer is connected and the account is active
+//   node praxis-connect.mjs catalog           list the tools this account may install, one "name version" line each
 //   node praxis-connect.mjs unlink            forget this computer's key; with --settings, also take the entry out
 //
 // The computer's key lives in ~/.praxis/device.json, readable only by this user (mode 0600).
 // No command ever prints it, except `headers`, whose output goes straight to Claude Code.
+// `catalog` sends the key to Praxis to read the list, and prints only names and versions.
 // No dependencies beyond Node 18 or later.
 
 import { chmodSync, copyFileSync, existsSync, mkdirSync, readFileSync, renameSync, unlinkSync, writeFileSync } from "node:fs";
@@ -244,7 +246,7 @@ function settings(write) {
   installSelf();
   say(`Added the praxis-construction entry to ${SETTINGS}.`);
   if (existsSync(SETTINGS_BACKUP)) say(`The previous file is kept at ${SETTINGS_BACKUP}.`);
-  say("Open a new chat so Claude Code picks up the Praxis catalog.");
+  say("Claude reads this setting when it starts.");
 }
 
 function removeSettingsEntry() {
@@ -288,6 +290,33 @@ async function status() {
   }
 }
 
+/** List what this account may install: one `name version` line per tool, read from the same
+ *  catalog Claude Code reads. Prints names and versions only, never the key or any header. */
+async function catalog() {
+  const d = device();
+  if (!d) {
+    say("This computer is not connected to a Praxis account, so there is no list to read.");
+    return void (process.exitCode = 3);
+  }
+  let r;
+  try {
+    r = await call("marketplace.json", { secret: d.secret, limitMs: CHECK_LIMIT_MS * 2 });
+  } catch (e) {
+    say(offline(e) ? "Could not reach Praxis just now, so the list was not read." : `Could not read the list: ${e.message}`);
+    return void (process.exitCode = 5);
+  }
+  if (r.status !== 200) {
+    say(r.data.message || `Praxis answered ${r.status}, so the list was not read.`);
+    return void (process.exitCode = 3);
+  }
+  const plugins = Array.isArray(r.data.plugins) ? r.data.plugins.filter((p) => p && typeof p.name === "string") : [];
+  if (!plugins.length) {
+    say("Nothing is set up for this account yet.");
+    return void (process.exitCode = 3);
+  }
+  for (const p of plugins) say(`${p.name} ${typeof p.version === "string" && p.version ? p.version : "(no version listed)"}`);
+}
+
 function unlink(alsoSettings) {
   const had = !!device();
   removeIfThere(DEVICE);
@@ -309,8 +338,9 @@ if (isMain) {
     else if (cmd === "settings") settings(flag("--write"));
     else if (cmd === "headers") headers();
     else if (cmd === "status") await status();
+    else if (cmd === "catalog") await catalog();
     else if (cmd === "unlink") unlink(flag("--settings"));
-    else fail("Use one of: link, link --wait, settings, settings --write, headers, status, unlink [--settings]", 2);
+    else fail("Use one of: link, link --wait, settings, settings --write, headers, status, catalog, unlink [--settings]", 2);
   } catch (e) {
     fail(`Something went wrong: ${e.message}`);
   }
