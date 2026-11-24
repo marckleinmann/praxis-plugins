@@ -13,8 +13,8 @@
   ],
   "plugins": {
     "merlin": {
-      "version": "1.3.0",
-      "hash": "39946d5c7eccdb976388c9a88fa973552292be170bad465102f0529aa26b4811",
+      "version": "1.3.1",
+      "hash": "e971cefcc809a077ba2023229a43c6c0c36231051d830c2e5831e98f0fcf4058",
       "skills": [
         "about-me-setup",
         "anti-slop",
@@ -29,8 +29,8 @@
         "task-management"
       ],
       "files": {
-        ".claude-plugin/plugin.json": "de825c99283049302076deacf8dbf497e6b16d1918f13cdf41e1c5d7a09d5a37",
-        ".codex-plugin/plugin.json": "3c305765d3b137242b637eede047dd42e88f51c0c1e7015f73e7fffafe37ea9d",
+        ".claude-plugin/plugin.json": "f9fc43e149b07472110b57d4d1e10faeb1bad6e1b3d4de289eda937dab401a74",
+        ".codex-plugin/plugin.json": "bb5611388db7461ffaf5f5c7daf3a04350aa5074d4bb9d0368eef7b130e35ec9",
         "LICENSE": "3a4a1539d3e265d98a43af998a13e28d4f04fcc35c283bec1e9bf7a86b266ef7",
         "NOTICE": "1863fb9732bca2fe9d55462186ab2c7f411e4bd1ec0a1bccbd783ae7657e5935",
         "hooks/hooks.json": "711f730a5f7ac15b0198f0e73e7cefac2070d48c09602b6b888a5093609b6e4a",
@@ -74,7 +74,8 @@
         "skills/rules/SKILL.md": "492faceb0f608933e4f1586d3a75fd7726162a98efa3129eb3d6957a6b988498",
         "skills/save-and-close/SKILL.md": "b8a23e0b4df8768036778caf01276aef46b4dc528abfd10808333771bce7a0d3",
         "skills/save-and-close/continuation.md": "d59e073428354a2d7c99e337e48871eb48450c9c31faae3762402f61fd051b90",
-        "skills/setup/SKILL.md": "131842f6123a7809921b84fcc3b0e775f0ace5507e0f431f6b867f1ef1c2cf94",
+        "skills/setup/SKILL.md": "0b681aaa9b2c12ee5733c4087ea8a3badaf426a6bbb74f32c3f30e18f3b63fcd",
+        "skills/setup/scripts/node_pkg.sh": "3ab1c2a6cfb1f62062bf120049b1a7036e2f884c54111cb5d115533ba9e3cd2e",
         "skills/setup/scripts/setup.py": "0223e7070aaa47c5ca3a8a8ebc475bed59dad032d18fecd55c8e26be208552aa",
         "skills/setup/scripts/setup.sh": "c926ce3fdaa3369026300033171f51041d504205f41db9d4092c4d34de02e3f4",
         "skills/task-management/SKILL.md": "34732dc0bef952b5d35fc486048b371d013439622c8f60605d6a67dce5f0396b",

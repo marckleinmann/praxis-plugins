@@ -44,12 +44,13 @@ is installing Node in step 1, which is told and then done.
        user to accept any Windows permission window. If `winget` is not found or
        fails, give them the LTS installer link, https://nodejs.org/en/download.
      - Mac with Homebrew: `brew install node`.
-     - Mac without Homebrew: make a new empty temp folder. Download `SHASUMS256.txt`
-       from https://nodejs.org/dist/latest-v24.x/ and the `.pkg` file it lists into
-       that folder, and check the `.pkg` with `shasum -a 256 -c` against its line.
-       On a match, `open` the `.pkg` and tell the user to click through the installer
-       and enter their Mac password. On a mismatch, delete nothing, stop, and give the
-       nodejs.org link instead.
+     - Mac without Homebrew: run `bash <plugin-root>/skills/setup/scripts/node_pkg.sh`.
+       It downloads the current Node 24 installer from nodejs.org, checks it against its
+       checksum, and opens it only when Apple says it is signed and notarized for the
+       Node.js Foundation. When it prints `OPENED`, tell the user to click through the
+       installer and enter their Mac password. When it prints `REFUSED` or
+       `DOWNLOAD FAILED`, nothing was opened: stop and give the user the nodejs.org
+       link it prints. Never open a downloaded installer any other way.
 
      Then tell the user to quit and reopen the Claude app fully and start a new chat
      in the same folder. Node is ready once `node --version` shows v24 or later. Go on
