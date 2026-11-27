@@ -171,6 +171,8 @@ POINTER_WORDS = 'this computer\'s note of your business folder (~/.merlin/instan
 # The last Merlin version the start-up hook saw on this computer, beside the pointer.
 LAST_VERSION = home('.merlin', 'last-version')
 RECORD = home('.merlin', 'setup-record.json')
+# The Merlin home's own folder: its secret, its list of business folders, its settings, its log.
+HOME_STATE = home('.merlin', 'home')
 SETTINGS = home('.claude', 'settings.json')
 KNOWN_MARKETPLACES = home('.claude', 'plugins', 'known_marketplaces.json')
 INSTALLED_PLUGINS = home('.claude', 'plugins', 'installed_plugins.json')
@@ -2333,6 +2335,28 @@ def key_check(name):
 
 # ------------------------------------------------------------------ remove
 
+def stop_home_server():
+    """Stop this computer's Merlin home server, when one of this account's answers, through the
+    home hook's own stop command. Done before ~/.merlin/home is deleted, because the secret in it
+    is how a server is known to be ours. Returns one plain line."""
+    hook = os.path.join(os.sep.join(os.path.abspath(__file__).split(os.sep)[:-4]), 'hooks', 'home_context.py')
+    if not os.path.isfile(hook):
+        return ('Merlin home: the plugin\'s home script is missing, so a running home server was not stopped. '
+                'It stops by itself within 8 hours.')
+    saved = sys.dont_write_bytecode
+    sys.dont_write_bytecode = True
+    try:
+        import importlib.util
+        spec = importlib.util.spec_from_file_location('merlin_home_context', hook)
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        return mod.stop_cmd()
+    except Exception:
+        return 'Merlin home: a running home server could not be stopped. It stops by itself within 8 hours.'
+    finally:
+        sys.dont_write_bytecode = saved
+
+
 def remove(data, yes, keys):
     rec = load_record()
     plan = []
@@ -2366,6 +2390,9 @@ def remove(data, yes, keys):
         plan.append('delete the note of the last Merlin version this computer used (~/.merlin/last-version)')
     if os.path.exists(RECORD):
         plan.append('delete setup\'s own record, ~/.merlin/setup-record.json')
+    if os.path.isdir(HOME_STATE):
+        plan.append('stop the Merlin home server on this computer if it is running, and delete the Merlin home\'s own '
+                    'folder, ~/.merlin/home (its two settings, its list of business folders and its log)')
     say('Remove: this reverses what Merlin wrote outside your business folder.')
     if not plan:
         say('Nothing to remove.')
@@ -2439,6 +2466,11 @@ def remove(data, yes, keys):
             say('Task numbers: the lane file %s was deleted.' % tilde(lane['file']))
         else:
             say('Task numbers: the lane file %s changed since setup wrote it, so it was left as it is.' % tilde(lane['file']))
+    if os.path.isdir(HOME_STATE):
+        say(stop_home_server())
+        shutil.rmtree(HOME_STATE, ignore_errors=True)
+        say('Merlin home: ~/.merlin/home %s.' % ('could not be deleted completely' if os.path.exists(HOME_STATE)
+                                                 else 'was deleted'))
     if os.path.exists(POINTER):
         os.remove(POINTER)
         say('Deleted %s.' % POINTER_WORDS)

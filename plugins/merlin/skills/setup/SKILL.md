@@ -358,7 +358,8 @@ When the user asks to remove or uninstall Merlin:
 
 1. Run `bash <setup> --remove --data "${user_config.data_dir}"`. It lists exactly what
    it will undo: the pointer file, the folder-access line setup added, automatic
-   updates if setup turned them on, the Codex block, and setup's own record. Add `--keys NAME,NAME` only if the user wants
+   updates if setup turned them on, the Codex block, setup's own record, and the Merlin
+   home's own folder `~/.merlin/home` (it stops the home server first). Add `--keys NAME,NAME` only if the user wants
    stored keys deleted too.
 2. Ask: "Okay to remove these?" On a yes, run the same command with `--yes`.
 3. Tell the user their business folder and every file in it are untouched, and

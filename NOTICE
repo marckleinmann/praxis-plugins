@@ -16,3 +16,8 @@ unchanged, to anyone else, under any name.
 Names: "Merlin" and "Praxis" are names reserved by v1r2al Inc. The license
 grants no right to use either name, or any related logo, for any product,
 service, or copy of this software.
+
+Fonts: the Merlin home page embeds three fonts, Fraunces, Inter and JetBrains
+Mono. They are not covered by the license above. Each is licensed under the
+SIL Open Font License, Version 1.1. That license and each font's copyright
+line are in the file fonts-OFL.txt, beside the fonts in skills/home/shell/.

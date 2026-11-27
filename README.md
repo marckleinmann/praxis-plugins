@@ -31,6 +31,20 @@ No folder question appears when you add Merlin. That is expected: setup asks for
 
 On claude.ai you can add the same catalog under **Customize**, **Plugins**, **Add**: choose to add a marketplace, pick the option that takes a web address, and paste the address above.
 
+## What runs on your computer
+
+Merlin opens a home page beside your chat: your projects, your notes about yourself and your company, and your settings. To show it, Merlin starts one small program on your computer.
+
+- It answers only this computer. Nothing on your network or the internet can reach it.
+- It shows the business folder you chose in setup, and nothing else on your computer.
+- It never writes in your business folder. It keeps its own few files in a folder named `.merlin/home` in your home folder: your two page settings, the list of business folders it may show, and a short log with no names or paths in it.
+- Besides showing pages, it can do four things, and only when your own Merlin home asks: save the two page settings, open one of your project folders in Finder or File Explorer, open a praxisatwork.com page in your browser, and ask an installed Praxis add-on for the address of its page.
+- It starts with the first new chat and stops by itself after 8 hours without use.
+- To stop the home from opening, say "turn off the Merlin home". To bring it back, say "turn the Merlin home back on".
+- Removing Merlin stops the program and deletes that folder.
+
+It needs Python 3.8 or later, which setup already checks for. Without Python the home does not open and everything else works as before.
+
 ## Update
 
 Click your name, then **Settings**, and scroll down to **Plugins**. Click **Sync** on **praxis-plugins**, then update **Merlin**. Start a new conversation afterwards.

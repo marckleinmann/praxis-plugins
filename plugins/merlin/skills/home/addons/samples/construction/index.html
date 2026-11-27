@@ -1,0 +1,1473 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="merlin-built" content="v=1;p=1.10.5;t=2026-11-26T12:52:00;h=35826367b80ffc9a"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>18 Example Way · Merlin for Construction</title>
+<link rel="stylesheet" href="../../fonts.css">
+<style>:root {
+  
+  --warm-50:  #ffffff;
+  --warm-100: #edf1e9;
+  --warm-200: #f2f5fa;
+  --warm-300: #b7c2d6;
+  --warm-400: #9dabc1;
+  --warm-500: #8494ad;
+  --warm-600: #52627d;
+  --warm-700: #374762;
+  --warm-800: #18263e;
+  --warm-900: #0b1425;
+  --warm-950: #091224;
+  --warm-975: #060b16;   
+  --warm-990: #04080f;   
+
+  
+  --signal-100: #E8FFD4;
+  --signal-300: #C6FF7A;
+  --signal-500: #A3FF12;   
+  --signal-700: #6FA80B;
+  --signal-900: #2F4504;
+
+  
+  --terracotta-100: #F2D9CE;
+  --terracotta-300: #c2d5ff;
+  --terracotta-500: #a5c2ff;  
+  --terracotta-700: #234d87;
+  --terracotta-900: #3A1C11;
+
+  
+  --destructive-100: #F5D4D4;
+  --destructive-300: #E08080;
+  --destructive-500: #C94343;
+  --destructive-700: #8A2828;
+  --destructive-900: #3D0F10;
+
+  --success-100: #D4E8DF;
+  --success-300: #7FB19C;
+  --success-500: #3A7560;
+  --success-700: #1F4A3C;
+  --success-900: #0F241E;
+
+  --warning-100: #F0DCB8;
+  --warning-300: #D4AA6E;
+  --warning-500: #C28130;
+  --warning-700: #8A5A1A;
+  --warning-900: #3D2808;
+
+  --info-100: #D4DFE8;
+  --info-300: #7A95AE;
+  --info-500: #4A7090;
+  --info-700: #2A4A65;
+  --info-900: #10243A;
+
+  
+  --bg:              var(--warm-975);   
+  --surface:         var(--warm-700);
+  --surface-subtle:  rgba(237, 241, 233, 0.03);
+
+  --text-primary:    var(--warm-100);
+  --text-secondary:  var(--warm-300);
+  --text-muted:      var(--warm-500);
+  --text-signal:     var(--signal-500);
+
+  
+  --accent:          var(--signal-500);
+  --accent-status:   var(--terracotta-500);
+
+  --border-subtle:   rgba(237, 241, 233, 0.08);
+
+  
+  --btn-hero-bg:        var(--signal-500);
+  --btn-hero-fg:        var(--warm-800);
+  --btn-primary-bg:     var(--terracotta-500);
+  --btn-primary-fg:     var(--warm-100);
+  --btn-destructive-bg: var(--destructive-500);
+  --btn-destructive-fg: var(--warm-100);
+  --btn-neutral-bg:     var(--warm-700);
+  --btn-neutral-fg:     var(--warm-100);
+
+  
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body:    'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono:    'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
+
+  
+  --radius-button: 10px;  
+  --radius-card:   16px;  
+  --radius-media:  12px;  
+  --radius-tile:   9%;    
+
+  
+  --focus-ring: 2px solid #c2d5ff;
+  --focus-ring-offset: 2px;
+
+  
+  --line-hi:          rgba(237, 241, 233, 0.06); 
+  --elev-shadow:      0 16px 40px -18px rgba(0, 0, 0, 0.70);
+
+  
+  --glow-accent:      var(--signal-500);   
+  --glow-blur-inner:  22px;  --glow-strength-inner: 0.50;
+  --glow-blur-outer:  40px;  --glow-strength-outer: 0.28;
+
+  
+  --field-dot:        var(--warm-500);
+  --field-dot-r:      1.2px;  
+  --field-tile:       28px;
+  --field-opacity:    0.30;
+  --field-drift:      9s;     
+  --twinkle:          var(--signal-500);  
+  --spot:             320px;  
+  --ease-soft:        cubic-bezier(.45, .05, .3, 1);
+}
+
+:root {
+  
+  --space-1:4px;  --space-2:8px;  --space-3:12px; --space-4:16px;
+  --space-5:24px; --space-6:32px; --space-7:48px; --space-8:64px;
+  --space-9:96px;
+
+  
+  --type-xs:12px;   --type-sm:13.5px; --type-base:16px; --type-lg:20px;
+  --type-xl:25px;   --type-2xl:32px;  --type-3xl:40px;  --type-4xl:56px;
+
+  
+  --track-display:-0.02em; --track-h1:-0.01em;
+  --track-body:0em;        --track-label:0.14em;
+
+  
+  --leading-tight:1.25; --leading-heading:1.3;
+  --leading-body:1.55;  --leading-wide:1.65;
+
+  
+  --measure-narrow:52ch; --measure-body:68ch; --measure-wide:75ch;
+
+  
+  --elev-1:0 1px 2px rgba(20,18,16,0.30);
+  --elev-2:0 4px 12px rgba(20,18,16,0.38);
+  --elev-3:0 12px 32px rgba(20,18,16,0.46);
+
+  
+  --lod-leading:1.62; --lod-track:0.005em; --lod-weight:450;
+}
+
+
+
+
+.theme-light {
+  --bg:              var(--warm-100);
+  --surface:         var(--warm-50);
+  --surface-subtle:  rgba(24, 38, 62, 0.03);
+  --text-primary:    var(--warm-900);
+  --text-secondary:  var(--warm-700);
+  --text-muted:      var(--warm-500);
+  --border-subtle:   rgba(24, 38, 62, 0.08);
+  --btn-hero-fg:     var(--warm-900);
+  --btn-primary-fg:  var(--warm-100);
+  --btn-destructive-fg: var(--warm-100);
+  --btn-neutral-bg:  var(--warm-200);
+  --btn-neutral-fg:  var(--warm-900);
+}
+
+
+
+
+.mode-brand {
+  --bg:             var(--warm-975);   
+  --surface:        var(--warm-700);
+  --accent:         var(--signal-500);
+  --accent-status:  var(--terracotta-500);
+  --glow-accent:    var(--signal-500);
+  --twinkle:        var(--signal-500);
+}
+
+
+.mode-os {
+  --bg:             var(--warm-975);
+  --surface:        var(--app-surface);
+  --accent:         var(--terracotta-500);   
+  --accent-status:  var(--lime-500);         
+  --glow-accent:    var(--terracotta-500);
+  --twinkle:        var(--lime-500);
+  --text-primary:   var(--app-ink);
+  --text-secondary: var(--app-muted);
+  --text-muted:     var(--app-faint);
+  --border-subtle:  var(--app-rule-soft);
+}
+
+
+:root {
+  
+  --lime-100: #e9f8c4;
+  --lime-300: #d4f774;
+  --lime-500: #b9e84b;
+  --lime-900: #182509;   
+
+  
+  --app-panel:     #0a1322;   
+  --app-surface:   #0d182b;   
+  --app-raised:    #15233c;   
+  --app-rule:      #283b5c;   
+  --app-rule-soft: #1a2843;   
+  --app-ink:       #edf1e9;
+  --app-muted:     #b7c2d6;
+  --app-faint:     #8494ad;
+
+  
+  --app-glass-a:    rgba(18, 31, 54, 0.70);
+  --app-glass-b:    rgba(9, 17, 31, 0.66);
+  --app-glass-edge: rgba(165, 194, 255, 0.12);
+  --app-glass-blur: 9px;
+
+  
+  --app-where: var(--terracotta-500);   
+  --app-act:   var(--lime-500);         
+
+  
+  --btn-next-fill:   linear-gradient(180deg, rgba(185,232,75,.06), rgba(185,232,75,.01)), linear-gradient(#111e35, #0c1729);
+  --btn-next-edge:   linear-gradient(120deg, rgba(212,247,116,.95) 0%, rgba(185,232,75,.9) 38%, rgba(165,194,255,.7) 100%);
+  --btn-next-edge-w: 1.5px;
+  --btn-next-halo:   0 0 22px -7px rgba(185,232,75,.48), 0 0 40px -16px rgba(165,194,255,.32);
+  --btn-next-halo-hover: 0 0 26px -5px rgba(185,232,75,.6), 0 0 46px -14px rgba(165,194,255,.45);
+  --btn-next-fg:     #f3f7ec;
+
+  
+  --btn-action-bg:     linear-gradient(180deg, #15253f, #101c31);
+  --btn-action-border: #33497a;
+  --btn-action-fg:     #e3ebff;
+
+  
+  --pill-act-border: rgba(185, 232, 75, 0.45);
+  --pill-act-fg:     var(--lime-500);
+  --pill-info-border: rgba(165, 194, 255, 0.35);
+  --pill-info-fg:     var(--terracotta-500);
+
+  
+  --font-app-ui:     var(--font-body);      
+  --font-app-moment: var(--font-display);   
+  --font-app-label:  var(--font-mono);      
+
+  
+  --kind-0: #c2d5ff; --kind-1: #94b2f2; --kind-2: #6d8bd6;
+  --kind-3: #5371b8; --kind-4: #415c96; --kind-5: #334a7c;
+}
+
+
+:root {
+  --overlay-fill:   linear-gradient(180deg, rgba(30,46,78,.58), rgba(14,24,44,.52));
+  --overlay-blur:   blur(28px) saturate(170%);
+  --overlay-edge:   rgba(255,255,255,.14);
+  --overlay-light:  inset 0 1px 0 rgba(255,255,255,.22), inset 0 0 0 .5px rgba(255,255,255,.06);
+  --overlay-shadow: 0 30px 80px -20px rgba(0,0,0,.65), 0 8px 24px -8px rgba(0,0,0,.45);
+  --overlay-radius-window: 22px;
+  --overlay-radius-pop:    16px;
+  --overlay-radius-toast:  14px;
+  --overlay-scrim:  rgba(4,8,15,.38);
+  --overlay-scrim-blur: blur(6px);
+  --viewer-scrim:   rgba(4,8,15,.88);
+}
+
+
+:root {
+  --app-pick:       var(--lime-500);          
+  --app-pick-edge:  rgba(185, 232, 75, 0.45); 
+  --app-pick-glow:  rgba(185, 232, 75, 0.4);  
+  --app-pick-wash:  rgba(185, 232, 75, 0.08); 
+  --app-where-wash: rgba(165, 194, 255, 0.12);
+}
+
+
+:root {
+  --page-max:          1120px; 
+  --page-gutter:       32px;   
+  --page-gutter-phone: 16px;   
+  --page-nav-h:        42px;   
+  --page-nav-top:      12px;   
+  --page-nav-radius:   12px;
+  --page-link-h:       30px;   
+  --page-link-radius:  8px;
+  --page-search-w:     230px;  
+  --page-head-gap:     40px;   
+  --page-section-gap:  56px;   
+  --page-grid-gap:     20px;   
+  
+  --site-section-gap:  96px;   
+  --site-btn-h:        36px;   
+  --site-hero-size:    64px;   
+  --site-h2-size:      36px;   
+  --site-body-size:    15px;
+  --site-glow-1:       rgba(110, 145, 235, 0.30); 
+  --site-glow-2:       rgba(110, 145, 235, 0.20);
+  --site-glow-3:       rgba(110, 145, 235, 0.12);
+  --site-watermark:    0.05;   
+  --site-result-size:  28px;   
+  --site-price-size:   44px;   
+  --site-field-h:      40px;   
+  --site-article-h1:   44px;   
+  --site-read-size:    16.5px; 
+  --site-read-leading: 1.7;
+}
+</style>
+<style>:root{color-scheme:dark;
+ --lime:var(--app-act);--blue:var(--app-where);--ui:'Inter',system-ui,-apple-system,sans-serif;--label:'JetBrains Mono',ui-monospace,Menlo,monospace;
+ --moment:'Fraunces',Georgia,serif;--ok:var(--success-300);--warn:var(--warning-300);
+ --tint-blue:color-mix(in srgb,var(--app-where) 7%,transparent);--tint-ok:color-mix(in srgb,var(--success-300) 14%,transparent);
+ --tint-warn:color-mix(in srgb,var(--warning-300) 14%,transparent);--edge-warn:color-mix(in srgb,var(--warning-300) 55%,transparent);
+ --edge-ok:color-mix(in srgb,var(--success-300) 55%,transparent);--dot:color-mix(in srgb,var(--app-faint) 12%,transparent)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--app-rule) transparent}
+::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-thumb{background:var(--app-rule);border-radius:8px}::-webkit-scrollbar-track{background:transparent}
+body{margin:0;background:var(--warm-975);color:var(--app-ink);font:400 14px/1.55 var(--ui);overflow-x:hidden;
+ background-image:radial-gradient(var(--dot) 1.2px,transparent 1.3px),radial-gradient(60% 40% at 85% -5%,var(--tint-blue),transparent 70%);
+ background-size:28px 28px,100% 100%;background-attachment:fixed}
+a{color:var(--blue)}
+:focus-visible{outline:var(--focus-ring);outline-offset:2px}
+.ic{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.wrap{max-width:var(--page-max);margin:0 auto;padding:var(--page-nav-top) var(--page-gutter) 72px}
+
+
+.pnav{position:sticky;top:var(--page-nav-top);z-index:20;display:flex;align-items:center;gap:8px;min-height:var(--page-nav-h);padding:5px 5px 5px 12px;
+ border-radius:var(--page-nav-radius);background:var(--overlay-fill);-webkit-backdrop-filter:var(--overlay-blur);backdrop-filter:var(--overlay-blur);
+ border:1px solid var(--overlay-edge);box-shadow:var(--overlay-light),var(--overlay-shadow)}
+.lock{font-family:var(--moment);font-weight:560;font-size:18px;letter-spacing:-.03em;white-space:nowrap;margin-right:10px}
+.lock i{font-style:italic;font-weight:500;font-size:13px;letter-spacing:0;margin-left:5px;color:var(--app-faint)}.lock i b{font-weight:500;color:var(--app-muted)}
+.links{display:flex;gap:2px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none}.links::-webkit-scrollbar{display:none}
+.links a{position:relative;display:inline-flex;align-items:center;height:var(--page-link-h);padding:0 11px;border-radius:var(--page-link-radius);border:1px solid transparent;
+ font-size:12.5px;font-weight:500;color:var(--app-muted);text-decoration:none;white-space:nowrap;transition:background .18s,color .18s}
+.links a:hover{color:var(--app-ink);background:var(--tint-blue)}
+.links a[aria-current]{color:var(--app-ink);background:var(--app-where-wash);border-color:var(--pill-info-border)}
+.links a[aria-current]::after{content:"";position:absolute;left:11px;right:11px;bottom:3px;height:2px;border-radius:2px;background:var(--blue)}
+.links a:focus-visible{outline-offset:-2px}
+.slot-r{margin-left:auto;display:flex;align-items:center}
+
+
+.next{display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 12px;border-radius:9px;font:600 12.5px/1 var(--ui);white-space:nowrap;cursor:pointer;
+ color:var(--btn-next-fg);text-decoration:none;background:var(--btn-next-fill) padding-box,var(--btn-next-edge) border-box;border:var(--btn-next-edge-w) solid transparent;
+ box-shadow:var(--btn-next-halo);transition:box-shadow .2s}
+.next .ic{color:var(--lime)}.next:hover{box-shadow:var(--btn-next-halo-hover)}.next:hover .arr{transform:translateX(3px)}.next .arr{transition:transform .15s}
+.action{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 11px;border-radius:8px;border:1px solid var(--btn-action-border);background:var(--btn-action-bg);
+ color:var(--btn-action-fg);font:500 12.5px/1 var(--ui);white-space:nowrap;cursor:pointer;text-decoration:none}
+.action .ic{color:var(--blue)}.action:hover{border-color:var(--blue)}
+.action.iconly{width:30px;padding:0;justify-content:center}.action.iconly .ic{width:15px;height:15px}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:2px 7px;border-radius:99px;border:1px solid var(--app-rule);color:var(--app-muted);
+ font:400 9.5px/1.4 var(--label);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap}
+.pill::before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor}
+.pill.warn{border-color:var(--edge-warn);color:var(--warn)}.pill.info{border-color:var(--pill-info-border);color:var(--blue)}.pill.ok{border-color:var(--edge-ok);color:var(--ok)}
+.pill.plain::before,.pill.id::before{display:none}
+.pill.id{border-color:var(--pill-info-border);color:var(--app-ink);background:color-mix(in srgb,var(--warm-975) 80%,transparent);font:600 11.5px/1.4 var(--label);letter-spacing:.02em;padding:2px 8px}
+
+
+header{margin-top:var(--page-head-gap);display:grid;grid-template-columns:1fr auto;gap:24px;align-items:start}
+.crumb{font:400 10.5px/1.4 var(--label);letter-spacing:.14em;text-transform:uppercase;color:var(--app-faint);margin:0 0 12px}
+h1{font:italic 500 36px/1.12 var(--moment);letter-spacing:-.015em;margin:0 0 12px}
+.status{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
+.status .pill{font-size:10.5px;padding:3px 9px}
+.lead{max-width:var(--measure-narrow);color:var(--app-muted);font-size:15px;margin:0 0 18px}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap}
+.prepared{display:flex;flex-direction:column;align-items:flex-end;gap:8px;font:400 10px/1 var(--label);letter-spacing:.14em;text-transform:uppercase;color:var(--app-faint)}
+.wordmark{display:inline-block;background:var(--app-ink);color:var(--warm-975);border-radius:10px;padding:11px 14px;font:700 14px/1 var(--ui);letter-spacing:.01em;text-transform:none;white-space:nowrap}
+
+
+.dg .c{fill:var(--app-surface);stroke:var(--app-rule);stroke-width:1}
+.dg .now{fill:var(--app-surface);stroke:var(--blue);stroke-width:1.25;filter:drop-shadow(0 0 10px var(--app-where-wash))}
+.dg .t{font:600 13px var(--ui);letter-spacing:-.005em;fill:var(--app-ink)}.dg .s{font:400 11.5px var(--ui);fill:var(--app-muted)}
+.dg .kb{font:500 9.5px var(--label);letter-spacing:.14em;fill:var(--blue)}
+.dg .ln{stroke:var(--app-faint);stroke-width:1.25;fill:none}.dg .lnb{stroke:var(--blue);stroke-width:1.25;fill:none}
+.dg .dot{fill:var(--app-raised);stroke:var(--blue);stroke-width:1.25}.dg .nowdot{fill:var(--blue);stroke:var(--blue);stroke-width:1.25}
+.dg .dn{font:600 11px var(--label);fill:var(--app-ink)}.dg .nown{font:600 11px var(--label);fill:var(--warm-975)}
+.dg .ck{fill:none;stroke:var(--app-ink);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.dg .done{opacity:.5}.dg .wait{opacity:.4}
+.dg .ah,.dg .ahs{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:1.6}.dg .ah{stroke:var(--app-faint)}.dg .ahs{stroke:var(--blue)}
+.dg .step{cursor:pointer;outline:none}.dg .step:hover rect,.dg .step:focus-visible rect{stroke:var(--blue);stroke-width:1.5}
+.dg .step:hover .wait,.dg .step:hover.wait{opacity:.7}.dg .step:focus-visible rect{stroke-width:2}
+.phasewrap{display:grid;gap:var(--page-grid-gap)}
+.phasewrap.b{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}
+.dgpanel{padding:18px 18px 14px}.dgpanel .lab{margin-bottom:12px}
+@media (max-width:760px){.phasewrap.b{grid-template-columns:1fr}}
+
+
+section{margin-top:var(--page-section-gap);scroll-margin-top:calc(var(--page-nav-h) + 24px + var(--page-nav-top))}
+.sl{font:400 10.5px/1.4 var(--label);letter-spacing:.14em;text-transform:uppercase;color:var(--app-faint);margin:0 0 6px}
+h2{font:600 22px/1.25 var(--ui);letter-spacing:-.02em;margin:0 0 6px}
+.sub{color:var(--app-muted);max-width:var(--measure-body);margin:0 0 18px}
+.panel{background:var(--app-surface);border:1px solid var(--app-rule-soft);border-radius:16px}
+.lab{font:400 10px/1.4 var(--label);letter-spacing:.14em;text-transform:uppercase;color:var(--app-faint)}
+.chipic{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:7px;flex:none;color:var(--app-muted);
+ background:linear-gradient(180deg,var(--app-raised),var(--app-surface));border:1px solid var(--app-rule-soft)}
+.note{font-size:12.5px;color:var(--app-faint);margin:10px 0 0}
+.mono2{font:400 12px/1.4 var(--label);color:var(--app-muted);letter-spacing:.02em}
+
+
+.facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0}
+.fact{display:flex;gap:11px;align-items:flex-start;padding:16px 18px;border-right:1px solid var(--app-rule-soft);border-bottom:1px solid var(--app-rule-soft);min-width:0}
+.fact>div{min-width:0}
+.fact:nth-child(4n){border-right:0}.fact:nth-last-child(-n+4){border-bottom:0}
+.fact .val{font-weight:500;margin-top:3px;overflow-wrap:anywhere}
+.tlink{display:inline-flex;align-items:center;gap:5px;margin-top:6px;font:500 13px/1.3 var(--ui);color:var(--blue);text-decoration:none}.tlink:hover{text-decoration:underline;text-underline-offset:3px}.tlink .chev{width:12px;height:12px}
+.warnline{display:flex;gap:12px;align-items:flex-start;margin-top:12px;padding:14px 18px;border-color:var(--edge-warn);background:linear-gradient(180deg,var(--tint-warn),var(--app-surface) 80%)}
+.warnline .chipic{color:var(--warn)}.warnline b{display:block;font-weight:600}.warnline span:not(.chipic){display:block;color:var(--app-muted);font-size:13.5px;margin-top:2px}
+
+
+.qpanel{padding:6px 20px 18px}
+.alist{list-style:none;margin:0 0 16px;padding:0;max-width:var(--measure-body)}
+.alist li{display:flex;gap:12px;align-items:flex-start;padding:13px 0;border-top:1px solid var(--app-rule-soft)}.alist li:first-child{border-top:0}
+.alist b{font-weight:600}.alist div{color:var(--app-muted)}.alist div b{color:var(--app-ink)}
+.qn{flex:none;width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:1.25px solid var(--blue);
+ font:600 11px var(--label);color:var(--app-ink);background:var(--app-raised);margin-top:-1px}
+
+
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--page-grid-gap)}
+.tile{position:relative;padding:16px 16px 14px;border-radius:14px;background:var(--app-panel);border:1px solid var(--app-rule-soft);overflow:hidden}
+.tile .top{display:flex;align-items:center;gap:8px}
+.tile .num{font:600 30px/1.1 var(--ui);letter-spacing:-.03em;margin:10px 0 4px}
+.tile .what{color:var(--app-muted);font-size:13px}
+.tile.ok{border-color:var(--edge-ok);background:linear-gradient(180deg,var(--tint-ok),var(--app-panel) 70%)}.tile.ok .chipic{color:var(--ok)}.tile.ok .num{color:var(--ok)}
+.tile.warn{border-color:var(--edge-warn);background:linear-gradient(180deg,var(--tint-warn),var(--app-panel) 70%)}.tile.warn .chipic{color:var(--warn)}.tile.warn .num{color:var(--warn)}
+.tile.blue .chipic,.tile.blue .num{color:var(--blue)}
+
+
+.muted{color:var(--app-faint)}.over{color:var(--warn)}.under{color:var(--ok)}
+table.bg tr.bsec td{padding-top:18px;font:400 10px/1.4 var(--label);letter-spacing:.12em;text-transform:uppercase;color:var(--app-muted);border-top:0}
+table.bg .bn{min-width:190px}table.bg .bn b{font-weight:500}table.bg .bp .pill{margin-left:6px}.bnote{display:block;color:var(--app-faint);font-size:12.5px}
+table.bg tfoot td{border-top:1px solid var(--app-rule);font-weight:600}
+table.bg tr.tunused td{border-top:0;padding:0 0 10px;font-size:12.5px;color:var(--app-muted)}table.bg tr.tunused summary{cursor:pointer;color:var(--app-faint)}table.bg tr.tunused p{margin:6px 0 0}
+table.bg .bp .action{height:auto;min-height:26px;padding:4px 9px;font-size:12px;line-height:1.3;white-space:normal;text-align:left}table.bg td.n,table.bg th.n{padding-left:12px}
+.bgtbl h3,.bgflags h3{margin:14px 0 6px;font:600 15px/1.3 var(--ui)}
+.flist{margin:6px 0 4px;padding-left:18px}.flist li{margin:5px 0}
+@media (max-width:600px){
+ #budget .tile .num{font-size:21px}
+ table.bg thead,table.mb thead{display:none}
+ table.bg,table.bg tbody,table.bg tfoot,table.mb,table.mb tbody{display:block}
+ table.bg tr,table.mb tr{display:flex;flex-wrap:wrap;gap:6px 14px;padding:12px 0;border-top:1px solid var(--app-rule-soft)}
+ table.bg td,table.mb td{display:block;border:0;padding:0!important;text-align:left!important}
+ table.bg .bn,table.mb .bn,table.bg tr.bsec td{flex-basis:100%}
+ table.bg td[data-label]::before,table.mb td[data-label]::before{content:attr(data-label) " ";font:400 9.5px/1.4 var(--label);letter-spacing:.12em;text-transform:uppercase;color:var(--app-faint);margin-right:6px}
+}
+
+.tbl{padding:6px 18px 14px;overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{font:400 10px/1.4 var(--label);letter-spacing:.12em;text-transform:uppercase;color:var(--app-faint);text-align:left;padding:12px 0 10px;font-weight:400}
+td{padding:10px 0;border-top:1px solid var(--app-rule-soft);vertical-align:middle}
+th.n,td.n{text-align:right;white-space:nowrap;padding-left:16px}
+.mname{font-weight:500}
+table.pk th,table.pk td{padding-right:14px}table.pk th:last-child,table.pk td:last-child{padding-right:0}
+table.pk th.n,table.pk td.n{padding-right:22px}
+table.pk .pno{width:48px}table.pk .pst{white-space:nowrap}
+.bidline{display:block;font-size:12.5px;color:var(--ok);margin-top:2px}
+.ops{display:flex;gap:6px;justify-content:flex-end}
+@media (max-width:600px){
+ .pktbl{padding:4px 12px 12px;overflow-x:visible}
+ table.pk thead{display:none}
+ table.pk,table.pk tbody{display:block}
+ table.pk tr{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;padding:14px 0;border-top:1px solid var(--app-rule-soft)}
+ table.pk tbody tr:first-child{border-top:0}
+ table.pk td{display:block;border:0;padding:0!important;text-align:left!important}
+ table.pk .pno{width:auto;order:1}table.pk .ptr{order:2;flex:1 1 0;min-width:0}table.pk .pst{order:3}
+ table.pk .psh{order:4;flex-basis:100%}table.pk .psc{order:5}table.pk .pq{order:6}table.pk .pop{order:7;flex-basis:100%}
+ table.pk td[data-label]::before{content:attr(data-label) " ";font:400 9.5px/1.4 var(--label);letter-spacing:.12em;text-transform:uppercase;color:var(--app-faint);margin-right:6px}
+ table.pk .psc,table.pk .pq{font-size:13.5px}
+ .ops{justify-content:flex-start;margin-top:4px}
+}
+
+
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--page-grid-gap)}
+.mcard{display:flex;flex-direction:column;background:var(--app-surface);border:1px solid var(--app-rule-soft);border-radius:16px;overflow:hidden;transition:border-color .18s}
+.mcard:hover{border-color:var(--pill-info-border)}
+.media{position:relative;margin:8px 8px 0;padding:0;border:0;border-radius:12px;overflow:hidden;aspect-ratio:16/10;cursor:zoom-in;background:var(--app-panel)}
+.media img{display:block;width:100%;height:100%;object-fit:cover;object-position:top;transition:transform .3s}
+.mcard:hover .media img{transform:scale(1.02)}
+.media .pill.id{position:absolute;top:12px;left:12px}
+.media .kind{position:absolute;top:12px;right:12px;font:400 10px/1 var(--label);letter-spacing:.14em;color:var(--app-ink);padding:5px 7px;border-radius:6px;
+ background:color-mix(in srgb,var(--warm-975) 78%,transparent)}
+.mcard .body{display:flex;flex-direction:column;flex:1;padding:14px 16px 14px}
+.mcard h3{font:600 16px/1.35 var(--ui);margin:0 0 8px;letter-spacing:-.01em}
+.mcard .pill{align-self:flex-start;margin-bottom:10px}
+.fchips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.fchip{display:inline-flex;gap:6px;font-size:12px;padding:3px 8px;border-radius:6px;background:var(--app-raised);color:var(--app-ink)}.fchip span{color:var(--app-faint)}
+.mcard p{color:var(--app-muted);font-size:13.5px;line-height:1.5;margin:0 0 14px}
+.foot{margin-top:auto;padding-top:12px;border-top:1px solid var(--app-rule-soft);display:flex;gap:8px;align-items:center}
+.nobid{max-width:var(--measure-body);margin-top:14px;font-size:13.5px;color:var(--app-muted)}
+
+footer{margin-top:64px;padding-top:16px;border-top:1px solid var(--app-rule-soft);font:400 10.5px/1.6 var(--label);letter-spacing:.06em;color:var(--app-faint)}
+
+
+.scrim{position:fixed;inset:0;z-index:50;background:var(--overlay-scrim);-webkit-backdrop-filter:var(--overlay-scrim-blur);backdrop-filter:var(--overlay-scrim-blur);
+ display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .12s}
+.scrim.open{opacity:1;pointer-events:auto;transition:opacity .18s var(--ease-soft)}
+.win{width:min(1240px,100%);height:min(88vh,1000px);display:flex;flex-direction:column;border-radius:var(--overlay-radius-window);overflow:hidden;
+ background:var(--overlay-fill);-webkit-backdrop-filter:var(--overlay-blur);backdrop-filter:var(--overlay-blur);border:1px solid var(--overlay-edge);
+ box-shadow:var(--overlay-light),var(--overlay-shadow);transform:scale(.96);transition:transform .18s var(--ease-soft)}
+.scrim.open .win{transform:scale(1)}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.win,.pnav,.modal{background:color-mix(in srgb,var(--app-raised) 96%,transparent)}}
+.wbar{display:flex;align-items:center;gap:10px;padding:10px 10px 10px 14px}
+.wbar h3{flex:1;min-width:0;font:600 15px/1.3 var(--ui);margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.closeb{width:30px;height:30px;border-radius:50%;border:1px solid var(--app-rule);background:transparent;color:var(--app-muted);display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+.closeb:hover{color:var(--app-ink);border-color:var(--btn-action-border)}.closeb .ic{width:14px;height:14px}
+.frame{flex:1;margin:0 10px 10px;border-radius:12px;overflow:hidden;background:var(--app-ink)}
+.frame iframe{width:100%;height:100%;border:0;display:block}
+.modal{width:min(440px,100%);border-radius:var(--overlay-radius-window);padding:22px 22px 18px;background:var(--overlay-fill);-webkit-backdrop-filter:var(--overlay-blur);backdrop-filter:var(--overlay-blur);
+ border:1px solid var(--overlay-edge);box-shadow:var(--overlay-light),var(--overlay-shadow);transform:scale(.96);transition:transform .18s var(--ease-soft)}
+.scrim.open .modal{transform:scale(1)}
+.modal h3{font:600 19px/1.3 var(--ui);letter-spacing:-.02em;margin:0 0 8px}.modal p{margin:0 0 6px;color:var(--app-muted);font-size:14px}
+.mbtns{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
+.ghost{display:inline-flex;align-items:center;height:30px;padding:0 12px;border:1px solid var(--app-rule);border-radius:8px;background:transparent;color:var(--app-muted);font:500 12.5px/1 var(--ui);cursor:pointer}
+.ghost:hover{color:var(--app-ink);border-color:var(--btn-action-border)}
+
+
+.mailwin{width:min(860px,100%)}
+.mailwin .wbar .pill.warn{font-size:10px;padding:3px 9px}.mailwin .closeb{margin-left:auto;flex:none}
+.mailbody{flex:1;overflow:auto;margin:0 10px 10px;border-radius:12px;background:var(--app-ink)}
+.paper{color:var(--warm-975);padding:22px 28px 30px;font:400 14.5px/1.6 var(--ui)}
+.mh{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;padding:7px 0;border-bottom:1px solid color-mix(in srgb,var(--warm-975) 12%,transparent);font-size:13.5px}
+.mh>span{width:64px;flex:none;font:400 10px/1.4 var(--label);letter-spacing:.12em;text-transform:uppercase;color:color-mix(in srgb,var(--warm-975) 55%,transparent)}
+.mh i{font-style:normal;font:400 9.5px/1 var(--label);letter-spacing:.1em;text-transform:uppercase;padding:3px 6px;border-radius:99px;border:1px solid color-mix(in srgb,var(--warm-975) 25%,transparent);color:color-mix(in srgb,var(--warm-975) 60%,transparent)}
+.mh em{font-style:normal;color:color-mix(in srgb,var(--warm-975) 70%,transparent)}
+.mtext{margin-top:18px;max-width:72ch}.mtext p{margin:0 0 12px}
+.qlist{margin:6px 0 18px;padding:0;list-style:none}
+.qlist li{display:grid;grid-template-columns:28px 1fr;gap:2px 8px;padding:10px 0;border-top:1px solid color-mix(in srgb,var(--warm-975) 10%,transparent)}
+.qid{font:600 12px/1.6 var(--label);color:color-mix(in srgb,var(--warm-975) 70%,transparent)}
+.qt b{font-weight:600}
+.sig{display:flex;flex-direction:column;margin-top:4px;font-size:13.5px;line-height:1.5}.sig span{color:color-mix(in srgb,var(--warm-975) 70%,transparent)}
+@media (max-width:560px){.paper{padding:16px 16px 22px}.mailwin .wbar{flex-wrap:wrap}.mailwin .wbar h3{order:3;flex-basis:100%}}
+
+@media (max-width:1000px){.facts{grid-template-columns:repeat(2,minmax(0,1fr))}.fact{border-right:1px solid var(--app-rule-soft)!important;border-bottom:1px solid var(--app-rule-soft)!important}
+ .fact:nth-child(2n){border-right:0!important}.fact:nth-last-child(-n+2){border-bottom:0!important}
+ .stats{grid-template-columns:repeat(2,minmax(0,1fr))}.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:760px){.pnav{flex-wrap:wrap}.links{order:3;flex-basis:100%}header{grid-template-columns:1fr}.prepared{align-items:center;flex-direction:row}}
+@media (max-width:560px){.wrap{padding-left:var(--page-gutter-phone);padding-right:var(--page-gutter-phone)}.facts,.cards{grid-template-columns:1fr}
+ .fact{border-right:0!important;border-bottom:1px solid var(--app-rule-soft)!important}.fact:last-child{border-bottom:0!important}
+ h1{font-size:30px}.scrim{padding:8px}.win{height:94vh}.slot-r .next .lbl{display:none}.qpanel{padding:4px 14px 16px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}.scrim .win{transform:none}}
+</style>
+<style id="app-shell">
+
+
+
+:root{--page-nav-h:50px;--page-nav-top:14px}
+.pnav{gap:14px;padding:7px 8px 7px 18px;flex-wrap:nowrap!important}
+.slot-r{display:flex;align-items:center;gap:8px;margin-left:auto;flex:none}
+.mnav{display:flex;align-items:center;gap:2px;flex:1;min-width:0}
+.mnav a{position:relative;display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 9px;border-radius:8px;border:1px solid transparent;font:500 12.5px/1 var(--ui);color:var(--app-muted);text-decoration:none;white-space:nowrap;cursor:pointer}
+.mnav a:hover{color:var(--app-ink);background:var(--tint-blue)}
+.mnav a.on{color:var(--app-ink);background:var(--app-where-wash);border-color:var(--pill-info-border)}
+
+.tdd summary{height:30px;padding:0 12px;font-size:12.5px;white-space:nowrap}
+.slot-r .tdd{margin:0}
+.slot-r .tdd-m{left:auto;right:0;z-index:40}
+.tdd-m a{font-size:12.5px}
+.modesw{width:34px;height:34px;flex:none;border-radius:9px;border:1px solid rgba(165,194,255,.28);background:rgba(165,194,255,.08);color:#edf1e9;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;padding:0}
+.modesw:hover{background:rgba(165,194,255,.16)}
+.modesw svg{width:17px;height:17px}
+.modesw .sun{display:none}
+html[data-mode="light"] .modesw .sun{display:block}
+html[data-mode="light"] .modesw .moon{display:none}
+.slot-r a.next.su{display:inline-flex;height:32px;padding:0 13px;font-size:12.5px;text-decoration:none}
+.slot-r a.next.su .lbl{display:inline!important}
+
+
+.lock{display:inline-flex;flex-direction:column;align-items:flex-start;gap:2px;line-height:1;margin-right:0;text-decoration:none;flex:none}
+.lock .lockimg{height:20px!important;width:auto!important;display:block}
+.lock .wm-l{display:none!important}
+html[data-mode="light"] .lock .wm-l{display:block!important}
+html[data-mode="light"] .lock .wm-d{display:none!important}
+.lock .wmsub{font:italic 400 9.5px/1 'Fraunces',Georgia,serif;letter-spacing:.01em;color:var(--app-faint);padding-left:1px;white-space:nowrap}
+
+
+.strip{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(max-content,1fr);gap:0;border:1px solid var(--app-rule-soft);border-radius:11px;background:var(--app-surface);overflow-x:auto;overflow-y:hidden;box-shadow:var(--elev-1);scrollbar-width:none}
+.strip::-webkit-scrollbar{display:none}
+.strip a{display:flex;align-items:center;justify-content:center;gap:6px;height:34px;padding:0 10px;font:500 12px/1 var(--ui);color:var(--app-muted);text-decoration:none;cursor:pointer;border-right:1px solid var(--app-rule-soft);white-space:nowrap}
+.strip a:last-child{border-right:0}
+.strip a:hover{background:var(--tint-blue);color:var(--app-ink)}
+.strip a.on{background:var(--app-where-wash);color:var(--app-ink);box-shadow:inset 0 -2px 0 var(--blue)}
+.strip a:focus-visible{outline-offset:-2px}
+.strip .n{font:500 10px/1 var(--label);color:var(--app-faint)}
+.strip .dot{width:6px;height:6px;border-radius:50%;background:var(--warn);flex:none}
+.strip .dot.ok{background:var(--ok)}
+.strip a.ovcell{display:none}
+
+
+body.pg-ov #workflow,body.pg-step #overview{display:none}
+#overview>.sl{display:none}
+
+
+.tile{padding:11px 14px 10px;border-radius:12px}
+.tile .num{font-size:22px;margin:6px 0 2px}
+.tile .num.sm{font-size:19px}
+.tile .what{font-size:12.5px}
+.stage .stats{margin-bottom:14px}
+.ovg{border-radius:14px}
+.ovc{padding:14px 16px;gap:5px}
+.ovc .v{white-space:normal;overflow:visible;text-overflow:clip}
+
+
+html,body{height:100%;overflow:hidden}
+.wrap{height:100vh;height:100dvh;display:flex;flex-direction:column;padding-top:12px!important;padding-bottom:12px!important}
+.wrap>.pnav{position:relative;top:auto;flex:none;z-index:30}
+.wrap>.strip{position:relative;top:auto;flex:none;margin-top:10px}
+.scrollmid{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;margin:10px -10px;padding:0 10px 6px;scrollbar-width:thin;scrollbar-color:var(--app-rule) transparent;overscroll-behavior:contain}
+.scrollmid>section{margin-top:4px!important;scroll-margin-top:8px}
+
+
+.wrap>footer.appft{flex:none;margin-top:0;padding:10px 16px;display:flex;align-items:center;gap:16px;border:1px solid var(--app-rule-soft);border-radius:14px;background:var(--app-surface);font:400 12.5px/1.5 var(--ui);color:var(--app-muted);letter-spacing:0;text-transform:none}
+.appft .row{flex:1;min-width:0;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:nowrap}
+.appft .brand{display:flex;align-items:center;gap:14px;flex:none}
+.appft .brand a{display:block}
+.appft .brand svg{height:18px;width:auto;display:block}
+.appft .brand .prod{padding-left:14px;border-left:1px solid var(--app-rule);font:italic 400 13px/1 'Fraunces',Georgia,serif;color:var(--app-muted);white-space:nowrap}
+.appft nav{display:flex;gap:4px;flex:none}
+.appft nav a{padding:5px 10px;border-radius:8px;color:var(--app-muted);text-decoration:none;font-weight:500}
+.appft nav a:hover{background:var(--tint-blue);color:var(--app-ink)}
+.appft .fine{font:400 10px/1.6 var(--label);letter-spacing:.06em;text-transform:uppercase;color:var(--app-faint);white-space:nowrap;min-width:0}
+
+
+html[data-mode="light"]{color-scheme:light;
+  --app-panel:#f6f8fc;--app-surface:#ffffff;--app-raised:#eef2f9;--app-rule:#cfd8e8;--app-rule-soft:#e1e7f2;
+  --app-ink:#0b1425;--app-muted:#374762;--app-faint:#5d6c85;
+  --app-glass-a:rgba(255,255,255,.9);--app-glass-b:rgba(255,255,255,.82);--app-glass-edge:rgba(11,20,37,.08);
+  --app-where:#2f5bb7;--blue:#2f5bb7;--app-act:#2f5bb7;--lime:#3d6b0a;
+  --app-pick:#2f5bb7;--app-pick-edge:rgba(47,91,183,.50);--app-pick-glow:rgba(47,91,183,.22);--app-pick-wash:rgba(47,91,183,.09);
+  --app-where-wash:rgba(47,91,183,.08);
+  --pill-act-border:rgba(47,91,183,.40);--pill-act-fg:#2f5bb7;--pill-info-border:rgba(47,91,183,.32);--pill-info-fg:#2f5bb7;
+  --ok:#1f7a6a;--warn:#9a6214;--tint-ok:rgba(31,122,106,.09);--tint-warn:rgba(194,129,48,.11);
+  --edge-warn:rgba(154,98,20,.40);--edge-ok:rgba(31,122,106,.40);
+  --btn-action-bg:#ffffff;--btn-action-border:#c1cbdc;--btn-action-fg:#0b1425;
+  --elev-1:0 1px 2px rgba(11,20,37,.06);--elev-2:0 4px 14px rgba(11,20,37,.08);--elev-3:0 12px 32px rgba(11,20,37,.12);
+  --kind-0:#2f5bb7;--kind-1:#3f6cc8;--kind-2:#5a83d6;--kind-3:#7c9de0;--kind-4:#a3bce9;--kind-5:#c8d6f2;
+  --dot:rgba(47,74,124,.17);--tint-blue:rgba(47,91,183,.06);
+  --focus-ring:2px solid #2f5bb7;
+  --overlay-fill:linear-gradient(180deg,rgba(255,255,255,.97),rgba(246,248,252,.96));
+  --overlay-edge:rgba(11,20,37,.10);--overlay-light:inset 0 1px 0 rgba(255,255,255,.9);
+  --overlay-shadow:0 30px 80px -20px rgba(11,20,37,.35),0 8px 24px -8px rgba(11,20,37,.18);
+  --overlay-scrim:rgba(11,20,37,.34)
+}
+
+html[data-mode="light"] body{background-color:#f2f5fa;color:var(--app-ink)}
+html[data-mode="light"] .callout.howto{border-color:rgba(47,91,183,.30);background:linear-gradient(180deg,rgba(47,91,183,.07),#fff 85%)}
+html[data-mode="light"] .pill.auto{background:rgba(110,70,210,.08);border-color:rgba(110,70,210,.40);color:#5b34b8}
+html[data-mode="light"] .pill.id{background:#eef2f9;color:#1d3f8a;border-color:rgba(47,91,183,.35)}
+html[data-mode="light"] .pnav{background:rgba(255,255,255,.88);border:1px solid #cfd8e8;box-shadow:0 1px 0 rgba(255,255,255,.9) inset,0 8px 22px -14px rgba(11,20,37,.30)}
+html[data-mode="light"] .tdd summary{border-color:rgba(47,91,183,.40);background:rgba(47,91,183,.06)}
+html[data-mode="light"] .tdd-m{box-shadow:0 14px 34px rgba(11,20,37,.16)}
+html[data-mode="light"] .modesw{border-color:#cfd8e8;background:#f3f6fb;color:#0b1425}
+html[data-mode="light"] .modesw:hover{background:#e6ecf6}
+
+html[data-mode="light"] .appft .brand svg [fill="#edf1e9"]{fill:#0b1425}
+
+html[data-mode="light"] .frame,html[data-mode="light"] .mailbody{background:#fff;box-shadow:inset 0 0 0 1px #cfd8e8}
+html[data-mode="light"] .wordmark{color:#edf1e9}
+html[data-mode="light"] #mtoast .mt{background:#fff;border-color:rgba(110,70,210,.40);border-left-color:#6b3fd1;box-shadow:0 14px 36px rgba(11,20,37,.18)}
+html[data-mode="light"] #mtoast .mt span::before{color:#6b3fd1}
+html[data-mode="light"] table.dt td.neg{color:#9a6214}
+html[data-mode="light"] table.dt td.pos{color:#1f7a6a}
+html[data-mode="light"] table.dt tr.orig td{background:rgba(11,20,37,.03)}
+
+html[data-mode="light"] .modal.phone{color-scheme:dark;color:#edf1e9;
+  --app-panel:#0a1322;--app-surface:#0d182b;--app-raised:#15233c;--app-rule:#283b5c;--app-rule-soft:#1a2843;
+  --app-ink:#edf1e9;--app-muted:#b7c2d6;--app-faint:#8494ad;
+  --app-where:#a5c2ff;--blue:#a5c2ff;--app-act:#b9e84b;--lime:#b9e84b;
+  --app-pick:#b9e84b;--app-pick-edge:rgba(185,232,75,.45);--app-pick-glow:rgba(185,232,75,.4);--app-pick-wash:rgba(185,232,75,.08);
+  --app-where-wash:rgba(165,194,255,.12);
+  --pill-act-border:rgba(185,232,75,.45);--pill-act-fg:#b9e84b;--pill-info-border:rgba(165,194,255,.35);--pill-info-fg:#a5c2ff;
+  --ok:var(--success-300);--warn:var(--warning-300);--tint-ok:color-mix(in srgb,var(--success-300) 14%,transparent);--tint-warn:color-mix(in srgb,var(--warning-300) 14%,transparent);
+  --edge-warn:color-mix(in srgb,var(--warning-300) 55%,transparent);--edge-ok:color-mix(in srgb,var(--success-300) 55%,transparent);
+  --btn-action-bg:linear-gradient(180deg,#15253f,#101c31);--btn-action-border:#33497a;--btn-action-fg:#e3ebff;
+  --tint-blue:rgba(165,194,255,.07);--focus-ring:2px solid #c2d5ff}
+html[data-mode="light"] .modal.phone .pill.auto{background:rgba(160,120,255,.14);border-color:rgba(170,135,255,.55);color:#cbb8ff}
+html[data-mode="light"] .modal.phone .pill.id{border-color:var(--pill-info-border);color:var(--app-ink);background:rgba(6,11,22,.8)}
+
+
+@media (max-width:1000px){.appft .brand .prod{display:none}}
+@media (max-width:820px){.appft .row{flex-wrap:wrap;gap:4px 12px}.appft .fine{order:3;flex-basis:100%;white-space:normal;font-size:9px}}
+
+
+@media (max-width:640px){
+  .wrap{padding-top:8px!important;padding-bottom:8px!important}
+  .pnav{gap:5px;padding:6px 7px 6px 10px}
+  .mnav{visibility:hidden}.mnav a{display:none}
+  .strip a.ovcell{display:flex;font-weight:600}
+  .strip{margin-top:8px!important}
+  .strip a{height:38px;padding:0 13px}
+  .tdd summary{padding:0 7px;font-size:11.5px;gap:3px}
+  .slot-r{gap:5px}
+  .slot-r a.next.su{padding:0 9px}
+  .scrollmid{margin:8px -6px;padding:0 6px 6px}
+  .stage{padding:16px 14px 16px}
+  .wrap>footer.appft{padding:8px 12px;border-radius:12px}
+  .appft nav a{padding:5px 7px}
+  .stagenav{flex-wrap:wrap}
+}
+
+@media (max-height:520px){
+  :root{--page-nav-h:42px}
+  .wrap{padding-top:6px!important;padding-bottom:6px!important}
+  .pnav{padding-top:4px;padding-bottom:4px}
+  .wrap>.strip{margin-top:6px!important}.strip a{height:30px}
+  .scrollmid{margin-top:6px;margin-bottom:6px}
+  .wrap>footer.appft{padding:4px 12px}
+  .appft .row{flex-wrap:nowrap!important}.appft .fine{order:0!important;flex-basis:auto!important;white-space:nowrap!important;overflow:hidden;text-overflow:ellipsis}
+  .appft .brand .prod{display:none}
+}
+
+@media (max-width:379px){
+  .pnav{gap:6px;padding-left:10px}
+  .tdd summary{display:block;max-width:108px;line-height:28px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .slot-r a.next.su{padding:0 9px}
+}
+@media print{html,body{height:auto;overflow:visible}.wrap{height:auto;display:block}.scrollmid{overflow:visible}.strip,.appft nav,.modesw{display:none}}
+
+
+.wrap{max-width:none!important}
+.wrap>.pnav,.wrap>.strip,.wrap>footer.appft{width:100%;max-width:1056px;margin-left:auto!important;margin-right:auto!important}
+.scrollmid>section{max-width:1056px;margin-left:auto!important;margin-right:auto!important}
+.scrollmid .wide,.scrollmid .xlwrap,.scrollmid .panel.tbl:has(>table.gantt){width:max(100%,var(--fullw,100%));max-width:none;margin-left:calc((100% - max(100%,var(--fullw,100%))) / 2)}
+
+
+.scrollmid h1{font-size:28px!important;line-height:1.15!important}
+.scrollmid h2,.stage h3{font-size:20px!important;line-height:1.25!important}
+.scrollmid h3{font-size:15px}
+.scrollmid .lead,.scrollmid p.sub,.stage p.why,.stage>p{font-size:14.5px;line-height:1.55}
+.scrollmid,.scrollmid td,.scrollmid li,.scrollmid p{font-size:14px}
+.scrollmid th{font-size:10px}
+.ovc .v{font-size:13.5px!important}
+.ovc .k,.ovc .ovl{font-size:10px!important}
+.strip a{font-size:12.5px!important}
+.mnav a,.tdd summary{font-size:12.5px}
+.scrollmid .pill{font-size:10px}
+.action,.next{font-size:12.5px}
+.scrollmid .note{font-size:12.5px}
+.scrollmid .crumb{font-size:10.5px}
+
+.tile .num{font-size:22px}.tile .num.sm{font-size:19px}.tile .what{font-size:12.5px}
+
+
+
+
+.scrim .modal.ccapp{width:min(1360px,100%);height:92vh;max-height:92vh;padding:0;overflow:hidden;background:var(--app-panel);border-radius:14px;color:var(--app-ink)}
+.cc{display:grid;grid-template-columns:200px minmax(0,1fr);height:100%;font-family:var(--ui);color:var(--app-ink)}
+.cc-body{position:relative;overflow:hidden;display:flex;flex-direction:column;min-width:0}
+
+.scrim .modal .cc p{color:inherit;font-size:13px;max-width:none}
+.scrim .modal .cc .cc-sub{color:var(--app-faint)}
+.scrim .modal section.cc-body{margin-top:0;scroll-margin-top:0}
+
+
+.cc-side{background:var(--app-raised);color:var(--app-muted);padding:14px 10px;display:flex;flex-direction:column;gap:2px;overflow:auto;border-right:1px solid var(--app-rule-soft)}
+.cc-logo{display:flex;align-items:center;gap:8px;padding:2px 6px 12px}
+.cc-logo .tl{display:grid;place-items:center;width:26px;height:26px;border-radius:5px;background:var(--blue);color:var(--app-panel);font:700 14px/1 var(--ui)}
+.cc-logo b{font:600 16px/1 var(--ui);color:var(--app-ink)}
+.cc-search{margin:0 4px 10px;padding:7px 10px;border-radius:8px;background:var(--app-surface);border:1px solid var(--app-rule-soft);color:var(--app-faint);font-size:12.5px}
+.cc-co{padding:4px 8px 10px;font-weight:600;font-size:13px;color:var(--app-ink)}
+.cc-nav{padding:8px 10px;border-radius:8px;font-size:13.5px}
+.cc-nav.on{background:var(--app-where-wash);color:var(--app-ink)}
+.cc-navb{margin-top:auto;border-top:1px solid var(--app-rule-soft);padding-top:8px}
+
+
+.cc-top{display:flex;align-items:center;gap:8px;padding:12px 20px 6px}
+.cc-back{color:var(--blue);font-size:13.5px;font-weight:600}
+.cc-out{height:32px;padding:0 12px;border-radius:8px;border:1px solid var(--app-rule);background:var(--app-surface);color:var(--app-ink);font:600 12.5px var(--ui);cursor:pointer}
+.cc-out:hover{border-color:var(--blue)}
+.cc-blue{height:32px;padding:0 14px;border-radius:8px;border:0;background:var(--blue);color:var(--app-panel);font:600 12.5px var(--ui);cursor:pointer}
+.cc-blue:hover{filter:brightness(1.08)}
+
+
+.cc-ph{display:flex;gap:16px;align-items:center;padding:6px 20px 10px}
+.cc-cover{width:84px;height:84px;object-fit:cover;border-radius:10px;flex:none}
+.cc-ph h2{margin:0 0 2px;font:800 24px/1.2 var(--ui);color:var(--app-ink)}
+.cc-ph u{font-size:13px;color:var(--app-muted);text-decoration:none}
+.cc-labels{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.cc-labels .lp{font:600 11px/1 var(--ui);padding:5px 9px;border-radius:99px;background:var(--app-raised);color:var(--app-muted)}
+.cc-labels .lp.b{background:var(--app-where-wash);color:var(--blue)}
+.cc-tabs{display:flex;gap:4px;padding:0 20px;border-bottom:1px solid var(--app-rule-soft)}
+.cc-tabs button{all:unset;cursor:pointer;padding:10px 12px;font:600 13.5px var(--ui);color:var(--app-muted);border-bottom:2px solid transparent}
+.cc-tabs button span{font-weight:500;color:var(--app-faint);margin-left:3px}
+.cc-tabs button.on{color:var(--app-ink);border-bottom-color:var(--blue)}
+
+
+.cc-wrap{flex:1;display:grid;grid-template-columns:minmax(0,1fr) 270px;min-height:0}
+.cc-wrap.fa-split{grid-template-columns:minmax(0,1fr) minmax(320px,420px)}
+.cc-wrap.fa-full{grid-template-columns:minmax(0,1fr)}
+.cc-main{overflow:auto;padding:14px 20px 30px;min-width:0}
+.cc-panel{overflow:auto;padding:14px 16px 24px;border-left:1px solid var(--app-rule-soft);background:var(--app-surface)}
+
+
+.cc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}
+.cc-panel .cc-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.cc-th{all:unset;cursor:pointer;position:relative;display:block;border-radius:10px;overflow:hidden;aspect-ratio:1/1;background:var(--app-raised)}
+.cc-th img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .2s}
+.cc-th:hover img{transform:scale(1.04)}
+.cc-th .st{position:absolute;top:7px;left:7px;font:700 10px/1 var(--ui);padding:4px 7px;border-radius:99px}
+.cc-th .st.op{background:var(--tint-warn);color:var(--warn);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.cc-th .st.ok{background:var(--tint-ok);color:var(--ok);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.cc-cap{font-size:11.5px;color:var(--app-faint);margin-top:5px}
+
+
+.cc-card{background:var(--app-surface);border:1px solid var(--app-rule-soft);border-radius:10px;padding:12px;margin-bottom:12px;font-size:13px}
+.cc-panel .cc-card{background:var(--app-panel)}
+.cc-lab{font:700 11px var(--ui);text-transform:uppercase;letter-spacing:.06em;color:var(--app-faint);margin-bottom:6px}
+.cc-sub{font-size:12px;color:var(--app-faint)}
+.cc-obs{display:flex;justify-content:space-between;gap:12px;padding:5px 0;border-top:1px solid var(--app-rule-soft);font-size:12.5px}
+.cc-obs:first-of-type{border-top:0}
+.cc-obs span:first-child{color:var(--app-faint)}
+.cc-obs span:last-child{text-align:right}
+.cc-cl{background:var(--app-surface);border:1px solid var(--app-rule-soft);border-radius:12px;overflow:hidden}
+.cc-clh{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 16px 8px}
+.cc-clh b{font:800 17px var(--ui)}
+.cc-sec{background:var(--app-raised);font:700 12.5px var(--ui);color:var(--app-muted);padding:8px 16px}
+.cc-row{display:grid;grid-template-columns:28px minmax(0,1fr) 64px;gap:12px;align-items:center;padding:10px 16px;border-top:1px solid var(--app-rule-soft);font-size:13.5px}
+.cc-row.done .cc-rl{color:var(--app-faint)}
+.cc-meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:4px;font-size:12px;color:var(--app-faint)}
+.cc-as{background:var(--app-where-wash);color:var(--blue);font-weight:600;padding:2px 7px;border-radius:99px}
+.cc-mini{all:unset;cursor:pointer;width:64px;height:48px;border-radius:6px;overflow:hidden;background:var(--app-raised)}
+.cc-mini img{width:100%;height:100%;object-fit:cover;display:block}
+
+.cc-ic{width:22px;height:22px;display:grid;place-items:center;color:var(--app-muted);border-radius:50%;background:var(--app-raised)}
+.cc-row.note .cc-rl{color:var(--app-muted)}
+.cc-as.g{background:var(--app-raised);color:var(--app-muted)}
+
+
+.cc-lb{flex:1;display:grid;grid-template-columns:minmax(0,1fr) 340px;min-height:0;height:100%}
+.cc-img{position:relative;background:#0b0f16;display:flex;align-items:center;justify-content:center;min-height:0}
+.cc-img img{max-width:100%;max-height:100%;object-fit:contain}
+.cc-arr{all:unset;cursor:pointer;position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.92);color:#111a28;font:600 26px/40px var(--ui);text-align:center}
+.cc-arr.l{left:14px}.cc-arr.r{right:14px}
+.cc-rp{background:var(--app-panel);overflow:auto;display:flex;flex-direction:column;padding:14px 14px 0}
+.cc-rph{display:flex;justify-content:space-between;gap:10px;margin-bottom:10px}
+.cc-x{all:unset;cursor:pointer;font-size:24px;line-height:1;color:var(--app-muted);padding:0 4px}
+
+
+.cc-toast{position:absolute;left:50%;bottom:20px;transform:translateX(-50%);background:var(--app-ink);color:var(--app-panel);font-size:13px;padding:10px 14px;border-radius:10px;max-width:80%;box-shadow:0 8px 24px rgba(0,0,0,.3);z-index:2}
+
+
+.cc-rl{min-width:0}
+.fa-pick{all:unset;cursor:pointer;display:block;width:100%;box-sizing:border-box;min-width:0;border-radius:6px}
+.fa-pick b{color:var(--app-ink)}
+.cc-row.done .fa-pick b{color:var(--app-faint)}
+.cc-row.on{background:var(--app-where-wash);box-shadow:inset 3px 0 0 var(--blue)}
+.cc-row .cc-out{height:28px;font-size:12px;margin-top:8px}
+.fa-sum{display:block;margin-top:2px;color:var(--app-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cc-as.w{background:var(--tint-warn);color:var(--warn)}
+.cc-as.ok{background:var(--tint-ok);color:var(--ok)}
+.fa-none{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--app-raised);color:var(--app-faint);font:600 10.5px/1.2 var(--ui);text-align:center;padding:4px;box-sizing:border-box}
+.fa-big{all:unset;cursor:zoom-in;display:block;width:100%;aspect-ratio:4/3;border-radius:10px;overflow:hidden;background:var(--app-raised);margin-bottom:12px}
+.fa-big img{width:100%;height:100%;object-fit:cover;display:block}
+div.fa-big{cursor:default}
+.fa-h{margin:0 0 6px;font:700 17px/1.3 var(--ui);color:var(--app-ink);letter-spacing:-.01em}
+.fa-acts{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 14px}
+.fa-notes{margin:0;padding:0 0 0 18px;font-size:13px;color:var(--app-ink)}
+.fa-notes li{margin:0 0 4px}
+.fa-empty{padding:18px 16px;color:var(--app-faint);font-size:13px}
+.cc .fa-pick:focus-visible,.cc button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.cc-tabs button:focus-visible{outline-offset:-2px}
+
+
+.cc-clh{flex-wrap:wrap}
+.cc-clh .cc-blue{flex:none}
+.fa-form{display:flex;flex-direction:column;gap:10px}
+.fa-form .fa-h{margin-bottom:2px}
+.fa-f{display:flex;flex-direction:column;gap:4px;font:600 12px var(--ui);color:var(--app-muted)}
+.fa-f input,.fa-f textarea{box-sizing:border-box;width:100%;padding:8px 10px;border:1px solid var(--app-rule);border-radius:8px;background:var(--app-panel);color:var(--app-ink);font:400 13.5px/1.4 var(--ui)}
+.fa-f textarea{resize:vertical;min-height:64px}
+.fa-f input::placeholder,.fa-f textarea::placeholder{color:var(--app-faint)}
+.fa-f input:focus,.fa-f textarea:focus{outline:2px solid var(--blue);outline-offset:0;border-color:var(--blue)}
+.scrim .modal .cc p.fa-hint{margin:0;font-size:12px;color:var(--app-faint)}
+.fa-form .fa-acts{margin:2px 0 0}
+
+
+@media (max-width:900px){
+  .cc{grid-template-columns:1fr}
+  .cc-side{display:none}
+  .cc-wrap,.cc-wrap.fa-split{grid-template-columns:minmax(0,1fr);overflow:auto}
+  .cc-main,.cc-panel{overflow:visible}
+  .cc-panel{border-left:0;border-top:1px solid var(--app-rule-soft)}
+  .cc-lb{grid-template-columns:1fr;grid-template-rows:45% 1fr}
+}
+@media (max-width:560px){
+  .scrim .modal.ccapp{height:96vh;max-height:96vh}
+  .cc-top{padding:10px 14px 4px}
+  .cc-ph{padding:4px 14px 8px;gap:12px}
+  .cc-cover{width:56px;height:56px}
+  .cc-ph h2{font-size:19px}
+  .cc-tabs{padding:0 8px;overflow-x:auto}
+  .cc-main{padding:12px 12px 20px}
+  .cc-row{grid-template-columns:22px minmax(0,1fr) 56px;gap:10px;padding:10px 12px}
+  .cc-mini{width:56px;height:42px}
+}
+
+
+
+
+.md-wv .stats.md-s3{grid-template-columns:repeat(3,minmax(0,1fr));margin-bottom:14px}
+.md-dtw{overflow-x:auto;border:1px solid var(--app-rule-soft);border-radius:12px;padding:0 14px;background:var(--app-surface)}
+table.md-dt{width:100%;border-collapse:collapse;font-size:13.5px}
+table.md-dt th{padding:10px 14px 8px 0;text-align:left;font:400 10px/1.4 var(--label);letter-spacing:.12em;text-transform:uppercase;color:var(--app-faint);white-space:nowrap}
+table.md-dt td{padding:10px 14px 10px 0;border-top:1px solid var(--app-rule-soft);vertical-align:top;color:var(--app-ink)}
+table.md-dt th:last-child,table.md-dt td:last-child{padding-right:0;text-align:right}
+table.md-dt .n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+table.md-dt .md-mut{display:block;color:var(--app-muted);font-size:12px;margin-top:2px}
+table.md-dt .md-sb{font-weight:600}
+.md-tagrow{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.md-kind{font:400 10px/1.4 var(--label);letter-spacing:.1em;text-transform:uppercase;color:var(--app-muted)}
+.md-empty{padding:14px 0;color:var(--app-muted);font-size:13.5px}
+@media (max-width:600px){.md-wv .stats.md-s3{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+
+.scrim .modal.md-modal{width:min(820px,100%);max-height:92vh;overflow:auto;color:var(--app-ink)}
+.md-mhead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px}
+.md-mhead .md-tagrow{margin-bottom:2px}
+.md-mhead h3{margin:4px 0 0;font:600 18px/1.3 var(--ui);color:var(--app-ink)}
+.md-mfoot{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;margin-top:16px}
+.md-okline{margin:0 0 12px;padding:10px 14px;border-radius:10px;border:1px solid var(--edge-ok);color:var(--ok);font-size:13.5px;background:var(--tint-ok)}
+.md-okline.info{border-color:var(--pill-info-border);color:var(--blue);background:var(--app-where-wash)}
+.md-callout{margin:0 0 12px;padding:12px 16px;border-radius:12px;border:1px solid var(--edge-warn);background:linear-gradient(180deg,var(--tint-warn),var(--app-surface) 85%);font-size:14px;color:var(--app-muted)}
+.md-callout b{color:var(--app-ink)}
+
+
+.md-pdfv{background:var(--app-panel);border:1px solid var(--app-rule-soft);border-radius:10px;padding:14px;overflow:auto}
+.md-page{position:relative;max-width:760px;margin:0 auto;background:var(--app-surface);color:var(--app-ink);border:1px solid var(--app-rule);border-radius:3px;padding:34px 40px;
+ font:14px/1.55 Georgia,'Times New Roman',serif;box-shadow:var(--elev-2,0 2px 10px rgba(0,0,0,.35))}
+.md-page+.md-page{margin-top:12px}
+.scrim .modal .md-page p,.scrim .modal .md-page li,.scrim .modal .md-page td,.scrim .modal .md-page th{color:var(--app-ink);font-size:14px}
+.md-page .md-dh{font:700 19px/1.3 Georgia,serif;margin:0 0 4px;color:var(--app-ink);padding-right:120px}
+.scrim .modal .md-page p.md-dm,.md-page .md-dm{font:12px/1.4 var(--ui);color:var(--app-faint);margin:0 0 12px}
+.md-page h4{font:700 12px/1.4 var(--ui);text-transform:uppercase;letter-spacing:.06em;margin:16px 0 4px;color:var(--app-ink)}
+.md-page p{margin:0 0 10px}
+.md-page .md-notice{border:1px solid var(--app-rule);border-radius:4px;padding:8px 12px;font:12.5px/1.5 var(--ui)}
+.md-dtab{width:100%;border-collapse:collapse;font:13px var(--ui);margin:8px 0 12px}
+.md-dtab th,.md-dtab td{border-bottom:1px solid var(--app-rule-soft);padding:6px 8px 6px 0;text-align:left;vertical-align:top}
+.md-dtab .n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;padding-right:0}
+.md-dtab tr.tot td{border-top:2px solid var(--app-ink);border-bottom:0;font-weight:700}
+.md-sigs{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:22px}
+.md-sigs>div{display:flex;flex-direction:column;gap:3px}
+.md-sigs .md-line{border-bottom:1px solid var(--app-ink);height:4px}
+.md-sigs .md-sl2{font:12px var(--ui);color:var(--app-faint)}
+.md-sigs .md-script{font:italic 26px/1.1 'Brush Script MT','Segoe Script','Snell Roundhand',cursive;color:var(--blue);padding-left:4px;min-height:29px}
+.md-sigs .md-signhere{align-self:flex-start;font:700 11px/1 var(--ui);border:1px dashed var(--edge-warn);background:var(--tint-warn);color:var(--warn);padding:6px 8px;border-radius:4px}
+
+
+.md-stamp{position:absolute;top:26px;right:30px;transform:rotate(-8deg);border:2px solid var(--ok);color:var(--ok);border-radius:6px;padding:5px 10px 4px;
+ font:700 15px/1 var(--label);letter-spacing:.16em;text-transform:uppercase;text-align:center;background:var(--tint-ok)}
+.md-stamp small{display:block;font:500 9.5px/1.3 var(--label);letter-spacing:.06em;margin-top:3px;text-transform:none}
+.md-band{margin:-34px -40px 22px;padding:7px 40px;border-bottom:1px solid var(--edge-warn);color:var(--warn);font:600 11px/1.4 var(--label);letter-spacing:.14em;text-transform:uppercase;
+ background:repeating-linear-gradient(135deg,var(--tint-warn) 0 10px,transparent 10px 20px)}
+.md-band+.md-stamp{top:58px}
+
+
+.md-racts{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end}
+.md-dsec{margin:0 0 16px}
+.md-dsec h4{margin:0 0 8px;font:600 14px/1.3 var(--ui);color:var(--app-ink)}
+.md-dsec .md-dtw{padding:0 12px}
+.md-tot{display:flex;justify-content:space-between;gap:12px;margin:8px 2px 0;padding:8px 12px;border-radius:8px;background:var(--app-panel);font-size:13.5px;color:var(--app-muted)}
+.md-tot b{color:var(--app-ink);font-variant-numeric:tabular-nums}
+.md-band.md-band-flat{margin:0 0 14px;padding:7px 12px;border:1px solid var(--edge-warn);border-radius:8px}
+
+@media (max-width:900px){.md-page{padding:20px 18px}.md-band{margin:-20px -18px 18px;padding:7px 18px}.md-band+.md-stamp{top:44px}.md-stamp{right:14px}.md-sigs{grid-template-columns:1fr}.md-page .md-dh{padding-right:0;margin-top:44px}}
+@media (max-width:600px){.scrim .modal.md-modal{padding:16px 14px 14px}.md-pdfv{padding:8px}}
+@media (prefers-reduced-motion:reduce){.scrim .modal.md-modal{transition:none}}
+@media print{.md-pdfv{background:none;border:0;padding:0}.md-page{box-shadow:none}}
+
+body[data-pg] .scrollmid>section{display:none}
+body[data-pg="ov"] #overview,body[data-pg="ov"] #phases,body[data-pg="ov"] #record,body[data-pg="ov"] #files{display:block}
+body[data-pg="step-1"] #step-1{display:block}
+body[data-pg="step-2"] #step-2{display:block}
+body[data-pg="step-3"] #step-3{display:block}
+body[data-pg="step-4"] #step-4{display:block}
+body[data-pg="step-5"] #step-5{display:block}
+body[data-pg="step-6"] #step-6{display:block}
+body[data-pg="step-7"] #step-7{display:block}
+
+.strip a.ovcell{display:flex;font-weight:600}
+.strip .dot.open{background:transparent;box-shadow:inset 0 0 0 1.5px var(--app-faint)}
+.scrollmid>section{margin-top:18px!important}
+.scrollmid>section#overview{margin-top:4px!important}
+.ovg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--app-rule-soft);border-radius:14px;background:var(--app-surface);overflow:hidden;margin:18px 0 14px}
+.ovc{display:flex;flex-direction:column;gap:5px;padding:12px 14px;border-right:1px solid var(--app-rule-soft);border-bottom:1px solid var(--app-rule-soft);min-width:0}
+.ovc:nth-child(4n){border-right:0}.ovc:nth-last-child(-n+4){border-bottom:0}
+.ovc .kr{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.ovc .k{font:400 10px/1.3 var(--label);letter-spacing:.12em;text-transform:uppercase;color:var(--app-faint)}
+.ovc .ovl{font:500 10px/1.3 var(--label);letter-spacing:.12em;text-transform:uppercase;color:var(--blue);text-decoration:none}
+.ovc .v{color:var(--app-ink)}
+.callout.howto{border:1px solid var(--pill-info-border);border-radius:14px;padding:14px 18px;background:var(--app-where-wash)}
+.callout.howto ol{margin:8px 0 6px;padding-left:20px}.callout.howto li{margin:3px 0}.callout.howto p{margin:4px 0 0;color:var(--app-muted)}
+.stepsec>.sl .pill{margin-left:8px;vertical-align:1px}
+.stepnav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:22px}
+.stepnav .ic.back{transform:rotate(180deg)}
+
+.stepnav .nextstep{flex:1 1 auto;min-width:0;max-width:640px;display:flex;align-items:center;justify-content:center;gap:4px 10px;flex-wrap:nowrap;padding:6px 10px;border:1px dashed var(--app-rule);border-radius:10px;background:var(--app-surface)}
+.nextstep .k{font:600 10px/1 var(--label,var(--ui));letter-spacing:.08em;text-transform:uppercase;color:var(--app-faint)}
+.nextstep .nsq{font:500 13px/1.35 var(--ui);color:var(--app-ink);flex:0 1 auto;min-width:0}.nextstep .k{flex:none;white-space:nowrap}.nextstep .claudebtn{flex:none}
+.claudebtn.sm{height:28px;padding:0 9px;font-size:12px;gap:5px}
+@media (max-width:640px){.stepnav{flex-wrap:wrap}.stepnav .nextstep{order:-1;flex-basis:100%;max-width:none}}
+.secn{display:block;font-size:12px;margin-top:2px}
+.bidtbl tr.tsec td{font-weight:600;background:var(--app-raised)}
+details.closedl summary{cursor:pointer;padding:12px 16px;font-weight:600}
+table.pk.gantt td.gcell{width:46%;min-width:180px}
+.gtrack{position:relative;height:12px;border-radius:6px;background:var(--app-rule-soft)}
+.gfill{position:absolute;top:0;bottom:0;border-radius:6px;background:var(--app-faint)}.gfill.ok{background:var(--ok)}.gfill.warn{background:var(--warn)}
+.gtoday{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--blue)}
+.callout.estnote{margin-top:4px}
+#step-2 table.pk th.n,#step-2 td.psc,#step-2 td.pq{width:1%;white-space:nowrap}
+#step-2 td.psh{max-width:260px}
+.subnav{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 18px;padding:4px;border:1px solid var(--app-rule-soft);border-radius:12px;background:var(--app-surface);width:max-content;max-width:100%}
+.subnav a{padding:7px 12px;border-radius:9px;text-decoration:none;color:var(--app-muted);font-size:13px;font-weight:500}
+.subnav a.on{background:var(--app-raised);color:var(--app-ink);box-shadow:inset 0 0 0 1px var(--app-rule)}
+.subnav .cnt{font:500 11px/1 var(--label);color:var(--app-faint);margin-left:4px}
+#step-2 .subpg{display:none}#step-2:not([data-sub]) .subpg[data-sub="packages"],#step-2[data-sub="packages"] .subpg[data-sub="packages"],#step-2[data-sub="qa-design"] .subpg[data-sub="qa-design"],#step-2[data-sub="qa-subs"] .subpg[data-sub="qa-subs"],#step-2[data-sub="prices"] .subpg[data-sub="prices"],#step-2[data-sub="sheet"] .subpg[data-sub="sheet"]{display:block}
+#step-3 .subpg{display:none}#step-3:not([data-bsub]) .subpg[data-bsub="bg-lines"],#step-3[data-bsub="bg-lines"] .subpg[data-bsub="bg-lines"],#step-3[data-bsub="bg-sheet"] .subpg[data-bsub="bg-sheet"],#step-3[data-bsub="bg-cost"] .subpg[data-bsub="bg-cost"]{display:block}
+.subchip{display:inline-block;margin:2px 4px 2px 0;padding:2px 8px;border-radius:999px;border:1px solid var(--app-rule);font-size:12px;white-space:nowrap;color:var(--app-ink)}
+#step-2 td.psent{min-width:150px}
+.scrollmid table .pill:not(.id){min-width:96px;justify-content:center;text-align:center}
+table.bg .bp .action{width:auto;max-width:170px;min-height:28px;justify-content:flex-start;font-size:12px;white-space:nowrap}table.bg .bp .bpl{overflow:hidden;text-overflow:ellipsis;min-width:0}table.bg td.bp{width:1%}table.bg .bn{min-width:150px}
+.cmpcard{margin-top:14px}.cmpcard h3{display:flex;gap:8px;align-items:center}
+.qatbl td.qno{width:48px;vertical-align:top}.qatbl td{vertical-align:top}
+.qnum{flex:none;min-width:24px;display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;border:1px solid var(--app-rule);font:500 11px/1 var(--label);color:var(--app-muted)}
+.qatbl{table-layout:fixed;width:100%}.qatbl td:nth-child(3){white-space:nowrap}
+.cmpcard h3 .cmpbtn{margin-left:auto}
+#lienwaivers .md-tagrow{display:flex;flex-wrap:wrap;gap:4px}#lienwaivers .md-tagrow .pill{font-size:9px!important;padding:2px 7px!important;min-width:112px!important;letter-spacing:.06em}
+#lienwaivers td.md-stc{min-width:250px}#lienwaivers .pill.bad{color:var(--danger,#d9534f);border-color:currentColor}
+.xltabs{display:flex;gap:4px;margin:10px 0 0}.xlt{border:1px solid var(--app-rule-soft);border-bottom:0;border-radius:8px 8px 0 0;background:var(--app-panel);color:var(--app-muted);padding:6px 12px;font-size:12.5px;cursor:pointer}.xlt.on{background:var(--app-surface);color:var(--app-ink);font-weight:600}
+
+.xlwrap{border:1px solid var(--app-rule-soft);background:var(--app-surface);max-height:560px;overflow:auto;border-radius:8px}
+table.xl{border-collapse:collapse;font:12.5px/1.35 var(--label);width:100%}table.xl td{border:1px solid var(--app-rule-soft);padding:4px 8px;white-space:nowrap;color:var(--app-ink)}
+table.xl td.n{text-align:right;font-variant-numeric:tabular-nums}table.xl thead td{font-weight:600;background:var(--app-raised);position:sticky;top:0;z-index:1}
+table.xl tr.tsec td{font-weight:600;background:var(--app-where-wash)}table.xl tr.tot td{font-weight:600}table.xl tr.grand td{font-weight:700;background:var(--app-raised)}
+table.xl td.mine{color:var(--ok)}
+table.xl input{width:86px;text-align:right;font:inherit;border:1px solid var(--app-rule);border-radius:5px;background:var(--app-panel);color:var(--app-ink);padding:2px 5px}
+.scrollmid .xltabs{width:max(100%,var(--fullw,100%));max-width:none;margin-left:calc((100% - max(100%,var(--fullw,100%))) / 2);margin-bottom:8px}.xltabs .xlt{border-bottom:1px solid var(--app-rule-soft);border-radius:8px}table.xl tr.ttl td{font-weight:700;font-size:13px;background:var(--app-surface)}
+.jobid{display:flex!important;flex:1;justify-content:flex-start!important;align-items:center;margin-left:16px;padding-left:16px;border-left:1px solid var(--app-rule-soft);min-width:0;height:24px}
+.jobid span{font:400 10px/1.6 var(--label);letter-spacing:.06em;text-transform:uppercase;color:var(--app-faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.claudebtn{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 13px;border-radius:10px;border:1px solid var(--app-rule);background:var(--app-surface);color:var(--app-ink);font:500 12.5px var(--ui);cursor:pointer;text-decoration:none}
+.claudebtn svg{color:var(--blue)}.claudebtn:hover{border-color:var(--blue)}
+@media (max-width:640px){.jobid{display:none!important}.claudebtn span{display:none}.claudebtn{padding:0 10px}}
+.alertbtn{position:relative;display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;margin-left:8px;border-radius:10px;border:1px solid var(--app-rule);background:var(--app-surface);color:var(--app-ink);cursor:pointer}
+.abadge{position:absolute;top:-5px;right:-5px;min-width:17px;height:17px;border-radius:9px;background:var(--warn);color:#111;font:600 10px/17px var(--label);text-align:center;padding:0 4px}
+.pxdlg{border:1px solid var(--app-rule);border-radius:16px;background:var(--app-surface);color:var(--app-ink);padding:0;width:min(640px,94vw);max-height:86vh}
+.pxdlg::backdrop{background:rgba(4,8,15,.45)}.pxdlg .dh{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--app-rule-soft)}
+.pxdlg .body{padding:16px 18px;overflow:auto;max-height:72vh}.pxdlg ul{padding-left:20px}.pxdlg li{margin:6px 0}
+.alist{list-style:none;padding:0!important;margin:0 0 12px}.alist li{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--app-rule-soft)}.alist .at{flex:1}
+.cmsgs{display:flex;flex-direction:column;gap:8px;max-height:46vh;overflow:auto;margin-bottom:10px}.cm{padding:9px 12px;border-radius:12px;max-width:88%;font-size:14px}
+.cm.sys{background:var(--app-where-wash);color:var(--app-muted);max-width:100%}.cm.me{align-self:flex-end;background:var(--app-raised)}.cm.cl{align-self:flex-start;border:1px solid var(--app-rule-soft)}
+.cin{display:flex;gap:8px;align-items:flex-end}.cin textarea{flex:1;border:1px solid var(--app-rule);border-radius:10px;background:var(--app-panel);color:var(--app-ink);padding:8px 10px;font:14px var(--ui)}
+.callout.nextstep{margin-top:26px;border:1px solid var(--pill-info-border);border-left:3px solid var(--blue);border-radius:0 14px 14px 0;padding:14px 18px;background:var(--app-where-wash)}
+.callout.nextstep p{margin:6px 0}.nsrow{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:8px 0}
+.nsprompt{font:500 14px var(--ui);color:var(--app-ink);padding:8px 12px;border:1px dashed var(--app-rule);border-radius:10px;background:var(--app-surface)}
+.tellclaude{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin:12px 0 4px;padding:9px 12px;border:1px dashed var(--app-rule);border-radius:10px;background:var(--app-surface);font:500 13.5px/1.45 var(--ui);color:var(--app-ink);max-width:none}
+.tellclaude .k{font:600 10px/1 var(--label,var(--ui));letter-spacing:.08em;text-transform:uppercase;color:var(--app-faint)}
+.emptystep{display:flex;gap:12px;align-items:flex-start;padding:16px 18px}.emptystep span{display:block;color:var(--app-muted);margin-top:4px}
+html[data-mode="light"] .dg .nown{fill:#fff}
+html[data-mode="light"] .wordmark{background:#0b1425;color:#fff}
+@media (max-width:900px){.ovg{grid-template-columns:repeat(2,minmax(0,1fr))}.ovc:nth-child(4n){border-right:1px solid var(--app-rule-soft)}.ovc:nth-child(2n){border-right:0}.ovc:nth-last-child(-n+4){border-bottom:1px solid var(--app-rule-soft)}.ovc:nth-last-child(-n+2){border-bottom:0}}
+@media (max-width:640px){.slot-r a.next .lbl{display:none}}
+#step-1 .toolrow{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:16px 0 0}#step-1 .toolrow .next{text-decoration:none;flex:none}#step-1 .toolrow code{font:12px var(--label)}#step-1 .toolrow.top{margin:6px 0 18px}#step-1 .toolrow .action{text-decoration:none;flex:none}
+#step-1 .podet{margin:0 0 10px;padding:0;border-radius:12px}#step-1 .podet summary{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 16px;cursor:pointer}
+#step-1 .podet .posup{flex:1;min-width:180px}#step-1 .podet .poamt{font-variant-numeric:tabular-nums;font-weight:600}#step-1 .podet[open] summary{border-bottom:1px solid var(--app-rule-soft)}
+#step-1 .podoc{border:1px solid var(--app-rule-soft);border-radius:12px;padding:16px;margin:12px;background:var(--app-surface)}
+#step-1 .podh{display:flex;justify-content:space-between;gap:16px;margin-bottom:12px;font-size:13.5px}#step-1 .podh .r{text-align:right}
+#step-1 .podet .tellclaude{margin:0 12px 12px}#step-1 .potbl tr.grand td{background:var(--app-raised)}
+@media (max-width:640px){#step-1 .podh{flex-direction:column}#step-1 .podh .r{text-align:left}}
+.pill.bad{color:var(--danger,#d9534f);border-color:currentColor;background:transparent}
+.emptystep .nothing{font-weight:600}
+.emptystep .tellclaude{margin:10px 0 0}
+.emptystep .tellclaude .claudebtn{margin-left:auto}
+.ptbl-photo{width:56px;height:42px;object-fit:cover;border-radius:6px;border:1px solid var(--app-rule-soft);display:block}
+.mcard .media .fileic{display:flex;align-items:center;justify-content:center;width:100%;height:100%;min-height:120px;color:var(--app-faint)}
+.mcard .media .fileic svg{width:44px;height:44px;stroke-width:1.2}
+.demomark{display:inline-block;margin-left:10px;vertical-align:middle}
+.cmpmx td.ci{text-align:center}
+.dlog{margin:0 0 12px}.dlog summary{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:12px 16px;cursor:pointer}
+.dlog .dlb{padding:0 16px 14px}.dlog .dlb ul{margin:6px 0 0;padding-left:20px}
+.sumcheck{margin-top:12px}
+
+/* inspector run 3 */
+.nobr{white-space:nowrap}
+.tile .num.txt{font-size:15px;line-height:1.4;font-weight:500;color:var(--app-muted);font-family:var(--ui)}
+.fcount{font-size:12.5px;flex-basis:100%;display:block;margin-top:2px}
+table.pk.gantt{table-layout:auto;width:100%}table.pk.gantt td.gcell{width:auto;min-width:140px}
+@media (max-width:600px){
+ #step-2 table.pk td.psc,#step-2 table.pk td.pq{width:auto;flex:0 0 auto;white-space:nowrap}
+ #step-2 table.pk td.psh{max-width:none}#step-2 table.pk td.psent{min-width:0;flex-basis:100%}
+ table.pk.gantt td.gcell{min-width:0;flex-basis:100%}
+}
+.scrollmid .panel.tbl:has(>table.gantt){width:100%;max-width:100%;margin-left:0}
+@media (max-width:600px){
+ #step-2 table.pk td.psent{order:4;flex-basis:100%}#step-2 table.pk td.psh{order:5}#step-2 table.pk td.psc{order:6}#step-2 table.pk td.pq{order:7}#step-2 table.pk td.pop{order:8}
+}
+/* bills table: click a heading to sort, show all, not paid or paid, the date on one line, the budget sheet button */
+table.sortable th .sorth{all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;align-items:center;gap:4px;font:inherit;letter-spacing:inherit;text-transform:inherit;color:inherit;white-space:nowrap;border-radius:4px}
+table.sortable th .sorth:hover,table.sortable th[aria-sort="ascending"],table.sortable th[aria-sort="descending"]{color:var(--app-ink)}
+table.sortable th .sorth:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+table.sortable .sortic{display:inline-block;width:9px;text-align:center;opacity:.4;font-family:var(--ui);letter-spacing:0}
+table.sortable .sortic::after{content:"\2195"}
+table.sortable th[aria-sort="ascending"] .sortic::after{content:"\2191"}table.sortable th[aria-sort="descending"] .sortic::after{content:"\2193"}
+table.sortable th[aria-sort="ascending"] .sortic,table.sortable th[aria-sort="descending"] .sortic{opacity:1;color:var(--blue)}
+table.sortable tr[hidden]{display:none!important}
+table.bills td.bdate,table.bills th:nth-child(2){white-space:nowrap}
+.billbar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin:18px 0 0}
+.billbar .seg{display:inline-flex;gap:4px;padding:4px;border:1px solid var(--app-rule-soft);border-radius:12px;background:var(--app-surface)}
+.billbar .segb{all:unset;box-sizing:border-box;cursor:pointer;padding:6px 11px;border-radius:9px;color:var(--app-muted);font:500 13px/1.2 var(--ui);white-space:nowrap}
+.billbar .segb:hover{color:var(--app-ink)}.billbar .segb:focus-visible{outline:2px solid var(--blue);outline-offset:1px}
+.billbar .segb[aria-pressed="true"]{background:var(--app-raised);color:var(--app-ink);box-shadow:inset 0 0 0 1px var(--app-rule)}
+.billbar .segn{font:500 11px/1 var(--label);color:var(--app-faint);margin-left:3px}
+.billbar .bcount{font-size:12.5px}
+.billbar .sheetbtn{margin-left:auto}.billbar .sheetbtn .ic:last-child{width:13px;height:13px;color:var(--app-faint)}
+.billbar .sortsel{display:none;align-items:center;gap:6px;font:400 10px/1.4 var(--label);letter-spacing:.12em;text-transform:uppercase;color:var(--app-faint)}
+.billbar .sortsel select{font:500 13px/1.2 var(--ui);letter-spacing:0;text-transform:none;color:var(--app-ink);background:var(--app-surface);border:1px solid var(--app-rule);border-radius:8px;padding:6px 8px;max-width:100%}
+.bpaidnote{font-size:12.5px;margin:8px 0 0}
+@media (max-width:600px){
+ .billbar .sortsel{display:inline-flex;flex:1 1 100%}.billbar .sortsel select{flex:1 1 auto}
+ .billbar .seg{flex:1 1 100%}.billbar .segb{flex:1 1 0;text-align:center}
+ .billbar .sheetbtn{margin-left:0}
+}
+@media (min-width:601px){table.bidcmp{table-layout:fixed;width:100%}table.bidcmp th:first-child{width:36%}table.bidcmp th.n,#step-2 table.bidcmp th.n{width:16%}table.bidcmp td.n,table.bidcmp th.n{padding-right:28px}table.bidcmp td.n+td:not(.n),table.bidcmp th.n+th:not(.n){padding-left:20px}}
+#step-2 .subpg{display:none}#step-2:not([data-sub]) .subpg[data-sub="packages"],#step-2[data-sub="packages"] .subpg[data-sub="packages"],#step-2[data-sub="sent"] .subpg[data-sub="sent"],#step-2[data-sub="prices"] .subpg[data-sub="prices"],#step-2[data-sub="qa-subs"] .subpg[data-sub="qa-subs"]{display:block}
+</style>
+<script>(function(){var m=null;try{m=localStorage.getItem("merlin-demo-mode")}catch(e){}document.documentElement.setAttribute("data-mode",m==="dark"?"dark":"light")})();</script>
+<style id="merlin-home-sample">html[data-merlin-home="1"] .lock,html[data-merlin-home="1"] .modesw{display:none!important}</style>
+<script>
+/* merlin-home framed.js: begin */
+/* Merlin home, framed-page contract, version 1.
+   A plugin page builds this script into itself, as it is. It does nothing at all unless the
+   page's address carries merlin-home=1, which the Merlin home adds when it shows the page in
+   a frame. Then it:
+   - marks <html> with data-merlin-home="1", so the page's own CSS can hide its logo, its
+     light and dark button and any "INTERNAL" band;
+   - takes the look (light or dark) from the address (look=light|dark) and from the message
+     {type:"merlin-home", v:1, look:"light"|"dark"}, accepted only from the parent window and
+     only from an http://127.0.0.1 origin. The look is put on <html> as
+     data-merlin-home-look and announced with a "merlin-home-look" event on window
+     (event.detail.look). The page applies it over its own saved look and never saves it;
+   - sets window.merlinHome = {framed: true, v: 1, look: <"light"|"dark"|null>}, so the page
+     can change its own tabs with history.replaceState (or location.replace) and add no Back
+     step. Without merlin-home=1, window.merlinHome is not set. */
+(function () {
+  var q;
+  try { q = new URLSearchParams(window.location.search); } catch (e) { return; }
+  if (q.get('merlin-home') !== '1') return;
+  var root = document.documentElement;
+  var state = { framed: true, v: 1, look: null };
+  function setLook(look) {
+    if (look !== 'light' && look !== 'dark') return;
+    state.look = look;
+    root.setAttribute('data-merlin-home-look', look);
+    var ev;
+    try { ev = new CustomEvent('merlin-home-look', { detail: { look: look } }); } catch (e) { return; }
+    window.dispatchEvent(ev);
+  }
+  root.setAttribute('data-merlin-home', '1');
+  window.merlinHome = state;
+  setLook(q.get('look'));
+  window.addEventListener('message', function (e) {
+    if (window.parent === window || e.source !== window.parent) return;
+    if (!/^http:\/\/127\.0\.0\.1(:\d{1,5})?$/.test(e.origin)) return;
+    var d = e.data;
+    if (!d || typeof d !== 'object' || d.type !== 'merlin-home' || d.v !== 1) return;
+    setLook(d.look);
+  });
+})();
+/* merlin-home framed.js: end */
+(function(){var h=document.documentElement;function apply(l){if(l==='light'||l==='dark')h.setAttribute('data-mode',l);}if(!window.merlinHome)return;apply(window.merlinHome.look);window.addEventListener('merlin-home-look',function(e){apply(e.detail&&e.detail.look);});})();
+</script>
+</head>
+<body><div class="wrap">
+
+<nav class="pnav" aria-label="Page">
+  <a class="lock" href="#overview" data-pgo="ov" aria-label="Merlin for Construction, project overview"><img class="lockimg wm-d" src="data:image/png;base64,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" alt="" width="80" height="20"><img class="lockimg wm-l" src="data:image/png;base64,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" alt="" width="80" height="20"><span class="wmsub">for Construction</span></a>
+  <div class="mnav jobid"><span id="pxupdated">18 Example Way · Sample Homes Co · updated Oct 15, 2026</span></div>
+  <div class="slot-r"><button class="alertbtn" type="button" onclick="document.getElementById('pxalerts').showModal()" aria-label="3 alerts" title="Alerts"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="abadge">3</span></button><button class="modesw" type="button" id="modesw" aria-label="Switch to dark mode" title="Light or dark"><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></svg><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button></div>
+</nav>
+<nav class="strip" id="strip" aria-label="Project overview and the steps"><a href="#overview" data-pgo="ov" class="ovcell"><span class="t">Project overview</span></a><a href="#step-1" data-pgo="step-1" title="Step 1: Takeoff, done"><span class="n">1</span><span class="t">Takeoff</span><span class="dot ok" aria-hidden="true"></span></a><a href="#step-2" data-pgo="step-2" title="Step 2: Bid packages, questions and bids, in progress"><span class="n">2</span><span class="t">Bid packages</span><span class="dot" aria-hidden="true"></span></a><a href="#step-3" data-pgo="step-3" title="Step 3: Budget, done"><span class="n">3</span><span class="t">Budget</span><span class="dot ok" aria-hidden="true"></span></a><a href="#step-4" data-pgo="step-4" title="Step 4: Contract and change orders, in progress"><span class="n">4</span><span class="t">Contracts</span><span class="dot" aria-hidden="true"></span></a><a href="#step-5" data-pgo="step-5" title="Step 5: Schedule and daily log, in progress"><span class="n">5</span><span class="t">Schedule</span><span class="dot" aria-hidden="true"></span></a><a href="#step-6" data-pgo="step-6" title="Step 6: Field app, in progress"><span class="n">6</span><span class="t">Field app</span><span class="dot" aria-hidden="true"></span></a><a href="#step-7" data-pgo="step-7" title="Step 7: Bills and lien waivers, in progress"><span class="n">7</span><span class="t">Bills</span><span class="dot" aria-hidden="true"></span></a></nav>
+<div class="scrollmid" id="scrollmid">
+<section id="overview">
+<header>
+  <div>
+    <p class="crumb">Merlin for Construction / Building</p>
+    <h1>18 Example Way</h1>
+    <div class="status"></div>
+    <p class="lead">The plans came in on Jun 1, 2026 and the 5 bid packages were built on Jun 8, 2026.</p>
+  </div>
+</header>
+  <div class="ovg"><div class="ovc"><div class="kr"><span class="k">Project</span></div><span class="v">18 Example Way · New house</span></div><div class="ovc"><div class="kr"><span class="k">Builder</span></div><span class="v">Sample Homes Co · Jordan Example</span></div><div class="ovc"><div class="kr"><span class="k">Address</span></div><span class="v">18 Example Way, Sampleton</span></div><div class="ovc"><div class="kr"><span class="k">Drawings</span><a class="ovl" href="#files">Open</a></div><span class="v">0 files</span></div><div class="ovc"><div class="kr"><span class="k">Takeoff</span><a class="ovl" href="#step-1">Open</a></div><span class="v">24 windows · 4 exterior doors</span></div><div class="ovc"><div class="kr"><span class="k">Bid packages</span><a class="ovl" href="#sub-packages">Open</a></div><span class="v">5 trades · 5 sent</span></div><div class="ovc"><div class="kr"><span class="k">Bids</span><a class="ovl" href="#sub-prices">Open</a></div><span class="v">7 bids · 4 picked</span></div><div class="ovc"><div class="kr"><span class="k">Budget</span><a class="ovl" href="#step-3">Open</a></div><span class="v">$250,000.00 + $25,000.00 fee</span></div><div class="ovc"><div class="kr"><span class="k">Contracts</span><a class="ovl" href="#step-4">Open</a></div><span class="v">3 subs · 4 of 6 documents signed</span></div><div class="ovc"><div class="kr"><span class="k">Change orders</span><a class="ovl" href="#step-4">Open</a></div><span class="v">2 · $3,500.00</span></div><div class="ovc"><div class="kr"><span class="k">Finish, scheduled</span><a class="ovl" href="#step-5">Open</a></div><span class="v">Jan 29, 2027</span></div><div class="ovc"><div class="kr"><span class="k">Bills</span><a class="ovl" href="#step-7">Open</a></div><span class="v">4 · $80,000.00</span></div></div>
+  <div class="callout howto"><b>How to use this project dashboard</b>
+  <ol><li><b>Open this project's folder in Claude.</b> The Merlin for Construction plugin is required.</li>
+  <li><b>Tell Claude what you need, in plain words.</b> Each step below shows the sentence to say when it has nothing yet.</li>
+  <li><b>Check the result here.</b> Claude does the work, writes it into the job folder and rebuilds this dashboard.</li>
+  <li><b>Approvals happen in Claude.</b> Every email, signature and entry waits for your yes there.</li></ol>
+  <p>Nothing is sent from this dashboard.</p></div>
+</section>
+
+<section id="phases">
+  <p class="sl">Phases</p><h2>Where the job stands</h2>
+  <p class="sub">7 of 7 steps have records in the job folder.</p>
+  <div class="phasewrap b"><div class="panel dgpanel"><div class="lab">Plans to budget · steps 1 to 3</div><svg class="dg" viewBox="0 0 320 192" style="width:320px;max-width:100%" role="group" aria-label="Steps 1 to 3"><defs><marker id="pb1a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto"><path class="ah" d="M2,1.5 L9,5 L2,8.5"/></marker><marker id="pb1b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto"><path class="ahs" d="M2,1.5 L9,5 L2,8.5"/></marker></defs><line class="ln" x1="24" y1="45" x2="24" y2="79" marker-end="url(#pb1a)"/><a href="#step-1"><g class="step" data-state="done" aria-label="Takeoff"><g class="done"><circle class="dot" cx="24" cy="28" r="11"/><path class="ck" d="M19.5,28.5 l3,3 l5.5,-6.5"/><rect class="c" x="50" y="4" width="262" height="48" rx="10"/><text class="t" x="64" y="25">Takeoff</text><text class="s" x="64" y="41">24 windows counted</text></g></g></a><line class="ln" x1="24" y1="113" x2="24" y2="147" marker-end="url(#pb1a)"/><a href="#step-2"><g class="step" data-state="done" aria-label="Bid packages"><g class="done"><circle class="dot" cx="24" cy="96" r="11"/><path class="ck" d="M19.5,96.5 l3,3 l5.5,-6.5"/><rect class="c" x="50" y="72" width="262" height="48" rx="10"/><text class="t" x="64" y="93">Bid packages</text><text class="s" x="64" y="109">5 packages · 7 bids in</text></g></g></a><a href="#step-3"><g class="step" data-state="done" aria-label="Budget"><g class="done"><circle class="dot" cx="24" cy="164" r="11"/><path class="ck" d="M19.5,164.5 l3,3 l5.5,-6.5"/><rect class="c" x="50" y="140" width="262" height="48" rx="10"/><text class="t" x="64" y="161">Budget</text><text class="s" x="64" y="177">$250,000.00</text></g></g></a></svg></div><div class="panel dgpanel"><div class="lab">Contracts to bills · steps 4 to 7</div><svg class="dg" viewBox="0 0 320 260" style="width:320px;max-width:100%" role="group" aria-label="Steps 4 to 7"><defs><marker id="pb2a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto"><path class="ah" d="M2,1.5 L9,5 L2,8.5"/></marker><marker id="pb2b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" markerUnits="userSpaceOnUse" orient="auto"><path class="ahs" d="M2,1.5 L9,5 L2,8.5"/></marker></defs><line class="ln" x1="24" y1="45" x2="24" y2="79" marker-end="url(#pb2a)"/><a href="#step-4"><g class="step" data-state="done" aria-label="Contracts"><g class="done"><circle class="dot" cx="24" cy="28" r="11"/><path class="ck" d="M19.5,28.5 l3,3 l5.5,-6.5"/><rect class="c" x="50" y="4" width="262" height="48" rx="10"/><text class="t" x="64" y="25">Contracts</text><text class="s" x="64" y="41">6 documents · 2 change orders</text></g></g></a><line class="ln" x1="24" y1="113" x2="24" y2="147" marker-end="url(#pb2a)"/><a href="#step-5"><g class="step" data-state="done" aria-label="Schedule"><g class="done"><circle class="dot" cx="24" cy="96" r="11"/><path class="ck" d="M19.5,96.5 l3,3 l5.5,-6.5"/><rect class="c" x="50" y="72" width="262" height="48" rx="10"/><text class="t" x="64" y="93">Schedule</text><text class="s" x="64" y="109">Finish Jan 29, 2027</text></g></g></a><line class="ln" x1="24" y1="181" x2="24" y2="215" marker-end="url(#pb2a)"/><a href="#step-6"><g class="step" data-state="done" aria-label="Field app"><g class="done"><circle class="dot" cx="24" cy="164" r="11"/><path class="ck" d="M19.5,164.5 l3,3 l5.5,-6.5"/><rect class="c" x="50" y="140" width="262" height="48" rx="10"/><text class="t" x="64" y="161">Field app</text><text class="s" x="64" y="177">3 walk items</text></g></g></a><a href="#step-7"><g class="step" data-state="done" aria-label="Bills"><g class="done"><circle class="dot" cx="24" cy="232" r="11"/><path class="ck" d="M19.5,232.5 l3,3 l5.5,-6.5"/><rect class="c" x="50" y="208" width="262" height="48" rx="10"/><text class="t" x="64" y="229">Bills</text><text class="s" x="64" y="245">4 bills filed</text></g></g></a></svg></div></div>
+</section>
+
+
+<section id="files">
+  <p class="sl">Files</p><h2>Open any file here</h2>
+<p class="sub">View opens the file in a window on this dashboard. The arrow button opens it in its own tab.</p>
+  <div class="cards">
+
+  </div>
+</section>
+
+<section id="step-1" class="stepsec">
+  <p class="sl">Step 1 of 7 <span class="pill ok">Done</span></p><h2>Takeoff</h2>
+  <p class="sub">Merlin reads the plans and counts what the bid packages need.</p>
+  <p class="sub">Run on Jun 2, 2026.</p>
+  <div class="stats s4">
+    <div class="tile blue"><div class="top"><span class="chipic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 8l10 5 10-5-10-5z"/><path d="m2 13 10 5 10-5"/></svg></span><span class="lab">Windows</span></div><div class="num">24</div><div class="what">windows on the plans</div></div>
+    <div class="tile "><div class="top"><span class="chipic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 8l10 5 10-5-10-5z"/><path d="m2 13 10 5 10-5"/></svg></span><span class="lab">Exterior doors</span></div><div class="num">4</div><div class="what">exterior doors on the plans</div></div>
+    <div class="tile "><div class="top"><span class="chipic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 8l10 5 10-5-10-5z"/><path d="m2 13 10 5 10-5"/></svg></span><span class="lab">Interior doors</span></div><div class="num">18</div><div class="what">interior doors on the plans</div></div>
+    <div class="tile warn"><div class="top"><span class="chipic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6"/><path d="M12 17h.01"/></svg></span><span class="lab">Questions</span></div><div class="num">2</div><div class="what">for the design team, from the plans</div></div>
+  </div>
+  <h3 style="margin:22px 0 0">Windows</h3>
+  <div class="panel tbl bgtbl" style="margin-top:18px"><table class="pk bg"><thead><tr><th>Type</th><th class="n">Count</th><th>Size</th><th>Product</th><th>Use</th><th class="n">Marked on plans</th></tr></thead><tbody><tr><td class="bn"><b>Double hung</b><span class="muted secn">W1</span><span class="muted secn">Sheet 3</span></td><td class="n" data-label="Count">16</td><td data-label="Size">36 x 60</td><td data-label="Product"></td><td data-label="Use"></td><td class="n" data-label="Marked on plans"></td></tr><tr><td class="bn"><b>Casement</b><span class="muted secn">W2</span><span class="muted secn">Sheet 3</span></td><td class="n" data-label="Count">6</td><td data-label="Size">30 x 48</td><td data-label="Product"></td><td data-label="Use"></td><td class="n" data-label="Marked on plans"></td></tr><tr><td class="bn"><b>Picture</b><span class="muted secn">W3</span><span class="muted secn">Sheet 4</span></td><td class="n" data-label="Count">2</td><td data-label="Size">72 x 60</td><td data-label="Product"></td><td data-label="Use"></td><td class="n" data-label="Marked on plans"></td></tr></tbody></table></div>
+  <h3 style="margin:22px 0 0">Exterior doors</h3>
+  <div class="panel tbl bgtbl" style="margin-top:18px"><table class="pk bg"><thead><tr><th>Type</th><th class="n">Count</th><th>Size</th><th>Product</th><th>Use</th><th class="n">Marked on plans</th></tr></thead><tbody><tr><td class="bn"><b>Entry door</b><span class="muted secn">D1</span><span class="muted secn">Sheet 3</span></td><td class="n" data-label="Count">1</td><td data-label="Size">36 x 80</td><td data-label="Product"></td><td data-label="Use"></td><td class="n" data-label="Marked on plans"></td></tr><tr><td class="bn"><b>Patio slider</b><span class="muted secn">D2</span><span class="muted secn">Sheet 3</span></td><td class="n" data-label="Count">2</td><td data-label="Size">72 x 80</td><td data-label="Product"></td><td data-label="Use"></td><td class="n" data-label="Marked on plans"></td></tr><tr><td class="bn"><b>Garage service door</b><span class="muted secn">D3</span><span class="muted secn">Sheet 3</span></td><td class="n" data-label="Count">1</td><td data-label="Size">32 x 80</td><td data-label="Product"></td><td data-label="Use"></td><td class="n" data-label="Marked on plans"></td></tr></tbody></table></div>
+  <h3 style="margin:22px 0 0">Interior doors</h3>
+  <div class="panel tbl bgtbl" style="margin-top:18px"><table class="pk bg"><thead><tr><th>Type</th><th class="n">Count</th><th>Size</th><th>Product</th><th>Use</th><th class="n">Marked on plans</th></tr></thead><tbody><tr><td class="bn"><b>Passage door</b><span class="muted secn">D4</span><span class="muted secn">Sheet 5</span></td><td class="n" data-label="Count">14</td><td data-label="Size">30 x 80</td><td data-label="Product"></td><td data-label="Use"></td><td class="n" data-label="Marked on plans"></td></tr><tr><td class="bn"><b>Pocket door</b><span class="muted secn">D5</span><span class="muted secn">Sheet 5</span></td><td class="n" data-label="Count">4</td><td data-label="Size">28 x 80</td><td data-label="Product"></td><td data-label="Use"></td><td class="n" data-label="Marked on plans"></td></tr></tbody></table></div>
+  <h3 style="margin:22px 0 0">Sheets read</h3>
+  <div class="panel tbl bgtbl" style="margin-top:18px"><table class="pk bg"><thead><tr><th>Sheet</th><th>Title</th><th class="n">Page</th></tr></thead><tbody><tr><td class="bn">Sheet 3</td><td data-label="Title">First floor plan</td><td class="n" data-label="Page">3</td></tr><tr><td class="bn">Sheet 4</td><td data-label="Title">Elevations</td><td class="n" data-label="Page">4</td></tr><tr><td class="bn">Sheet 5</td><td data-label="Title">Second floor plan</td><td class="n" data-label="Page">5</td></tr></tbody></table></div>
+  <h3 style="margin:22px 0 0">Questions for the design team</h3>
+  <div class="panel tbl bgtbl" style="margin-top:18px"><table class="pk qatbl"><thead><tr><th class="n">No.</th><th>Question</th><th>Sheet</th></tr></thead><tbody><tr><td class="qno"><span class="qnum">1</span></td><td>Confirm the header size over the patio sliders.</td><td data-label="Sheet">Sheet 3</td></tr><tr><td class="qno"><span class="qnum">2</span></td><td>Is the pocket door at the pantry 28 or 30 inches?</td><td data-label="Sheet">Sheet 5</td></tr></tbody></table></div>
+  <p class="sub">Material you buy yourself, from the takeoff, with waste added.</p>
+  <div class="stats s4">
+    <div class="tile blue"><div class="top"><span class="chipic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="8" width="20" height="8" rx="1.5"/><path d="M6 8v3M10 8v4M14 8v3M18 8v4"/></svg></span><span class="lab">Lines</span></div><div class="num">3</div><div class="what">material lines you buy yourself</div></div>
+    <div class="tile "><div class="top"><span class="chipic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7.5 12 3l9 4.5v9L12 21l-9-4.5v-9z"/><path d="m3 7.5 9 4.5 9-4.5"/><path d="M12 12v9"/></svg></span><span class="lab">Suppliers</span></div><div class="num">2</div><div class="what">one purchase order each</div></div>
+    <div class="tile ok"><div class="top"><span class="chipic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h8l4 4v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M14 3v5h5"/><path d="M8.5 13h7M8.5 16.5h5"/></svg></span><span class="lab">Purchase orders</span></div><div class="num sm">$30,000.00</div><div class="what">in all, at the estimate&#x27;s prices</div></div>
+    <div class="tile warn"><div class="top"><span class="chipic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V4"/><path d="M5 4h11l-2 4 2 4H5"/></svg></span><span class="lab">To approve</span></div><div class="num">1</div><div class="what">$8,000.00 waiting on your yes</div></div>
+  </div>
+  <div class="panel tbl bgtbl" style="margin-top:18px"><h3>Takeoff</h3><table class="pk bg"><thead><tr><th>Line</th><th>Quantity</th><th>Where the quantity came from</th><th class="n">Waste</th><th>Order</th></tr></thead><tbody><tr data-takeoff-line><td class="bn"><b>Windows</b><span class="muted secn">Sheets 3 and 4</span></td><td data-label="Quantity">24 units</td><td data-label="Where the quantity came from">The takeoff</td><td class="n" data-label="Waste">0%</td><td data-label="Order">24 units</td></tr><tr data-takeoff-line><td class="bn"><b>Exterior doors</b><span class="muted secn">Sheet 3</span></td><td data-label="Quantity">4 units</td><td data-label="Where the quantity came from">The takeoff</td><td class="n" data-label="Waste">0%</td><td data-label="Order">4 units</td></tr><tr data-takeoff-line><td class="bn"><b>Interior doors</b><span class="muted secn">Sheet 5</span></td><td data-label="Quantity">18 units</td><td data-label="Where the quantity came from">The takeoff</td><td class="n" data-label="Waste">0%</td><td data-label="Order">18 units</td></tr></tbody></table>
+    <p class="note">Order is the takeoff quantity plus waste.</p></div>
+  <h3 style="margin:22px 0 8px">Purchase orders</h3>
+  <p class="sub">One purchase order per supplier.</p>
+<details class="panel podet" data-po="MO-1"><summary><span class="pill id">MO-1</span><span class="posup"><b>Sample Window Supply</b><span class="muted"> · 1 line · need on site Sep 28, 2026</span></span><span class="poamt">$22,000.00</span><span class="pill ok">Delivered</span></summary><div class="podoc"><div class="podh"><div><b>Sample Homes Co</b><br>Jordan Example</div><div class="r"><b>Purchase order MO-1</b><br>Dated Aug 20, 2026<br>Need on site: Sep 28, 2026</div></div><p><b>To:</b> Sample Window Supply<br><b>Ship to:</b> 18 Example Way, job site</p><table class="pk bg potbl"><thead><tr><th>Item</th><th>Takeoff</th><th class="n">Waste</th><th>Order</th><th class="n">Amount</th></tr></thead><tbody><tr><td class="bn">Windows</td><td data-label="Takeoff">24 units</td><td class="n" data-label="Waste">0%</td><td data-label="Order">24 units</td><td class="n" data-label="Amount">$22,000.00</td></tr><tr class="grand"><td colspan="4"><b>Total</b></td><td class="n" data-label="Total"><b>$22,000.00</b></td></tr></tbody></table></div></details><details class="panel podet" data-po="MO-2"><summary><span class="pill id">MO-2</span><span class="posup"><b>Example Door Supply</b><span class="muted"> · 2 lines · need on site Nov 9, 2026</span></span><span class="poamt">$8,000.00</span><span class="pill warn">To approve</span></summary><div class="podoc"><div class="podh"><div><b>Sample Homes Co</b><br>Jordan Example</div><div class="r"><b>Purchase order MO-2</b><br>Draft, not sent<br>Need on site: Nov 9, 2026</div></div><p><b>To:</b> Example Door Supply<br><b>Ship to:</b> 18 Example Way, job site</p><table class="pk bg potbl"><thead><tr><th>Item</th><th>Takeoff</th><th class="n">Waste</th><th>Order</th><th class="n">Amount</th></tr></thead><tbody><tr><td class="bn">Exterior doors</td><td data-label="Takeoff">4 units</td><td class="n" data-label="Waste">0%</td><td data-label="Order">4 units</td><td class="n" data-label="Amount">$5,000.00</td></tr><tr><td class="bn">Interior doors</td><td data-label="Takeoff">18 units</td><td class="n" data-label="Waste">0%</td><td data-label="Order">18 units</td><td class="n" data-label="Amount">$3,000.00</td></tr><tr class="grand"><td colspan="4"><b>Total</b></td><td class="n" data-label="Total"><b>$8,000.00</b></td></tr></tbody></table></div><p class="tellclaude"><span class="k">Tell Claude</span>"Approve MO-2 and send it to Example Door Supply"</p></details>
+  <div class="panel tbl bgtbl" style="margin-top:18px"><h3>Bought against the budget</h3><table class="pk bg"><thead><tr><th>Line</th><th class="n">Budget</th><th class="n">Purchase order</th><th class="n">Difference</th></tr></thead><tbody><tr><td class="bn"><b>Windows and doors</b><span class="muted secn">Budget line: Windows and doors</span></td><td class="n" data-label="Budget">$30,000.00</td><td class="n" data-label="Purchase order">$30,000.00</td><td class="n" data-label="Difference">$0.00</td></tr><tr class="grand"><td><b>Total</b></td><td class="n" data-label="Budget"><b>$30,000.00</b></td><td class="n" data-label="Purchase order"><b>$30,000.00</b></td><td class="n" data-label="Difference"><b>$0.00</b></td></tr></tbody></table>
+    <p class="note">The two orders match the budget line.</p></div>
+  <div class="stepnav"><a class="action" href="#overview">Project overview</a><a class="next" href="#step-2"><span class="lbl">Next: Bid packages</span><svg class="ic arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></a></div>
+</section>
+
+<section id="step-2" class="stepsec">
+  <p class="sl">Step 2 of 7 <span class="pill warn">In progress</span></p><h2>Bid packages, questions and bids</h2>
+  <p class="sub">One package per trade: the sheets that trade needs, the scope lines, and the questions the sub answers with the price.</p>
+  <nav class="subnav" aria-label="Bids"><a href="#sub-packages" data-sub="packages" class="on">Bid packages <span class="cnt">5</span></a><a href="#sub-sent" data-sub="sent">Sent to subs <span class="cnt">8</span></a><a href="#sub-prices" data-sub="prices">Bids compared <span class="cnt">7</span></a><a href="#sub-qa-subs" data-sub="qa-subs">Questions for subs <span class="cnt">1</span></a></nav>
+<div class="subpg" data-sub="packages">
+<p class="sub">Each package holds the sheets that trade needs, its scope lines, and the questions the sub answers with the price. View opens the package on this dashboard.</p>
+  <div class="stats s4">
+    <div class="tile blue"><div class="top"><span class="chipic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7.5 12 3l9 4.5v9L12 21l-9-4.5v-9z"/><path d="m3 7.5 9 4.5 9-4.5"/><path d="M12 12v9"/></svg></span><span class="lab">Packages</span></div><div class="num">5</div><div class="what">bid packages built, one per trade</div></div>
+    <div class="tile "><div class="top"><span class="chipic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h8l4 4v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M14 3v5h5"/><path d="M8.5 13h7M8.5 16.5h5"/></svg></span><span class="lab">Scope lines</span></div><div class="num">11</div><div class="what">lines of work across all packages</div></div>
+    <div class="tile "><div class="top"><span class="chipic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 6.5 8.5 7 8.5-7"/></svg></span><span class="lab">Sent</span></div><div class="num">5</div><div class="what">of 5 packages sent to subs</div></div>
+    <div class="tile ok"><div class="top"><span class="chipic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span><span class="lab">Picked</span></div><div class="num">4</div><div class="what">of 5 trades with a bid picked</div></div>
+  </div>
+  <div class="panel tbl bgtbl" style="margin-top:18px"><table class="pk"><thead><tr><th>No.</th><th>Trade</th><th>Drawing sheets</th><th class="n">Scope</th><th class="n">Questions</th><th>Subs</th><th>Status</th><th></th></tr></thead><tbody><tr data-package="01"><td class="pno"><span class="pill id">01</span></td><td class="ptr"><span class="mname">Foundation</span></td><td class="psh" data-label="Sheets"><span class="mono2"><span class="nobr">Sheet 2</span></span></td><td class="n psc" data-label="Scope lines">2</td><td class="n pq" data-label="Questions">0</td><td class="psent" data-label="Subs"><span class="subchip">Example Concrete</span><span class="subchip">Test Footings</span></td><td class="pst" data-label="Status"><span class="pill ok">Picked</span></td><td class="pop"></td></tr><tr data-package="02"><td class="pno"><span class="pill id">02</span></td><td class="ptr"><span class="mname">Framing</span></td><td class="psh" data-label="Sheets"><span class="mono2"><span class="nobr">Sheet 3</span>, <span class="nobr">Sheet 5</span></span></td><td class="n psc" data-label="Scope lines">3</td><td class="n pq" data-label="Questions">1</td><td class="psent" data-label="Subs"><span class="subchip">Example Framing</span><span class="subchip">Sample Carpentry</span></td><td class="pst" data-label="Status"><span class="pill ok">Picked</span></td><td class="pop"></td></tr><tr data-package="03"><td class="pno"><span class="pill id">03</span></td><td class="ptr"><span class="mname">Roofing</span></td><td class="psh" data-label="Sheets"><span class="mono2"><span class="nobr">Sheet 4</span></span></td><td class="n psc" data-label="Scope lines">2</td><td class="n pq" data-label="Questions">0</td><td class="psent" data-label="Subs"><span class="subchip">Sample Roofing</span><span class="subchip">Placeholder Roofs</span></td><td class="pst" data-label="Status"><span class="pill ok">Picked</span></td><td class="pop"></td></tr><tr data-package="04"><td class="pno"><span class="pill id">04</span></td><td class="ptr"><span class="mname">Electrical</span></td><td class="psh" data-label="Sheets"><span class="mono2"><span class="nobr">Sheet 6</span></span></td><td class="n psc" data-label="Scope lines">2</td><td class="n pq" data-label="Questions">0</td><td class="psent" data-label="Subs"><span class="subchip">Placeholder Electric</span></td><td class="pst" data-label="Status"><span class="pill ok">Picked</span></td><td class="pop"></td></tr><tr data-package="05"><td class="pno"><span class="pill id">05</span></td><td class="ptr"><span class="mname">Plumbing</span></td><td class="psh" data-label="Sheets"><span class="mono2"><span class="nobr">Sheet 6</span></span></td><td class="n psc" data-label="Scope lines">2</td><td class="n pq" data-label="Questions">0</td><td class="psent" data-label="Subs"><span class="subchip">Example Plumbing</span></td><td class="pst" data-label="Status"><span class="pill info">Sent</span></td><td class="pop"></td></tr></tbody></table></div>
+</div>
+<div class="subpg" data-sub="sent">
+<p class="sub">8 emails to subs, one per sub and package. 0 still a draft. Claude sends a draft only after your yes.</p>
+  <div class="panel tbl bgtbl" style="margin-top:18px"><table class="pk"><thead><tr><th>No.</th><th>Trade</th><th>Sub</th><th>Email</th><th>Status</th><th>Drafted</th><th>Sent</th></tr></thead><tbody><tr><td class="pno"><span class="pill id">01</span></td><td class="bn">Foundation</td><td data-label="Sub">Example Concrete</td><td data-label="Email"></td><td data-label="Status"><span class="pill info">Sent</span></td><td data-label="Drafted">Jun 8, 2026</td><td data-label="Sent">Jun 9, 2026</td></tr><tr><td class="pno"><span class="pill id">01</span></td><td class="bn">Foundation</td><td data-label="Sub">Test Footings</td><td data-label="Email"></td><td data-label="Status"><span class="pill info">Sent</span></td><td data-label="Drafted">Jun 8, 2026</td><td data-label="Sent">Jun 9, 2026</td></tr><tr><td class="pno"><span class="pill id">02</span></td><td class="bn">Framing</td><td data-label="Sub">Example Framing</td><td data-label="Email"></td><td data-label="Status"><span class="pill info">Sent</span></td><td data-label="Drafted">Jun 8, 2026</td><td data-label="Sent">Jun 9, 2026</td></tr><tr><td class="pno"><span class="pill id">02</span></td><td class="bn">Framing</td><td data-label="Sub">Sample Carpentry</td><td data-label="Email"></td><td data-label="Status"><span class="pill info">Sent</span></td><td data-label="Drafted">Jun 8, 2026</td><td data-label="Sent">Jun 9, 2026</td></tr><tr><td class="pno"><span class="pill id">03</span></td><td class="bn">Roofing</td><td data-label="Sub">Sample Roofing</td><td data-label="Email"></td><td data-label="Status"><span class="pill info">Sent</span></td><td data-label="Drafted">Jun 8, 2026</td><td data-label="Sent">Jun 9, 2026</td></tr><tr><td class="pno"><span class="pill id">03</span></td><td class="bn">Roofing</td><td data-label="Sub">Placeholder Roofs</td><td data-label="Email"></td><td data-label="Status"><span class="pill info">Sent</span></td><td data-label="Drafted">Jun 8, 2026</td><td data-label="Sent">Jun 9, 2026</td></tr><tr><td class="pno"><span class="pill id">04</span></td><td class="bn">Electrical</td><td data-label="Sub">Placeholder Electric</td><td data-label="Email"></td><td data-label="Status"><span class="pill info">Sent</span></td><td data-label="Drafted">Jun 8, 2026</td><td data-label="Sent">Jun 9, 2026</td></tr><tr><td class="pno"><span class="pill id">05</span></td><td class="bn">Plumbing</td><td data-label="Sub">Example Plumbing</td><td data-label="Email"></td><td data-label="Status"><span class="pill info">Sent</span></td><td data-label="Drafted">Jun 8, 2026</td><td data-label="Sent">Jun 9, 2026</td></tr></tbody></table></div>
+</div>
+<div class="subpg" data-sub="prices">
+<p class="sub">7 bids in on 4 packages. Each bid is read against its package: anything it leaves out or does not mention is flagged.</p>
+  <div class="cmpcard"><h3><span class="pill id">01</span> Foundation</h3>
+  <div class="panel tbl bgtbl" style="margin-top:18px"><table class="pk bidcmp"><thead><tr><th>Bidder</th><th class="n">Price</th><th class="n">Against the low bid</th><th>Received</th><th>Good until</th><th>Status</th></tr></thead><tbody><tr><td class="bn"><b>Example Concrete</b> <span class="pill ok">Low bid</span></td><td class="n" data-label="Price">$38,000.00</td><td class="n" data-label="Against the low bid"></td><td data-label="Received">Jun 20, 2026</td><td data-label="Good until">Aug 20, 2026</td><td data-label="Status"><span class="pill ok">Picked</span></td></tr><tr><td class="bn"><b>Test Footings</b></td><td class="n" data-label="Price">$41,000.00</td><td class="n" data-label="Against the low bid">+$3,000.00</td><td data-label="Received">Jun 20, 2026</td><td data-label="Good until">Aug 20, 2026</td><td data-label="Status"><span class="pill plain">Not picked</span></td></tr></tbody></table></div>
+  <ul style="margin:10px 0 0"><li>Both bids cover footings and slab.</li></ul>
+  </div>
+  <div class="cmpcard"><h3><span class="pill id">02</span> Framing</h3>
+  <div class="panel tbl bgtbl" style="margin-top:18px"><table class="pk bidcmp"><thead><tr><th>Bidder</th><th class="n">Price</th><th class="n">Against the low bid</th><th>Received</th><th>Good until</th><th>Status</th></tr></thead><tbody><tr><td class="bn"><b>Example Framing</b> <span class="pill ok">Low bid</span></td><td class="n" data-label="Price">$62,000.00</td><td class="n" data-label="Against the low bid"></td><td data-label="Received">Jun 20, 2026</td><td data-label="Good until">Aug 20, 2026</td><td data-label="Status"><span class="pill ok">Picked</span></td></tr><tr><td class="bn"><b>Sample Carpentry</b></td><td class="n" data-label="Price">$66,000.00</td><td class="n" data-label="Against the low bid">+$4,000.00</td><td data-label="Received">Jun 20, 2026</td><td data-label="Good until">Aug 20, 2026</td><td data-label="Status"><span class="pill plain">Not picked</span></td></tr></tbody></table></div>
+  <ul style="margin:10px 0 0"><li>Both include the roof trusses.</li></ul>
+  </div>
+  <div class="cmpcard"><h3><span class="pill id">03</span> Roofing</h3>
+  <div class="panel tbl bgtbl" style="margin-top:18px"><table class="pk bidcmp"><thead><tr><th>Bidder</th><th class="n">Price</th><th class="n">Against the low bid</th><th>Received</th><th>Good until</th><th>Status</th></tr></thead><tbody><tr><td class="bn"><b>Sample Roofing</b> <span class="pill ok">Low bid</span></td><td class="n" data-label="Price">$18,000.00</td><td class="n" data-label="Against the low bid"></td><td data-label="Received">Jun 20, 2026</td><td data-label="Good until">Aug 20, 2026</td><td data-label="Status"><span class="pill ok">Picked</span></td></tr><tr><td class="bn"><b>Placeholder Roofs</b></td><td class="n" data-label="Price">$19,500.00</td><td class="n" data-label="Against the low bid">+$1,500.00</td><td data-label="Received">Jun 20, 2026</td><td data-label="Good until">Aug 20, 2026</td><td data-label="Status"><span class="pill plain">Not picked</span></td></tr></tbody></table></div>
+  <ul style="margin:10px 0 0"><li>Same shingle line in both.</li></ul>
+  </div>
+  <div class="cmpcard"><h3><span class="pill id">04</span> Electrical</h3>
+  <div class="panel tbl bgtbl" style="margin-top:18px"><table class="pk bidcmp"><thead><tr><th>Bidder</th><th class="n">Price</th><th class="n">Against the low bid</th><th>Received</th><th>Good until</th><th>Status</th></tr></thead><tbody><tr><td class="bn"><b>Placeholder Electric</b></td><td class="n" data-label="Price">$24,000.00</td><td class="n" data-label="Against the low bid"></td><td data-label="Received">Jun 20, 2026</td><td data-label="Good until">Aug 20, 2026</td><td data-label="Status"><span class="pill ok">Picked</span></td></tr></tbody></table></div>
+  <p class="muted" style="margin:8px 0 0">Not compared yet.</p>
+  </div>
+  <div class="panel tbl bgtbl" style="margin-top:18px"><h3>Missing bids: 1 package with no bid yet</h3>
+    <table class="pk mb"><thead><tr><th>No.</th><th>Trade</th><th>Status</th></tr></thead><tbody><tr data-missing-bid><td class="pno"><span class="pill id">05</span></td><td class="bn"><b>Plumbing</b></td><td data-label="Status"><span class="pill warn">No bid yet</span></td></tr></tbody></table>
+    <p class="note">From the bid packages and the bids filed in the job folder: 4 of 5 packages have a bid in.</p></div>
+</div>
+<div class="subpg" data-sub="qa-subs">
+<p class="sub">The questions in each package, for the sub to answer with the price.</p>
+  <div class="panel tbl bgtbl" style="margin-top:18px"><table class="pk qatbl"><thead><tr><th>No.</th><th>Question</th><th>Sheet</th></tr></thead><tbody><tr><td class="pno"><span class="pill id">02</span></td><td>Confirm the header size over the patio sliders.</td><td data-label="Sheet">Sheet 3</td></tr></tbody></table></div>
+</div>
+
+  <p class="sub" data-open>Still open: 1 package sent, no bid back yet.</p>
+  <div class="stepnav"><a class="action" href="#step-1"><svg class="ic back" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>Previous step</a><div class="nextstep"><span class="k">Next, tell Claude</span><span class="nsq">"Follow up with Example Plumbing on the bid."</span></div><a class="next" href="#step-3"><span class="lbl">Next: Budget</span><svg class="ic arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></a></div>
+</section>
+
+<section id="step-3" class="stepsec">
+  <p class="sl">Step 3 of 7 <span class="pill ok">Done</span></p><h2>Budget</h2>
+  <p class="sub">The budget line by line, by section, with your fee.</p>
+<p class="sub">Built on Jul 1, 2026. Each line says where its price came from.</p>
+  <div class="stats s4">
+    <div class="tile blue"><div class="top"><span class="chipic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h8l4 4v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M14 3v5h5"/><path d="M8.5 13h7M8.5 16.5h5"/></svg></span><span class="lab">Budget</span></div><div class="num">$250,000.00</div><div class="what">construction cost</div></div>
+    <div class="tile "><div class="top"><span class="chipic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 9v6M18 9v6"/></svg></span><span class="lab">Builder fee</span></div><div class="num">$25,000.00</div><div class="what">your fee on this job</div></div>
+    <div class="tile "><div class="top"><span class="chipic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 9v6M18 9v6"/></svg></span><span class="lab">With fee</span></div><div class="num">$275,000.00</div><div class="what">total with the fee</div></div>
+    <div class="tile ok"><div class="top"><span class="chipic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span><span class="lab">From bids</span></div><div class="num">4</div><div class="what">lines priced by a picked bid</div></div>
+  </div>
+  <div class="panel tbl bgtbl" style="margin-top:18px"><table class="pk bg"><thead><tr><th>Budget line</th><th>From</th><th>Bid or price</th><th>Cost code</th><th class="n">Amount</th></tr></thead><tbody><tr class="bsec"><td colspan="5"><b>2000 Site and foundation</b> <span class="muted">$50,000.00</span></td></tr><tr><td class="bn"><b>Foundation</b></td><td data-label="From"><span class="pill ok">Bid</span></td><td data-label="Bid or price">Example Concrete · package 01</td><td data-label="Cost code"></td><td class="n" data-label="Amount">$38,000.00</td></tr><tr><td class="bn"><b>Site work</b></td><td data-label="From"><span class="pill warn">Allowance</span></td><td data-label="Bid or price"></td><td data-label="Cost code"></td><td class="n" data-label="Amount">$12,000.00</td></tr><tr class="bsec"><td colspan="5"><b>3000 Structure</b> <span class="muted">$92,000.00</span></td></tr><tr><td class="bn"><b>Framing</b></td><td data-label="From"><span class="pill ok">Bid</span></td><td data-label="Bid or price">Example Framing · package 02</td><td data-label="Cost code"></td><td class="n" data-label="Amount">$62,000.00</td></tr><tr><td class="bn"><b>Windows and doors</b></td><td data-label="From"><span class="pill plain">takeoff</span></td><td data-label="Bid or price"></td><td data-label="Cost code"></td><td class="n" data-label="Amount">$30,000.00</td></tr><tr class="bsec"><td colspan="5"><b>4000 Exterior</b> <span class="muted">$38,000.00</span></td></tr><tr><td class="bn"><b>Roofing</b></td><td data-label="From"><span class="pill ok">Bid</span></td><td data-label="Bid or price">Sample Roofing · package 03</td><td data-label="Cost code"></td><td class="n" data-label="Amount">$18,000.00</td></tr><tr><td class="bn"><b>Siding</b></td><td data-label="From"><span class="pill warn">Allowance</span></td><td data-label="Bid or price"></td><td data-label="Cost code"></td><td class="n" data-label="Amount">$20,000.00</td></tr><tr class="bsec"><td colspan="5"><b>5000 Systems</b> <span class="muted">$70,000.00</span></td></tr><tr><td class="bn"><b>Electrical</b></td><td data-label="From"><span class="pill ok">Bid</span></td><td data-label="Bid or price">Placeholder Electric · package 04</td><td data-label="Cost code"></td><td class="n" data-label="Amount">$24,000.00</td></tr><tr><td class="bn"><b>Plumbing</b></td><td data-label="From"><span class="pill warn">Allowance</span></td><td data-label="Bid or price"></td><td data-label="Cost code"></td><td class="n" data-label="Amount">$22,000.00</td></tr><tr><td class="bn"><b>Heating and cooling</b></td><td data-label="From"><span class="pill warn">Allowance</span></td><td data-label="Bid or price"></td><td data-label="Cost code"></td><td class="n" data-label="Amount">$24,000.00</td></tr></tbody></table></div>
+  <p class="muted sumcheck">The lines add to the budget total, $250,000.00, to the cent.</p>
+
+  <div class="stepnav"><a class="action" href="#step-2"><svg class="ic back" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>Previous step</a><a class="next" href="#step-4"><span class="lbl">Next: Contracts</span><svg class="ic arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></a></div>
+</section>
+
+<section id="step-4" class="stepsec">
+  <p class="sl">Step 4 of 7 <span class="pill warn">In progress</span></p><h2>Contract and change orders</h2>
+  <p class="sub">The owner contract, each subcontract and each change order, with where it stands.</p>
+  <div class="stats s4">
+    <div class="tile blue"><div class="top"><span class="chipic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="m13.5 6.5 4 4"/></svg></span><span class="lab">Contract total</span></div><div class="num">$275,000.00</div><div class="what">the price with the owner, signed Jul 6, 2026</div></div>
+    <div class="tile "><div class="top"><span class="chipic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h8l4 4v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M14 3v5h5"/><path d="M8.5 13h7M8.5 16.5h5"/></svg></span><span class="lab">Subs</span></div><div class="num">3</div><div class="what">0 agreements, 3 purchase orders</div></div>
+    <div class="tile "><div class="top"><span class="chipic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 9v6M18 9v6"/></svg></span><span class="lab">Purchase orders</span></div><div class="num">$118,000.00</div><div class="what">the work and price issued to subs on this job</div></div>
+    <div class="tile warn"><div class="top"><span class="chipic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span><span class="lab">Signed</span></div><div class="num">4</div><div class="what">of 6 documents</div></div>
+  </div>
+  <p class="sub" style="margin-top:18px">Each sub signs your subcontract agreement once. The work and the price for this job go on a purchase order under it. Purchase orders use a plain layout until you give Claude your own purchase order form. Every document stays a draft until you say yes. Signatures go out from Claude, never from this dashboard.</p>
+  <div class="panel tbl bgtbl" style="margin-top:18px"><table class="pk bg"><thead><tr><th>Document</th><th>Package</th><th class="n">Amount</th><th>Status</th><th>Drafted</th><th>Sent</th><th>Signed</th><th></th></tr></thead><tbody><tr><td class="bn"><b>Casey Owner</b><span class="muted secn">Owner contract</span></td><td data-label="Package"></td><td class="n" data-label="Amount">$275,000.00</td><td data-label="Status"><span class="pill ok">Signed Jul 6, 2026</span></td><td data-label="Drafted">Jul 2, 2026</td><td data-label="Sent">Jul 3, 2026</td><td data-label="Signed">Jul 6, 2026</td><td class="pop"></td></tr><tr class="bsec"><td colspan="8"><b>Example Concrete</b></td></tr><tr><td class="bn" colspan="8"><span class="muted">No subcontract agreement with Example Concrete in the folder yet.</span></td></tr><tr><td class="bn"><b>Purchase order PO-1</b><span class="muted secn">18 Example Way · Foundation</span></td><td data-label="Package"><span class="pill id">01</span></td><td class="n" data-label="Amount">$38,000.00</td><td data-label="Status"><span class="pill ok">Signed</span></td><td data-label="Drafted">Jul 8, 2026</td><td data-label="Sent">Jul 8, 2026</td><td data-label="Signed">Jul 10, 2026</td><td class="pop"></td></tr><tr><td class="bn"><b>Subcontract agreement</b><span class="muted secn">Foundation</span></td><td data-label="Package"><span class="pill id">01</span></td><td class="n" data-label="Amount"></td><td data-label="Status"><span class="pill ok">Signed</span></td><td data-label="Drafted">Jul 8, 2026</td><td data-label="Sent">Jul 8, 2026</td><td data-label="Signed">Jul 10, 2026</td><td class="pop"></td></tr><tr class="bsec"><td colspan="8"><b>Example Framing</b></td></tr><tr><td class="bn" colspan="8"><span class="muted">No subcontract agreement with Example Framing in the folder yet.</span></td></tr><tr><td class="bn"><b>Purchase order PO-2</b><span class="muted secn">18 Example Way · Framing</span></td><td data-label="Package"><span class="pill id">02</span></td><td class="n" data-label="Amount">$62,000.00</td><td data-label="Status"><span class="pill info">Sent</span></td><td data-label="Drafted">Jul 12, 2026</td><td data-label="Sent">Jul 12, 2026</td><td data-label="Signed">Not signed</td><td class="pop"></td></tr><tr><td class="bn"><b>Subcontract agreement</b><span class="muted secn">Framing</span></td><td data-label="Package"><span class="pill id">02</span></td><td class="n" data-label="Amount"></td><td data-label="Status"><span class="pill ok">Signed</span></td><td data-label="Drafted">Jul 12, 2026</td><td data-label="Sent">Jul 12, 2026</td><td data-label="Signed">Jul 15, 2026</td><td class="pop"></td></tr><tr class="bsec"><td colspan="8"><b>Sample Roofing</b></td></tr><tr><td class="bn" colspan="8"><span class="muted">No subcontract agreement with Sample Roofing in the folder yet.</span></td></tr><tr><td class="bn"><b>Purchase order PO-3</b><span class="muted secn">18 Example Way · Roofing</span></td><td data-label="Package"><span class="pill id">03</span></td><td class="n" data-label="Amount">$18,000.00</td><td data-label="Status"><span class="pill plain">Draft</span></td><td data-label="Drafted">Oct 1, 2026</td><td data-label="Sent">Not sent</td><td data-label="Signed">Not signed</td><td class="pop"></td></tr></tbody></table></div>
+  <h3 style="margin:26px 0 0">Change orders</h3>
+  <div class="panel tbl bgtbl" style="margin-top:18px"><table class="pk"><thead><tr><th>No.</th><th>Change</th><th class="n">Price</th><th>Status</th><th>Billed</th><th>Drafted</th><th>Signed</th><th></th></tr></thead><tbody><tr><td class="pno"><span class="pill id">CO-1</span></td><td class="bn">Add a window in the mudroom</td><td class="n" data-label="Price">$1,500.00</td><td data-label="Status"><span class="pill ok">Signed</span></td><td data-label="Billed">Billed</td><td data-label="Drafted">Aug 4, 2026</td><td data-label="Signed">Aug 6, 2026</td><td class="pop"></td></tr><tr><td class="pno"><span class="pill id">CO-2</span></td><td class="bn">Upgrade the kitchen lights</td><td class="n" data-label="Price">$2,000.00</td><td data-label="Status"><span class="pill info">Sent</span></td><td data-label="Billed">Not billed</td><td data-label="Drafted">Oct 5, 2026</td><td data-label="Signed">Not signed</td><td class="pop"></td></tr></tbody></table></div>
+
+  <p class="sub" data-open>Still open: 1 purchase order at draft, not sent, 1 document sent, not signed yet, and 1 change order not signed.</p>
+  <div class="stepnav"><a class="action" href="#step-3"><svg class="ic back" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>Previous step</a><div class="nextstep"><span class="k">Next, tell Claude</span><span class="nsq">"What needs me on this job?"</span></div><a class="next" href="#step-5"><span class="lbl">Next: Schedule</span><svg class="ic arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></a></div>
+</section>
+
+<section id="step-5" class="stepsec">
+  <p class="sl">Step 5 of 7 <span class="pill warn">In progress</span></p><h2>Schedule and daily log</h2>
+  <p class="sub">Each sub&#x27;s dates, and what happened on site each day.</p>
+<p class="sub">Built on Jul 1, 2026. Each task carries its trade and its sub. A late task moves a later task only when it really pushes it. Finished tasks never move.</p>
+  <div class="stats s4">
+    <div class="tile blue"><div class="top"><span class="chipic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span><span class="lab">Tasks</span></div><div class="num">6</div><div class="what">on the schedule</div></div>
+    <div class="tile "><div class="top"><span class="chipic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span><span class="lab">Start</span></div><div class="num">Jul 13, 2026</div><div class="what">first task starts</div></div>
+    <div class="tile "><div class="top"><span class="chipic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V4"/><path d="M5 4h11l-2 4 2 4H5"/></svg></span><span class="lab">Finish</span></div><div class="num">Jan 29, 2027</div><div class="what">last task ends</div></div>
+    <div class="tile warn"><div class="top"><span class="chipic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4 2.5 20h19L12 4z"/><path d="M12 10v4.5"/><path d="M12 17.5h.01"/></svg></span><span class="lab">Late</span></div><div class="num">2</div><div class="what">tasks past their finish and not done</div></div>
+  </div>
+  <div class="panel tbl bgtbl" style="margin-top:18px"><table class="pk gantt"><thead><tr><th>Task</th><th>Dates</th><th>After</th><th class="n">Done</th><th>Jul 13, 2026 to Jan 29, 2027</th></tr></thead><tbody><tr><td class="bn"><b>Site work</b><span class="muted secn"></span></td><td data-label="Dates">Jul 13, 2026 to Jul 31, 2026</td><td data-label="After">Start</td><td class="n" data-label="Done">100%</td><td class="gcell"><div class="gtrack"><span class="gfill ok" style="left:0.00%;width:9.00%"></span><span class="gtoday" style="left:68.00%" title="Today"></span></div></td></tr><tr><td class="bn"><b>Foundation</b><span class="muted secn"></span></td><td data-label="Dates">Aug 3, 2026 to Aug 28, 2026</td><td data-label="After">Site work</td><td class="n" data-label="Done">100%</td><td class="gcell"><div class="gtrack"><span class="gfill ok" style="left:10.50%;width:12.50%"></span><span class="gtoday" style="left:68.00%" title="Today"></span></div></td></tr><tr><td class="bn"><b>Framing</b><span class="muted secn"></span></td><td data-label="Dates">Aug 31, 2026 to Oct 9, 2026</td><td data-label="After">Foundation</td><td class="n" data-label="Done">100%</td><td class="gcell"><div class="gtrack"><span class="gfill ok" style="left:24.50%;width:19.50%"></span><span class="gtoday" style="left:68.00%" title="Today"></span></div></td></tr><tr><td class="bn"><b>Roofing</b><span class="muted secn"></span></td><td data-label="Dates">Oct 12, 2026 to Oct 23, 2026</td><td data-label="After">Framing</td><td class="n" data-label="Done">40%</td><td class="gcell"><div class="gtrack"><span class="gfill warn" style="left:45.50%;width:5.50%"></span><span class="gtoday" style="left:68.00%" title="Today"></span></div></td></tr><tr><td class="bn"><b>Rough in, electrical and plumbing</b><span class="muted secn"></span></td><td data-label="Dates">Oct 19, 2026 to Nov 13, 2026</td><td data-label="After">Framing</td><td class="n" data-label="Done">10%</td><td class="gcell"><div class="gtrack"><span class="gfill warn" style="left:49.00%;width:12.50%"></span><span class="gtoday" style="left:68.00%" title="Today"></span></div></td></tr><tr><td class="bn"><b>Drywall and finishes</b><span class="muted secn"></span></td><td data-label="Dates">Nov 16, 2026 to Jan 29, 2027</td><td data-label="After">Roofing, Rough in, electrical and plumbing</td><td class="n" data-label="Done">0%</td><td class="gcell"><div class="gtrack"><span class="gfill " style="left:63.00%;width:37.00%"></span><span class="gtoday" style="left:68.00%" title="Today"></span></div></td></tr></tbody></table></div>
+  <h3 style="margin:26px 0 0">Daily log</h3>
+  <details class="panel dlog" id="dlog-2026-10-14"><summary><b>Oct 14, 2026</b><span class="muted">Roofer, 4 people; Electrician, 2 people · Light wind</span></summary><div class="dlb"><p>North side shingled. Electrical rough in started on the first floor.</p></div></details>
+  <details class="panel dlog" id="dlog-2026-10-13"><summary><b>Oct 13, 2026</b><span class="muted">Roofer, 4 people · Clear</span></summary><div class="dlb"><p>Underlayment on the north side. Shingles arrive Thursday.</p></div></details>
+
+  <p class="sub" data-open>Still open: 2 tasks past its finish and not done. First: Roofing, due Oct 23, 2026 (40 percent). Running late? Tell Claude in your own words, for example &quot;Roofing is a week late&quot;.</p>
+  <div class="stepnav"><a class="action" href="#step-4"><svg class="ic back" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>Previous step</a><div class="nextstep"><span class="k">Next, tell Claude</span><span class="nsq">"Roofing is finished."</span></div><a class="next" href="#step-6"><span class="lbl">Next: Field app</span><svg class="ic arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></a></div>
+</section>
+
+<section id="step-6" class="stepsec">
+  <p class="sl">Step 6 of 7 <span class="pill warn">In progress</span></p><h2>Field app</h2>
+  <p class="sub">The site walk&#x27;s items, with their photos. Each sub marks theirs fixed in the field app.</p>
+  <div class="act-row" style="margin:6px 0 14px"><a class="action" href="#step-6"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>Open the field app</a> <a class="action" href="#step-6"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Open the daily log</a> <a class="action" href="#step-6" data-site-sign><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h8l4 4v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M14 3v5h5"/><path d="M8.5 13h7M8.5 16.5h5"/></svg>Print the site sign</a> <span class="muted fcount">2 open, 1 fixed or closed</span></div>
+  <div class="panel tbl bgtbl" style="margin-top:18px"><table class="pk bg"><thead><tr><th></th><th>Item</th><th>Owner</th><th>Status</th><th></th></tr></thead><tbody><tr data-punch><td class="pop"></td><td class="bn"><b>Loose stair rail</b><span class="muted secn">Main stair</span></td><td data-label="Owner">Example Framing</td><td data-label="Status"><span class="pill warn">Open</span></td><td class="pop"><a class="action" href="#step-6"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6"/><path d="M20 4 11 13"/><path d="M19 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h4"/></svg>Open in field app</a></td></tr><tr data-punch><td class="pop"></td><td class="bn"><b>Missing blocking for the towel bar</b><span class="muted secn">Upstairs bath</span></td><td data-label="Owner">Example Framing</td><td data-label="Status"><span class="pill ok">Fixed</span></td><td class="pop"><a class="action" href="#step-6"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6"/><path d="M20 4 11 13"/><path d="M19 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h4"/></svg>Open in field app</a></td></tr><tr data-punch><td class="pop"></td><td class="bn"><b>Window flashing to check</b><span class="muted secn">Kitchen</span><span class="muted secn">Look again after rain.</span></td><td data-label="Owner">Sample Homes Co</td><td data-label="Status"><span class="pill warn">Open</span></td><td class="pop"><a class="action" href="#step-6"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6"/><path d="M20 4 11 13"/><path d="M19 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h4"/></svg>Open in field app</a></td></tr></tbody></table></div>
+  <p class="sub" style="margin-top:14px">2 daily logs in the job folder. <a href="#step-5">Open them under Schedule</a>.</p>
+
+  <p class="sub" data-open>Still open: 2 open items from the site walk.</p>
+  <div class="stepnav"><a class="action" href="#step-5"><svg class="ic back" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>Previous step</a><div class="nextstep"><span class="k">Next, tell Claude</span><span class="nsq">"Pull the walkthroughs for this job."</span></div><a class="next" href="#step-7"><span class="lbl">Next: Bills</span><svg class="ic arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></a></div>
+</section>
+
+<section id="step-7" class="stepsec">
+  <p class="sl">Step 7 of 7 <span class="pill warn">In progress</span></p><h2>Bills and lien waivers</h2>
+  <p class="sub">Each invoice filed in the job folder, and each lien waiver with its status.</p>
+  <div class="stats s4">
+    <div class="tile blue"><div class="top"><span class="chipic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h8l4 4v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M14 3v5h5"/><path d="M8.5 13h7M8.5 16.5h5"/></svg></span><span class="lab">Bills</span></div><div class="num">4</div><div class="what">invoices filed in this job</div></div>
+    <div class="tile "><div class="top"><span class="chipic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 9v6M18 9v6"/></svg></span><span class="lab">Amount</span></div><div class="num">$80,000.00</div><div class="what">across every filed invoice</div></div>
+    <div class="tile ok"><div class="top"><span class="chipic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V4"/><path d="M5 4h11l-2 4 2 4H5"/></svg></span><span class="lab">Waiting</span></div><div class="num">0</div><div class="what">for your yes</div></div>
+    <div class="tile ok"><div class="top"><span class="chipic"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span><span class="lab">Waivers missing</span></div><div class="num">0</div><div class="what">for the last payment to that sub</div></div>
+  </div>
+  <p class="sub" style="margin-top:18px">The draw schedule row and the bill are each written only after your yes. Nothing is paid from here.</p>
+  <div class="billbar" data-for="billstbl"><div class="seg" role="group" aria-label="Show bills"><button type="button" class="segb" data-bfilt="all" aria-pressed="true">All <span class="segn">4</span></button><button type="button" class="segb" data-bfilt="unpaid" aria-pressed="false">Not paid <span class="segn">1</span></button><button type="button" class="segb" data-bfilt="paid" aria-pressed="false">Paid <span class="segn">3</span></button></div><label class="sortsel"><span>Sort</span><select data-bsort aria-label="Sort the bills"><option value="">File order</option><option value="1:desc">Invoice date, newest first</option><option value="1:asc">Invoice date, oldest first</option><option value="2:desc">Amount, largest first</option><option value="2:asc">Amount, smallest first</option><option value="0:asc">Invoice, A to Z</option><option value="6:asc">Status, A to Z</option></select></label><span class="bcount muted" aria-live="polite">4 bills</span></div>
+  <p class="muted bpaidnote">Paid means paid before Merlin, from your own folder. A bill entered through Merlin goes into QuickBooks unpaid and stays under Not paid here; QuickBooks shows when you paid it.</p>
+  <div class="panel tbl bgtbl" style="margin-top:18px"><table class="pk bg bills sortable" id="billstbl"><thead><tr><th aria-sort="none" data-type="text"><button type="button" class="sorth" data-col="0" title="Sort by invoice">Invoice<span class="sortic" aria-hidden="true"></span></button></th><th aria-sort="none" data-type="date"><button type="button" class="sorth" data-col="1" title="Sort by invoice date">Invoice date<span class="sortic" aria-hidden="true"></span></button></th><th class="n" aria-sort="none" data-type="num"><button type="button" class="sorth" data-col="2" title="Sort by amount">Amount<span class="sortic" aria-hidden="true"></span></button></th><th aria-sort="none" data-type="text"><button type="button" class="sorth" data-col="3" title="Sort by draw schedule">Draw schedule<span class="sortic" aria-hidden="true"></span></button></th><th aria-sort="none" data-type="text"><button type="button" class="sorth" data-col="4" title="Sort by quickbooks">QuickBooks<span class="sortic" aria-hidden="true"></span></button></th><th aria-sort="none" data-type="text"><button type="button" class="sorth" data-col="5" title="Sort by waiver">Waiver<span class="sortic" aria-hidden="true"></span></button></th><th aria-sort="none" data-type="text"><button type="button" class="sorth" data-col="6" title="Sort by status">Status<span class="sortic" aria-hidden="true"></span></button></th><th></th></tr></thead><tbody><tr data-paid="1"><td class="bn" data-sort="foundation-1.pdf"><b>foundation-1.pdf</b><span class="muted secn">Example Concrete</span></td><td class="bdate nobr" data-label="Invoice date" data-sort="2026-08-14">Aug 14, 2026</td><td class="n" data-label="Amount" data-sort="19000.00">$19,000.00</td><td data-label="Draw schedule" data-sort="entered"><span class="pill ok">Entered</span></td><td data-label="QuickBooks" data-sort="paid"><span class="pill plain">Paid</span></td><td data-label="Waiver" data-sort="sent"><span class="pill info">Sent</span></td><td data-label="Status" data-sort="done"><span class="pill ok">Done</span></td><td class="pop"><span class="muted">File not in the job folder</span></td></tr><tr data-paid="1"><td class="bn" data-sort="foundation-2.pdf"><b>foundation-2.pdf</b><span class="muted secn">Example Concrete</span></td><td class="bdate nobr" data-label="Invoice date" data-sort="2026-08-31">Aug 31, 2026</td><td class="n" data-label="Amount" data-sort="19000.00">$19,000.00</td><td data-label="Draw schedule" data-sort="entered"><span class="pill ok">Entered</span></td><td data-label="QuickBooks" data-sort="paid"><span class="pill plain">Paid</span></td><td data-label="Waiver" data-sort="sent"><span class="pill info">Sent</span></td><td data-label="Status" data-sort="done"><span class="pill ok">Done</span></td><td class="pop"><span class="muted">File not in the job folder</span></td></tr><tr data-paid="0"><td class="bn" data-sort="framing-1.pdf"><b>framing-1.pdf</b><span class="muted secn">Example Framing</span></td><td class="bdate nobr" data-label="Invoice date" data-sort="2026-09-18">Sep 18, 2026</td><td class="n" data-label="Amount" data-sort="30000.00">$30,000.00</td><td data-label="Draw schedule" data-sort="entered"><span class="pill ok">Entered</span></td><td data-label="QuickBooks" data-sort="approved"><span class="pill warn">Not entered yet</span></td><td data-label="Waiver" data-sort="due"><span class="pill warn">Due</span></td><td data-label="Status" data-sort="open"><span class="pill warn">Open</span></td><td class="pop"><span class="muted">File not in the job folder</span></td></tr><tr data-paid="1"><td class="bn" data-sort="lumber-1.pdf"><b>lumber-1.pdf</b><span class="muted secn">Sample Lumber Yard</span></td><td class="bdate nobr" data-label="Invoice date" data-sort="2026-08-28">Aug 28, 2026</td><td class="n" data-label="Amount" data-sort="12000.00">$12,000.00</td><td data-label="Draw schedule" data-sort="entered"><span class="pill ok">Entered</span></td><td data-label="QuickBooks" data-sort="paid"><span class="pill plain">Paid</span></td><td data-label="Waiver" data-sort="none due yet"><span class="pill plain">None due yet</span></td><td data-label="Status" data-sort="done"><span class="pill ok">Done</span></td><td class="pop"><span class="muted">File not in the job folder</span></td></tr></tbody></table></div>
+  <p class="muted billnone" hidden>No bills match this filter.</p>
+  <h3 id="lienwaivers" style="margin:26px 0 0">Lien waivers</h3>
+  <div class="panel tbl bgtbl" style="margin-top:18px"><table class="pk bg"><thead><tr><th>Sub</th><th class="n">Amount</th><th>Through</th><th>Status</th><th>Sent</th><th>Signed</th><th></th></tr></thead><tbody><tr><td class="bn"><b>Example Concrete</b><span class="muted secn">unconditional progress</span></td><td class="n" data-label="Amount">$19,000.00</td><td data-label="Through">Aug 14, 2026</td><td data-label="Status"><span class="pill ok">Signed</span></td><td data-label="Sent">Aug 20, 2026</td><td data-label="Signed">Aug 22, 2026</td><td class="pop"></td></tr><tr><td class="bn"><b>Example Concrete</b><span class="muted secn">unconditional final</span></td><td class="n" data-label="Amount">$19,000.00</td><td data-label="Through">Aug 31, 2026</td><td data-label="Status"><span class="pill info">Sent</span></td><td data-label="Sent">Sep 8, 2026</td><td data-label="Signed">Not signed</td><td class="pop"></td></tr></tbody></table></div>
+
+  <p class="sub" data-open>Still open: 1 bill approved, not in QuickBooks yet (Framing, first draw), 1 lien waiver due (Example Framing), and 1 lien waiver not signed yet.</p>
+  <div class="stepnav"><a class="action" href="#step-6"><svg class="ic back" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>Previous step</a><div class="nextstep"><span class="k">To finish, tell Claude</span><span class="nsq">"Enter the approved bills in QuickBooks."</span></div></div>
+</section>
+
+</div>
+<footer class="appft"><div class="row">
+  <div class="brand"><span class="prod">Merlin for Construction</span></div>
+  <div class="fine"></div>
+</div></footer>
+</div>
+<dialog class="pxdlg" id="pxalerts"><div class="dh"><b>Alerts for this job</b><button class="action btnsm" onclick="this.closest('dialog').close()">Close</button></div>
+<div class="body" id="pxalertsbody"><ul class="alist"><li><span class="pill warn">Bid</span><span class="at">Plumbing has no bid yet</span><a class="action btnsm" href="#step-2" onclick="this.closest('dialog').close()">Open</a></li><li><span class="pill warn">Contract</span><span class="at">The roofing purchase order is waiting on your yes</span><a class="action btnsm" href="#step-4" onclick="this.closest('dialog').close()">Open</a></li><li><span class="pill warn">Field</span><span class="at">2 open items from the last walk</span><a class="action btnsm" href="#step-6" onclick="this.closest('dialog').close()">Open</a></li></ul><p class="muted" style="font-size:12.5px">The Daily Briefing reads the job folder and lists what needs you. Each alert opens its file.</p></div></dialog>
+<div class="scrim" id="scrim" aria-hidden="true">
+  <div class="win" role="dialog" aria-modal="true" aria-labelledby="wt">
+    <div class="wbar"><span class="pill id" id="wn">01</span><h3 id="wt">File</h3>
+      <a class="action" id="wo" href="#" target="_blank" rel="noopener"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6"/><path d="M20 4 11 13"/><path d="M19 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h4"/></svg>Open in a new tab</a>
+      <button class="closeb" type="button" id="wc" aria-label="Close"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+    <div class="frame"><iframe id="wf" title="File preview"></iframe></div>
+  </div>
+</div>
+<script type="application/json" id="pxdata">{"V": {}, "PG": {"ov": ["overview", "phases", "record", "files"], "step-1": ["step-1"], "step-2": ["step-2"], "step-3": ["step-3"], "step-4": ["step-4"], "step-5": ["step-5"], "step-6": ["step-6"], "step-7": ["step-7"]}, "SEC": {"overview": "ov", "phases": "ov", "record": "ov", "files": "ov", "step-1": "step-1", "step-2": "step-2", "step-3": "step-3", "step-4": "step-4", "step-5": "step-5", "step-6": "step-6", "step-7": "step-7", "job": "ov", "sub-packages": "step-2", "sub-sent": "step-2", "sub-prices": "step-2", "sub-qa-subs": "step-2", "lienwaivers": "step-7"}}</script>
+<script>
+(function(){
+let V={},PG={},SEC={};
+function load(){try{const d=JSON.parse(document.getElementById('pxdata').textContent);V=d.V||{};PG=d.PG||{};SEC=d.SEC||{};}catch(e){}}
+load();
+const sc=document.getElementById('scrim'),wf=document.getElementById('wf'),wt=document.getElementById('wt'),wn=document.getElementById('wn'),wo=document.getElementById('wo'),wc=document.getElementById('wc');
+let opener=null;
+function openV(k,btn){const v=V[k];if(!v)return;opener=btn;wt.textContent=v.t;wn.textContent=v.n;wf.src=v.v;wo.href=v.o;
+ sc.classList.add('open');sc.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';wc.focus();}
+function closeV(){sc.classList.remove('open');sc.setAttribute('aria-hidden','true');document.body.style.overflow='';setTimeout(()=>{if(!sc.classList.contains('open'))wf.removeAttribute('src')},150);if(opener&&opener.isConnected)opener.focus();}
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-view]');if(b)openV(b.dataset.view,b);});
+wc.addEventListener('click',closeV);sc.addEventListener('click',e=>{if(e.target===sc)closeV()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&sc.classList.contains('open'))closeV();});
+const strip=document.getElementById('strip'), mid=document.getElementById('scrollmid');
+function mark(k){document.body.setAttribute('data-pg',k);
+  strip.querySelectorAll('a').forEach(a=>{const on=a.dataset.pgo===k;a.classList.toggle('on',on);if(on)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});}
+function show(k,push){if(!PG[k])k='ov';mark(k);
+  const h=k==='ov'?'#overview':'#'+k;if(push&&location.hash!==h){try{history.pushState(null,'',h)}catch(e){}}
+  if(mid)mid.scrollTop=0;const a=strip.querySelector('.on');if(a&&strip.scrollWidth>strip.clientWidth)strip.scrollLeft=a.offsetLeft-(strip.clientWidth-a.offsetWidth)/2;}
+function fromHash(){const id=(location.hash||'').slice(1);return !id?'ov':(SEC[id]||'ov');}
+document.addEventListener('click',e=>{const a=e.target.closest&&e.target.closest('a[href^="#"]');if(!a)return;const id=a.getAttribute('href').slice(1);
+  const k=a.dataset.pgo||SEC[id];if(!k)return;e.preventDefault();show(k,true);
+  if(id==='files'||id==='phases'||id==='record'||id==='lienwaivers'){const t=document.getElementById(id);if(t&&mid)mid.scrollTop=t.offsetTop-mid.offsetTop-8;}});
+window.addEventListener('popstate',()=>show(fromHash(),false));window.addEventListener('hashchange',()=>show(fromHash(),false));
+function setMode(m,save){document.documentElement.setAttribute('data-mode',m);const b=document.getElementById('modesw');
+  if(b)b.setAttribute('aria-label',m==='light'?'Switch to dark mode':'Switch to light mode');if(save)try{localStorage.setItem('merlin-demo-mode',m)}catch(e){}}
+setMode(document.documentElement.getAttribute('data-mode')==='dark'?'dark':'light',false);
+document.getElementById('modesw').addEventListener('click',()=>setMode(document.documentElement.getAttribute('data-mode')==='dark'?'light':'dark',true));
+document.addEventListener('keydown',e=>{const t=e.target;if(t.matches&&t.matches('.strip a')&&(e.key==='ArrowRight'||e.key==='ArrowLeft')){e.preventDefault();const as=[...strip.querySelectorAll('a')];const i=as.indexOf(t)+(e.key==='ArrowRight'?1:-1);if(as[i]){as[i].click();as[i].focus();}}});
+const SUB={"sub-packages":"packages","sub-sent":"sent","sub-prices":"prices","sub-qa-subs":"qa-subs"};
+function setSub(v){const sec=document.getElementById('step-2');if(!sec||!v||!sec.querySelector('.subnav'))return;sec.setAttribute('data-sub',v);sec.querySelectorAll('.subnav a').forEach(a=>a.classList.toggle('on',a.dataset.sub===v));}
+document.addEventListener('click',e=>{const a=e.target.closest&&e.target.closest('a[href^="#"]');if(!a)return;const v=SUB[a.getAttribute('href').slice(1)];if(v)setSub(v);});
+window.addEventListener('hashchange',()=>{const v=SUB[(location.hash||'').slice(1)];if(v)setSub(v);});
+show(fromHash(),false);
+const h0=(location.hash||'').slice(1);if(SUB[h0])setSub(SUB[h0]);
+function fullw(){if(!mid)return;const cs=getComputedStyle(mid);document.documentElement.style.setProperty('--fullw',(mid.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight))+'px');}
+fullw();window.addEventListener('resize',fullw);if(window.ResizeObserver&&mid)new ResizeObserver(fullw).observe(mid);
+// The bills table: a heading click sorts by that column, the bar over it shows all, not paid or paid.
+// The choice is kept for this page in sessionStorage, and re-applied after the page refreshes itself.
+const BK='merlin-bills:'+location.pathname;let BS={col:null,dir:null,filt:'all'};
+try{const j=JSON.parse(sessionStorage.getItem(BK)||'null');if(j&&typeof j==='object')BS=Object.assign(BS,j);}catch(e){}
+function bsave(){try{sessionStorage.setItem(BK,JSON.stringify(BS))}catch(e){}}
+function bcmp(a,b,typ){return typ==='num'?parseFloat(a)-parseFloat(b):a.localeCompare(b,undefined,{numeric:true,sensitivity:'base'});}
+function applyBills(){const t=document.getElementById('billstbl');if(!t||!t.tBodies[0])return;const tb=t.tBodies[0],rows=[...tb.rows],ths=t.tHead.rows[0].cells;
+  rows.forEach((r,i)=>{if(r.dataset.i===undefined)r.dataset.i=i;});const ord=(x,y)=>x.dataset.i-y.dataset.i;
+  const th=BS.col===null?null:ths[BS.col];
+  if(th&&th.dataset.type){const c=BS.col,typ=th.dataset.type,m=BS.dir==='desc'?-1:1;
+    rows.sort((x,y)=>{const a=(x.cells[c]&&x.cells[c].dataset.sort)||'',b=(y.cells[c]&&y.cells[c].dataset.sort)||'';
+      if(a===''||b==='')return a===b?ord(x,y):(a===''?1:-1);return (bcmp(a,b,typ)*m)||ord(x,y);});}
+  else{BS.col=null;BS.dir=null;rows.sort(ord);}
+  rows.forEach(r=>tb.appendChild(r));
+  [...ths].forEach((h,i)=>{if(h.dataset.type)h.setAttribute('aria-sort',i===BS.col?(BS.dir==='desc'?'descending':'ascending'):'none');});
+  let shown=0;rows.forEach(r=>{const p=r.dataset.paid==='1',hide=BS.filt==='paid'?!p:(BS.filt==='unpaid'?p:false);r.hidden=hide;if(!hide)shown++;});
+  const bar=document.querySelector('.billbar[data-for="billstbl"]');
+  if(bar){bar.querySelectorAll('[data-bfilt]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.bfilt===BS.filt?'true':'false'));
+    const s=bar.querySelector('select[data-bsort]');if(s){const v=BS.col===null?'':BS.col+':'+BS.dir;s.value=[...s.options].some(o=>o.value===v)?v:'';}
+    const n=bar.querySelector('.bcount'),w=k=>k+(k===1?' bill':' bills');if(n)n.textContent=shown===rows.length?w(rows.length):'Showing '+shown+' of '+w(rows.length);}
+  const none=document.querySelector('.billnone');if(none)none.hidden=shown>0;}
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('#billstbl .sorth');
+  if(b){const c=+b.dataset.col,typ=b.closest('th').dataset.type;if(BS.col===c)BS.dir=BS.dir==='asc'?'desc':'asc';else{BS.col=c;BS.dir=(typ==='date'||typ==='num')?'desc':'asc';}bsave();applyBills();return;}
+  const f=e.target.closest&&e.target.closest('.billbar [data-bfilt]');if(f){BS.filt=f.dataset.bfilt;bsave();applyBills();}});
+document.addEventListener('change',e=>{const s=e.target.closest&&e.target.closest('select[data-bsort]');if(!s)return;
+  if(!s.value){BS.col=null;BS.dir=null;}else{const p=s.value.split(':');BS.col=+p[0];BS.dir=p[1];}bsave();applyBills();s.blur();});
+applyBills();
+window.__merlinBills={apply:applyBills,state:()=>BS};
+// The takeoff button is a fold-out that needs no script (Claude's pane shows a file page as a still copy).
+// Served by the dashboard server, it becomes the link: on load and again after each in-place refresh.
+function liveLinks(){if(!/^https?:$/.test(location.protocol))return;document.querySelectorAll('details.tk-open[data-srv]').forEach(d=>{const a=document.createElement('a');a.setAttribute('class','action');a.setAttribute('href',d.getAttribute('data-srv'));a.innerHTML=d.querySelector('summary').innerHTML;d.replaceWith(a);});}
+liveLinks();
+window.__merlinLiveCfg={
+  parts:[{sel:'#scrollmid'},{sel:'#strip'},{sel:'#pxalertsbody'},{sel:'.alertbtn',attrs:['aria-label']},{sel:'#pxdata',text:true}],
+  updated:'#pxupdated',notLive:'Not live. Start a chat on this job to update.',
+  keep:()=>{const s2=document.getElementById('step-2');return {pg:document.body.getAttribute('data-pg'),sub:s2?s2.getAttribute('data-sub'):null,sl:strip.scrollLeft};},
+  restore:s=>{load();mark(s&&PG[s.pg]?s.pg:'ov');if(s&&s.sub)setSub(s.sub);if(s)strip.scrollLeft=s.sl;applyBills();liveLinks();}};
+})();
+</script>
+
+</body></html>
